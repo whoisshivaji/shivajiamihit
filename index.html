@@ -62,7 +62,7 @@
       margin-bottom: 35px;
       flex-wrap: wrap;
       justify-content: center;
-      max-width: 400px;
+      max-width: 420px;
     }
 
     .social-btn {
@@ -99,6 +99,10 @@
 
     .social-btn.threads {
       background: #101010;
+    }
+
+    .social-btn.email {
+      background: #ea4335;
     }
 
     .social-btn:hover {
@@ -196,14 +200,14 @@
 </head>
 <body>
 
-  <!-- Screen 1: Hero Section (Photo + All 5 Social Links) -->
+  <!-- Screen 1: Hero Section (Photo + All 6 Social/Contact Links) -->
   <section class="hero-section">
     <img src="photo.jpg" alt="Shivaji" class="profile-photo" onerror="this.src='https://via.placeholder.com/160'">
     
     <h1>Shivaji Amihit</h1>
     <p class="subtitle">Connect with me</p>
 
-    <!-- Social Media Buttons -->
+    <!-- Social & Contact Buttons -->
     <div class="social-links">
       <!-- Instagram -->
       <a href="https://instagram.com/who_is_shivaji?exln=Mm1kOHRsOHB1Mmsy" target="_blank" rel="noopener noreferrer" class="social-btn instagram" title="Instagram">
@@ -228,6 +232,11 @@
       <!-- Threads -->
       <a href="https://www.threads.com/@who_is_shivaji" target="_blank" rel="noopener noreferrer" class="social-btn threads" title="Threads">
         <i class="fa-brands fa-threads"></i>
+      </a>
+
+      <!-- Gmail -->
+      <a href="mailto:shivajiraoamihit786@gmail.com" class="social-btn email" title="Send Email">
+        <i class="fa-solid fa-envelope"></i>
       </a>
     </div>
 
@@ -262,5 +271,4 @@
   </section>
 
 </body>
-          </html>
-          
+</html>

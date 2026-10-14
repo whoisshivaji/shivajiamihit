@@ -17,11 +17,11 @@
   <meta property="og:image" content="https://shivajiamihit.in/profile.jpg">
 
   <!-- Twitter / X Meta Tags -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://shivajiamihit.in/">
-  <meta property="twitter:title" content="Shivaji Kumar | Official Portfolio">
-  <meta property="twitter:description" content="Connect with Shivaji. View my portfolio, contact details, and social links.">
-  <meta property="twitter:image" content="https://shivajiamihit.in/profile.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://shivajiamihit.in/">
+  <meta name="twitter:title" content="Shivaji Kumar | Official Portfolio">
+  <meta name="twitter:description" content="Connect with Shivaji. View my portfolio, contact details, and social links.">
+  <meta name="twitter:image" content="https://shivajiamihit.in/profile.jpg">
 
   <!-- Google Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,6 +56,7 @@
       filter: blur(80px);
       z-index: 0;
       opacity: 0.6;
+      pointer-events: none;
       animation: floatOrb 12s infinite alternate ease-in-out;
     }
 
@@ -91,6 +92,10 @@
       100% { transform: translate(-30px, -20px) scale(0.95); }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      .liquid-orb, .save-contact-btn i { animation: none; }
+    }
+
     /* Liquid Glass Card Container */
     .glass-card {
       position: relative;
@@ -102,7 +107,7 @@
       -webkit-backdrop-filter: blur(24px) saturate(190%);
       border-radius: 32px;
       border: 1px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 
+      box-shadow:
         0 20px 50px rgba(0, 0, 0, 0.6),
         inset 0 1px 1px rgba(255, 255, 255, 0.3),
         inset 0 -1px 1px rgba(255, 255, 255, 0.05);
@@ -140,6 +145,7 @@
       margin-bottom: 5px;
       background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
@@ -167,7 +173,7 @@
       font-weight: 600;
       border: 1px solid rgba(255, 255, 255, 0.35);
       cursor: pointer;
-      box-shadow: 
+      box-shadow:
         0 10px 25px rgba(16, 185, 129, 0.35),
         inset 0 1px 1px rgba(255, 255, 255, 0.4);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -195,6 +201,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      width: 100%;
       padding: 13px 18px;
       background: rgba(255, 255, 255, 0.04);
       backdrop-filter: blur(12px);
@@ -205,20 +212,24 @@
       text-decoration: none;
       font-size: 14px;
       font-weight: 500;
+      text-align: left;
       transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 
+      box-shadow:
         0 4px 15px rgba(0, 0, 0, 0.15),
         inset 0 1px 1px rgba(255, 255, 255, 0.1);
       cursor: pointer;
+      user-select: none;
     }
 
-    .link-item:hover {
+    .link-item:hover,
+    .link-item:focus-visible {
       background: rgba(255, 255, 255, 0.12);
       border-color: rgba(255, 255, 255, 0.3);
       transform: translateY(-2px) scale(1.01);
-      box-shadow: 
+      box-shadow:
         0 10px 25px rgba(0, 0, 0, 0.3),
         inset 0 1px 2px rgba(255, 255, 255, 0.25);
+      outline: none;
     }
 
     .link-left {
@@ -227,7 +238,6 @@
       gap: 14px;
     }
 
-    /* Icon Animation */
     .link-left i {
       font-size: 20px;
       width: 24px;
@@ -247,13 +257,14 @@
 
     /* Special Highlight for Explore Movies Button */
     .movie-btn-item {
-      background: linear-gradient(135deg, rgba(225, 29, 72, 0.18), rgba(168, 85, 247, 0.18));
-      border: 1px solid rgba(244, 63, 94, 0.4);
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.2), rgba(168, 85, 247, 0.2));
+      border: 1px solid rgba(244, 63, 94, 0.45);
     }
 
-    .movie-btn-item:hover {
-      background: linear-gradient(135deg, rgba(225, 29, 72, 0.3), rgba(168, 85, 247, 0.3));
-      border-color: rgba(244, 63, 94, 0.7);
+    .movie-btn-item:hover,
+    .movie-btn-item:focus-visible {
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.35), rgba(168, 85, 247, 0.35));
+      border-color: rgba(244, 63, 94, 0.8);
     }
 
     /* Brand Colors */
@@ -261,9 +272,7 @@
     .fa-phone { color: #38bdf8; }
     .fa-envelope { color: #f87171; }
     .fa-instagram { color: #f43f5e; }
-    .fa-threads { color: #ffffff; }
     .fa-telegram { color: #38bdf8; }
-    .fa-youtube { color: #ef4444; }
     .fa-x-twitter { color: #f1f5f9; }
     .fa-film { color: #fb7185; }
 
@@ -294,35 +303,40 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(3, 7, 18, 0.82);
+      background: rgba(3, 7, 18, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 100;
+      z-index: 99999;
       padding: 16px;
-      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: fadeIn 0.25s ease-out;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .modal-glass {
       width: 100%;
-      max-width: 460px;
-      max-height: 88vh;
+      max-width: 440px;
+      height: 82vh;
+      height: 82dvh;
       display: flex;
       flex-direction: column;
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(30px) saturate(200%);
       -webkit-backdrop-filter: blur(30px) saturate(200%);
       border-radius: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
-      padding: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+      padding: 20px;
       position: relative;
     }
 
@@ -330,7 +344,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      flex-shrink: 0;
     }
 
     .modal-header h2 {
@@ -343,9 +358,9 @@
     }
 
     .close-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #cbd5e1;
       width: 34px;
       height: 34px;
       border-radius: 50%;
@@ -358,24 +373,26 @@
     }
 
     .close-btn:hover {
-      background: rgba(239, 68, 68, 0.3);
+      background: rgba(239, 68, 68, 0.4);
       color: #fff;
     }
 
     .search-box {
       display: flex;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      flex-shrink: 0;
     }
 
     .search-input {
       flex: 1;
-      padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      min-width: 0;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 14px;
       color: #fff;
-      font-size: 14px;
+      font-size: 16px; /* 16px stops iOS auto-zoom on focus */
       outline: none;
       transition: border-color 0.2s;
     }
@@ -389,7 +406,7 @@
       border: none;
       border-radius: 14px;
       color: #fff;
-      padding: 0 18px;
+      padding: 0 16px;
       font-weight: 600;
       cursor: pointer;
       transition: transform 0.2s;
@@ -406,18 +423,17 @@
       padding-right: 4px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .movie-results::-webkit-scrollbar {
       width: 4px;
     }
     .movie-results::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.25);
       border-radius: 4px;
     }
 
-    /* Movie Card in Glass style */
     .movie-item {
       display: flex;
       gap: 12px;
@@ -425,18 +441,18 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 16px;
       padding: 10px;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
     }
 
     .movie-item:hover {
       background: rgba(255, 255, 255, 0.08);
       border-color: rgba(251, 113, 133, 0.4);
-      transform: translateY(-2px);
     }
 
     .movie-poster {
-      width: 75px;
-      height: 110px;
+      width: 70px;
+      height: 98px;
       object-fit: cover;
       border-radius: 10px;
       background: rgba(0, 0, 0, 0.4);
@@ -445,31 +461,33 @@
 
     .movie-info {
       flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
     .movie-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       color: #f8fafc;
       margin-bottom: 4px;
-      line-height: 1.3;
+      line-height: 1.25;
     }
 
     .movie-meta {
-      font-size: 12px;
+      font-size: 11px;
       color: #fb7185;
       margin-bottom: 6px;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .movie-meta span {
-      background: rgba(255, 255, 255, 0.06);
-      padding: 2px 7px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 6px;
       border-radius: 6px;
       color: #cbd5e1;
     }
@@ -479,14 +497,15 @@
       color: #94a3b8;
       line-height: 1.4;
       display: -webkit-box;
-      -webkit-line-clamp: 3;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
 
     .error-box {
       text-align: center;
-      padding: 30px 10px;
+      padding: 35px 10px;
       color: #94a3b8;
       font-size: 13px;
     }
@@ -501,17 +520,18 @@
 
   <!-- Main Profile Card -->
   <div class="glass-card">
-    
+
     <!-- Profile Photo -->
     <div class="avatar-wrapper">
-      <img src="profile.jpg" alt="Shivaji" class="profile-img" onerror="this.src='https://ui-avatars.com/api/?name=Shivaji+Kumar&background=0284c7&color=ffffff&size=200'">
+      <img src="profile.jpg" alt="Shivaji" class="profile-img"
+           onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Shivaji+Kumar&background=0284c7&color=ffffff&size=200'">
     </div>
 
     <h1>Shivaji Kumar</h1>
-    <p class="subtitle">Operator & Tech Enthusiast | Amihit, Jaunpur</p>
+    <p class="subtitle">Operator &amp; Tech Enthusiast | Amihit, Jaunpur</p>
 
     <!-- Save Contact Button -->
-    <button onclick="downloadVCard()" class="save-contact-btn">
+    <button type="button" onclick="downloadVCard()" class="save-contact-btn">
       <i class="fa-solid fa-address-card"></i> Save Contact
     </button>
 
@@ -519,7 +539,7 @@
     <div class="links-list">
 
       <!-- WhatsApp -->
-      <a href="https://api.whatsapp.com/send?phone=919792156988&text=Hi%20Shivaji!" target="_blank" class="link-item">
+      <a href="https://api.whatsapp.com/send?phone=919792156988&text=Hi%20Shivaji!" target="_blank" rel="noopener" class="link-item">
         <div class="link-left">
           <i class="fa-brands fa-whatsapp"></i>
           <span>WhatsApp</span>
@@ -546,7 +566,7 @@
       </a>
 
       <!-- Instagram -->
-      <a href="instagram://user?username=who_is_shivaji" onclick="window.location='https://instagram.com/who_is_shivaji';" class="link-item">
+      <a href="https://instagram.com/who_is_shivaji" target="_blank" rel="noopener" class="link-item">
         <div class="link-left">
           <i class="fa-brands fa-instagram"></i>
           <span>Instagram</span>
@@ -554,17 +574,8 @@
         <i class="fa-solid fa-chevron-right"></i>
       </a>
 
-      <!-- Threads -->
-      <a href="barcelona://user?username=who_is_shivaji" onclick="window.location='https://www.threads.net/@who_is_shivaji';" class="link-item">
-        <div class="link-left">
-          <i class="fa-brands fa-threads"></i>
-          <span>Threads</span>
-        </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </a>
-
       <!-- Telegram -->
-      <a href="tg://resolve?domain=Whoisshivaji" onclick="window.location='https://t.me/Whoisshivaji';" class="link-item">
+      <a href="https://t.me/Whoisshivaji" target="_blank" rel="noopener" class="link-item">
         <div class="link-left">
           <i class="fa-brands fa-telegram"></i>
           <span>Telegram</span>
@@ -572,17 +583,8 @@
         <i class="fa-solid fa-chevron-right"></i>
       </a>
 
-      <!-- YouTube -->
-      <a href="vnd.youtube://www.youtube.com/@shivajiworld" onclick="window.location='https://youtube.com/@shivajiworld';" class="link-item">
-        <div class="link-left">
-          <i class="fa-brands fa-youtube"></i>
-          <span>YouTube</span>
-        </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </a>
-
       <!-- Twitter / X -->
-      <a href="twitter://user?screen_name=who_is_shivaji" onclick="window.location='https://x.com/who_is_shivaji';" class="link-item">
+      <a href="https://x.com/who_is_shivaji" target="_blank" rel="noopener" class="link-item">
         <div class="link-left">
           <i class="fa-brands fa-x-twitter"></i>
           <span>Twitter (X)</span>
@@ -591,13 +593,13 @@
       </a>
 
       <!-- Explore Movies Tool Button -->
-      <div class="link-item movie-btn-item" onclick="openMovies()">
+      <button type="button" class="link-item movie-btn-item" id="openMoviesBtn">
         <div class="link-left">
           <i class="fa-solid fa-film"></i>
           <span>Explore Movies</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
-      </div>
+      </button>
 
     </div>
 
@@ -607,22 +609,22 @@
   </div>
 
   <!-- Liquid Glass Explore Movies Modal Window -->
-  <div class="modal-overlay" id="movieModal" onclick="closeOnOverlay(event)">
+  <div class="modal-overlay" id="movieModal">
     <div class="modal-glass">
       <div class="modal-header">
         <h2><i class="fa-solid fa-film" style="color:#fb7185;"></i> Explore Movies</h2>
-        <button class="close-btn" onclick="closeMovies()"><i class="fa-solid fa-xmark"></i></button>
+        <button type="button" class="close-btn" id="closeMoviesBtn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
       <div class="search-box">
-        <input type="text" id="movieInput" class="search-input" placeholder="Search movie (e.g. Batman, Avatar)..." onkeypress="handleMovieEnter(event)">
-        <button class="search-btn" onclick="searchMovies()"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <input type="text" id="movieInput" class="search-input" placeholder="Search movie (e.g. Avatar, Avengers)...">
+        <button type="button" class="search-btn" id="searchMoviesBtn" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
       </div>
 
       <div class="movie-results" id="movieResults">
         <div class="error-box">
           <i class="fa-solid fa-spinner fa-spin" style="font-size:24px; color:#fb7185;"></i>
-          <p style="margin-top:8px;">Loading popular titles...</p>
+          <p style="margin-top:8px;">Loading movies...</p>
         </div>
       </div>
     </div>
@@ -632,18 +634,19 @@
   <script>
     // Save Contact (vCard)
     function downloadVCard() {
-      const vcard = 
-`BEGIN:VCARD
-VERSION:3.0
-N:Kumar;Shivaji;;;
-FN:Shivaji Kumar
-ORG:Personal
-TITLE:Packaging Operator & Tech Enthusiast
-TEL;TYPE=CELL,VOICE:+919792156988
-EMAIL;TYPE=INTERNET:shivajiraoamihit786@gmail.com
-URL:https://shivajiamihit.in
-ADR;TYPE=HOME:;;Amihit, Kerakat;Jaunpur;Uttar Pradesh;222142;India
-END:VCARD`;
+      const vcard = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        'N:Kumar;Shivaji;;;',
+        'FN:Shivaji Kumar',
+        'ORG:Personal',
+        'TITLE:Packaging Operator & Tech Enthusiast',
+        'TEL;TYPE=CELL,VOICE:+919792156988',
+        'EMAIL;TYPE=INTERNET:shivajiraoamihit786@gmail.com',
+        'URL:https://shivajiamihit.in',
+        'ADR;TYPE=HOME:;;Amihit, Kerakat;Jaunpur;Uttar Pradesh;222142;India',
+        'END:VCARD'
+      ].join('\r\n');
 
       const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -653,127 +656,95 @@ END:VCARD`;
       document.body.appendChild(tempLink);
       tempLink.click();
       document.body.removeChild(tempLink);
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
-    // Modal Window Functions
-    function openMovies() {
-      document.getElementById('movieModal').style.display = 'flex';
-      const input = document.getElementById('movieInput');
-      if (!input.value.trim()) {
-        fetchMovieData('marvel'); // Initial default load
+    // Modal Control
+    const modal = document.getElementById('movieModal');
+    const openBtn = document.getElementById('openMoviesBtn');
+    const closeBtn = document.getElementById('closeMoviesBtn');
+    const searchBtn = document.getElementById('searchMoviesBtn');
+    const movieInput = document.getElementById('movieInput');
+
+    function openModal() {
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      if (!movieInput.value.trim()) {
+        fetchMovieData('avengers');
       }
-      input.focus();
+      setTimeout(() => movieInput.focus(), 100);
     }
 
-    function closeMovies() {
-      document.getElementById('movieModal').style.display = 'none';
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
     }
 
-    function closeOnOverlay(e) {
-      if (e.target.id === 'movieModal') {
-        closeMovies();
-      }
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    function runSearch() {
+      const val = movieInput.value.trim();
+      if (val) fetchMovieData(val);
     }
 
-    function handleMovieEnter(e) {
-      if (e.key === 'Enter') {
-        searchMovies();
-      }
-    }
+    searchBtn.addEventListener('click', runSearch);
+    movieInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') runSearch();
+    });
 
-    function searchMovies() {
-      const query = document.getElementById('movieInput').value.trim();
-      if (query) {
-        fetchMovieData(query);
-      }
-    }
+    // Escape HTML so API text can never break the page
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-    // Free Open Movie API Search (TVMaze Open Source Endpoint)
+    // Movie search (iTunes Search API - real movies, free, no key)
+    let searchToken = 0;
     async function fetchMovieData(query) {
-      const resultsDiv = document.getElementById('movieResults');
-      resultsDiv.innerHTML = '<div class="error-box"><i class="fa-solid fa-spinner fa-spin" style="font-size:24px; color:#fb7185;"></i><p style="margin-top:8px;">Searching movies...</p></div>';
+      const box = document.getElementById('movieResults');
+      const myToken = ++searchToken;
+      box.innerHTML = '<div class="error-box"><i class="fa-solid fa-spinner fa-spin" style="font-size:24px;color:#fb7185;"></i><p style="margin-top:8px;">Searching movies...</p></div>';
 
       try {
-        const response = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`);
-        if (!response.ok) throw new Error('Network error');
+        const res = await fetch('https://itunes.apple.com/search?media=movie&limit=20&term=' + encodeURIComponent(query));
+        if (!res.ok) throw new Error('Network error');
+        const data = await res.json();
+        if (myToken !== searchToken) return; // a newer search is running
 
-        const data = await response.json();
+        const results = (data.results || []).filter(m => m.trackName);
 
-        if (data.length === 0) {
-          resultsDiv.innerHTML = `
-            <div class="error-box">
-  <i class="fa-solid fa-chevron-right"></i>
-      </a>
+        if (!results.length) {
+          box.innerHTML = '<div class="error-box"><i class="fa-solid fa-circle-question" style="font-size:26px;color:#fb7185;margin-bottom:8px;"></i><p>Koi movie nahi mili. Kuch aur search karein.</p></div>';
+          return;
+        }
 
-      <!-- Threads -->
-      <a href="barcelona://user?username=who_is_shivaji" onclick="window.location='https://www.threads.net/@who_is_shivaji';" class="link-item">
-        <div class="link-left">
-          <i class="fa-brands fa-threads"></i>
-          <span>Threads</span>
-        </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </a>
-
-      <!-- Telegram -->
-      <a href="tg://resolve?domain=Whoisshivaji" onclick="window.location='https://t.me/Whoisshivaji';" class="link-item">
-        <div class="link-left">
-          <i class="fa-brands fa-telegram"></i>
-          <span>Telegram</span>
-        </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </a>
-
-      <!-- YouTube -->
-      <a href="vnd.youtube://www.youtube.com/@shivajiworld" onclick="window.location='https://youtube.com/@shivajiworld';" class="link-item">
-        <div class="link-left">
-          <i class="fa-brands fa-youtube"></i>
-          <span>YouTube</span>
-        </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </a>
-
-      <!-- Twitter / X -->
-      <a href="twitter://user?screen_name=who_is_shivaji" onclick="window.location='https://x.com/who_is_shivaji';" class="link-item">
-        <div class="link-left">
-          <i class="fa-brands fa-x-twitter"></i>
-          <span>Twitter (X)</span>
-        </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </a>
-
-    </div>
-
-    <footer>
-      © 2026 shivajiamihit.in • All Rights Reserved
-    </footer>
-  </div>
-
-  <!-- JavaScript vCard Generator -->
-  <script>
-    function downloadVCard() {
-      const vcard = 
-`BEGIN:VCARD
-VERSION:3.0
-N:Kumar;Shivaji;;;
-FN:Shivaji Kumar
-ORG:Personal
-TITLE:Packaging Operator & Tech Enthusiast
-TEL;TYPE=CELL,VOICE:+919792156988
-EMAIL;TYPE=INTERNET:shivajiraoamihit786@gmail.com
-URL:https://shivajiamihit.in
-ADR;TYPE=HOME:;;Amihit, Kerakat;Jaunpur;Uttar Pradesh;222142;India
-END:VCARD`;
-
-      const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const tempLink = document.createElement('a');
-      tempLink.href = url;
-      tempLink.setAttribute('download', 'Shivaji_Kumar.vcf');
-      document.body.appendChild(tempLink);
-      tempLink.click();
-      document.body.removeChild(tempLink);
-      URL.revokeObjectURL(url);
+        box.innerHTML = results.map(m => {
+          const poster = (m.artworkUrl100 || '').replace('100x100bb', '300x300bb');
+          const year = (m.releaseDate || '').slice(0, 4);
+          return `
+            <div class="movie-item">
+              <img class="movie-poster" src="${esc(poster)}" alt="${esc(m.trackName)}" loading="lazy" onerror="this.style.visibility='hidden'">
+              <div class="movie-info">
+                <div class="movie-title">${esc(m.trackName)}</div>
+                <div class="movie-meta">
+                  ${year ? `<span>${esc(year)}</span>` : ''}
+                  ${m.primaryGenreName ? `<span>${esc(m.primaryGenreName)}</span>` : ''}
+                </div>
+                <div class="movie-summary">${esc(m.longDescription || m.shortDescription || '')}</div>
+              </div>
+            </div>`;
+        }).join('');
+      } catch (err) {
+        if (myToken !== searchToken) return;
+        box.innerHTML = '<div class="error-box"><i class="fa-solid fa-triangle-exclamation" style="font-size:26px;color:#fb7185;margin-bottom:8px;"></i><p>Movies load nahi ho paayi. Dobara try karein.</p></div>';
+      }
     }
   </script>
 

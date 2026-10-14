@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e9ecff">
+
+  <!-- Search Engine Meta Tags -->
+  <title>Shivaji Kumar | Official Portfolio</title>
+  <meta name="title" content="Shivaji Kumar | Official Portfolio">
+  <meta name="description" content="Official personal portfolio of Shivaji Kumar - Tech Enthusiast, Packaging Operator & Web Developer.">
+
+  <!-- Open Graph / WhatsApp / Facebook Preview Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shivajiamihit.in/">
+  <meta property="og:title" content="Shivaji Kumar | Official Portfolio">
+  <meta property="og:description" content="Connect with Shivaji. View my portfolio, contact details, and social links.">
+  <meta property="og:image" content="https://shivajiamihit.in/profile.jpg">
+
+  <!-- Twitter / X Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://shivajiamihit.in/">
+  <meta name="twitter:title" content="Shivaji Kumar | Official Portfolio">
+  <meta name="twitter:description" content="Connect with Shivaji. View my portfolio, contact details, and social links.">
+  <meta name="twitter:image" content="https://shivajiamihit.in/profile.jpg">
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --bg: #e9ecff;
+      --card: #f3f1ff;
+      --ink: #3b3a5c;
+      --ink-soft: #7a79a0;
+      --shadow-dark: rgba(152, 160, 205, 0.55);
+      --shadow-light: rgba(255, 255, 255, 0.95);
+
+      /* The signature clay look: soft outer shadows + puffy inner highlights */
+      --clay-out: 14px 14px 30px var(--shadow-dark), -10px -10px 26px var(--shadow-light);
+      --clay-in: inset 6px 6px 12px rgba(255, 255, 255, 0.85), inset -8px -8px 16px rgba(120, 120, 180, 0.14);
+      --clay-small-out: 8px 8px 18px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 28px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Floating clay blobs in the background */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      z-index: 0;
+      pointer-events: none;
+      box-shadow: 12px 12px 28px var(--shadow-dark), -8px -8px 22px var(--shadow-light), inset 6px 6px 14px rgba(255,255,255,.6), inset -8px -8px 16px rgba(0,0,0,.08);
+      animation: floaty 9s infinite alternate ease-in-out;
+    }
+    .blob-1 { width: 120px; height: 120px; top: 6%; left: -30px; background: linear-gradient(145deg, #a5d8ff, #74c0fc); }
+    .blob-2 { width: 160px; height: 160px; bottom: 5%; right: -50px; background: linear-gradient(145deg, #d0bfff, #b197fc); animation-duration: 12s; }
+    .blob-3 { width: 70px; height: 70px; top: 55%; left: 8%; background: linear-gradient(145deg, #ffc9c9, #ff8787); animation-duration: 7s; }
+    .blob-4 { width: 54px; height: 54px; top: 12%; right: 10%; background: linear-gradient(145deg, #b2f2bb, #69db7c); animation-duration: 10s; }
+
+    @keyframes floaty {
+      0%   { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-24px) rotate(8deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .blob, .save-contact-btn i { animation: none; }
+    }
+
+    /* Main clay card */
+    .clay-card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 440px;
+      background: var(--card);
+      border-radius: 44px;
+      box-shadow: var(--clay-out), var(--clay-in);
+      padding: 36px 22px 28px;
+      text-align: center;
+    }
+
+    /* Avatar */
+    .avatar-wrapper {
+      width: 124px;
+      height: 124px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      padding: 7px;
+      background: linear-gradient(145deg, #ffffff, #dcdcf5);
+      box-shadow: var(--clay-small-out);
+    }
+
+    .profile-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.12);
+      transition: transform 0.35s ease;
+    }
+
+    .avatar-wrapper:hover .profile-img { transform: scale(1.05); }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+
+    .subtitle {
+      font-size: 13.5px;
+      color: var(--ink-soft);
+      margin-bottom: 24px;
+      font-weight: 700;
+    }
+
+    /* Save Contact Button */
+    .save-contact-btn {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(145deg, #69db7c, #40c057);
+      color: #ffffff;
+      padding: 15px;
+      border-radius: 26px;
+      font-size: 16px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+      box-shadow:
+        10px 10px 22px rgba(64, 192, 87, 0.38),
+        -6px -6px 16px var(--shadow-light),
+        inset 4px 4px 10px rgba(255, 255, 255, 0.5),
+        inset -5px -6px 12px rgba(0, 90, 30, 0.22);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin-bottom: 22px;
+    }
+
+    .save-contact-btn:hover { transform: translateY(-3px); }
+
+    .save-contact-btn:active {
+      transform: translateY(1px);
+      box-shadow:
+        4px 4px 10px rgba(64, 192, 87, 0.3),
+        inset 6px 6px 12px rgba(0, 90, 30, 0.3),
+        inset -4px -4px 10px rgba(255, 255, 255, 0.3);
+    }
+
+    .save-contact-btn i { animation: pulseIcon 2s infinite ease-in-out; }
+
+    @keyframes pulseIcon {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.18); }
+    }
+
+    /* Links */
+    .links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .link-item {
+      --c: #74c0fc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 11px 16px 11px 12px;
+      background: var(--card);
+      border: none;
+      border-radius: 28px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 800;
+      text-align: left;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: var(--clay-small-out), var(--clay-in);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .link-item:hover,
+    .link-item:focus-visible {
+      transform: translateY(-3px);
+      outline: none;
+    }
+
+    .link-item:active {
+      transform: translateY(1px);
+      box-shadow:
+        inset 6px 6px 12px rgba(120, 120, 180, 0.25),
+        inset -6px -6px 12px rgba(255, 255, 255, 0.9);
+    }
+
+    .link-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Colored clay bubble behind each icon */
+    .icon-bubble {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 20px;
+      background: linear-gradient(145deg, color-mix(in srgb, var(--c) 70%, white), var(--c));
+      box-shadow:
+        5px 5px 11px color-mix(in srgb, var(--c) 45%, transparent),
+        inset 3px 3px 7px rgba(255, 255, 255, 0.55),
+        inset -4px -4px 8px rgba(0, 0, 0, 0.16);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .link-item:hover .icon-bubble { transform: scale(1.12) rotate(-6deg); }
+
+    .fa-chevron-right {
+      color: var(--ink-soft);
+      font-size: 12px;
+      transition: transform 0.25s ease;
+    }
+
+    .link-item:hover .fa-chevron-right { transform: translateX(4px); }
+
+    .c-whatsapp  { --c: #40c057; }
+    .c-call      { --c: #4dabf7; }
+    .c-mail      { --c: #ff6b6b; }
+    .c-insta     { --c: #f06595; }
+    .c-telegram  { --c: #22b8cf; }
+    .c-x         { --c: #495057; }
+    .c-movies    { --c: #9775fa; }
+
+    footer {
+      margin-top: 28px;
+      font-size: 12px;
+      color: var(--ink-soft);
+      font-weight: 700;
+    }
+
+    /* ========================================= */
+    /* Clay Movies Modal                         */
+    /* ========================================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(86, 88, 140, 0.45);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: pop 0.25s ease-out;
+    }
+
+    @keyframes pop {
+      from { opacity: 0; transform: scale(0.94); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-clay {
+      width: 100%;
+      max-width: 440px;
+      height: 82vh;
+      height: 82dvh;
+      display: flex;
+      flex-direction: column;
+      background: var(--card);
+      border-radius: 40px;
+      box-shadow: 0 30px 60px rgba(40, 40, 90, 0.45), var(--clay-in);
+      padding: 22px 18px 18px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-shrink: 0;
+    }
+
+    .modal-header h2 {
+      font-size: 19px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+    }
+
+    .modal-header h2 i { color: #9775fa; }
+
+    .close-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      color: #ff6b6b;
+      background: var(--card);
+      box-shadow: var(--clay-small-out), var(--clay-in);
+      transition: transform 0.2s;
+    }
+
+    .close-btn:hover { transform: scale(1.08); }
+    .close-btn:active { transform: scale(0.95); }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 0;
+      padding: 13px 18px;
+      background: #e6e4fa;
+      border: none;
+      border-radius: 22px;
+      color: var(--ink);
+      font-size: 16px; /* 16px stops iOS zoom on focus */
+      font-weight: 700;
+      outline: none;
+      box-shadow:
+        inset 5px 5px 10px rgba(120, 120, 180, 0.25),
+        inset -5px -5px 10px rgba(255, 255, 255, 0.9);
+    }
+
+    .search-input::placeholder { color: #a3a2c4; font-weight: 600; }
+    .search-input:focus { box-shadow: inset 5px 5px 10px rgba(120, 120, 180, 0.3), inset -5px -5px 10px rgba(255, 255, 255, 0.9), 0 0 0 3px rgba(151, 117, 250, 0.35); }
+
+    .search-btn {
+      width: 52px;
+      border: none;
+      border-radius: 20px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      background: linear-gradient(145deg, #b197fc, #845ef7);
+      box-shadow:
+        6px 6px 14px rgba(132, 94, 247, 0.4),
+        inset 3px 3px 8px rgba(255, 255, 255, 0.5),
+        inset -4px -4px 8px rgba(0, 0, 0, 0.18);
+      transition: transform 0.2s;
+    }
+
+    .search-btn:hover { transform: translateY(-2px); }
+    .search-btn:active { transform: translateY(1px); }
+
+    .movie-results {
+      overflow-y: auto;
+      flex: 1;
+      text-align: left;
+      padding: 4px 6px 10px 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .movie-results::-webkit-scrollbar { width: 5px; }
+    .movie-results::-webkit-scrollbar-thumb { background: #c4c2ea; border-radius: 6px; }
+
+    .movie-item {
+      display: flex;
+      gap: 12px;
+      flex-shrink: 0;
+      background: var(--card);
+      border-radius: 24px;
+      padding: 10px;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: var(--clay-small-out), var(--clay-in);
+      transition: transform 0.2s;
+    }
+
+    .movie-item:hover { transform: translateY(-2px); }
+
+    .movie-poster {
+      width: 72px;
+      height: 102px;
+      object-fit: cover;
+      border-radius: 16px;
+      background: #dedcf5;
+      flex-shrink: 0;
+      box-shadow: 4px 4px 10px rgba(120, 120, 180, 0.35);
+    }
+
+    .poster-fallback {
+      width: 72px;
+      height: 102px;
+      border-radius: 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      color: #fff;
+      background: linear-gradient(145deg, #b197fc, #845ef7);
+    }
+
+    .movie-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .movie-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--ink);
+      margin-bottom: 4px;
+      line-height: 1.25;
+    }
+
+    .movie-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .movie-meta span {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 9px;
+      border-radius: 10px;
+      color: #6741d9;
+      background: #e5dbff;
+    }
+
+    .movie-summary {
+      font-size: 12px;
+      color: var(--ink-soft);
+      font-weight: 600;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .error-box {
+      text-align: center;
+      padding: 40px 12px;
+      color: var(--ink-soft);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .error-box i { font-size: 30px; color: #9775fa; margin-bottom: 10px; display: block; }
+
+    .credit {
+      flex-shrink: 0;
+      text-align: center;
+      font-size: 11px;
+      color: var(--ink-soft);
+      font-weight: 700;
+      padding-top: 8px;
+    }
+
+    .credit a { color: #6741d9; }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Clay Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+
+  <!-- Main Profile Card -->
+  <div class="clay-card">
+
+    <!-- Profile Photo -->
+    <div class="avatar-wrapper">
+      <img src="profile.jpg" alt="Shivaji" class="profile-img"
+           onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Shivaji+Kumar&background=845ef7&color=ffffff&size=200'">
+    </div>
+
+    <h1>Shivaji Kumar</h1>
+    <p class="subtitle">Operator &amp; Tech Enthusiast | Amihit, Jaunpur</p>
+
+    <!-- Save Contact Button -->
+    <button type="button" onclick="downloadVCard()" class="save-contact-btn">
+      <i class="fa-solid fa-address-card"></i> Save Contact
+    </button>
+
+    <!-- Social & Tool Links -->
+    <div class="links-list">
+
+      <a href="https://api.whatsapp.com/send?phone=919792156988&text=Hi%20Shivaji!" target="_blank" rel="noopener" class="link-item c-whatsapp">
+        <div class="link-left">
+          <span class="icon-bubble"><i class="fa-brands fa-whatsapp"></i></span>
+          <span>WhatsApp</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <a href="tel:+919792156988" class="link-item c-call">
+        <div class="link-left">
+          <span class="icon-bubble"><i class="fa-solid fa-phone"></i></span>
+          <span>Call Me</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <a href="mailto:shivajiraoamihit786@gmail.com?subject=Contact%20from%20Portfolio" class="link-item c-mail">
+        <div class="link-left">
+          <span class="icon-bubble"><i class="fa-solid fa-envelope"></i></span>
+          <span>Email Me</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <a href="https://instagram.com/who_is_shivaji" target="_blank" rel="noopener" class="link-item c-insta">
+        <div class="link-left">
+          <span class="icon-bubble"><i class="fa-brands fa-instagram"></i></span>
+          <span>Instagram</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <a href="https://t.me/Whoisshivaji" target="_blank" rel="noopener" class="link-item c-telegram">
+        <div class="link-left">
+          <span class="icon-bubble"><i class="fa-brands fa-telegram"></i></span>
+          <span>Telegram</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <a href="https://x.com/who_is_shivaji" target="_blank" rel="noopener" class="link-item c-x">
+        <div class="link-left">
+          <span class="icon-bubble"><i class="fa-brands fa-x-twitter"></i></span>
+          <span>Twitter (X)</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <button type="button" class="link-item c-movies" id="openMoviesBtn">
+        <div class="link-left">
+          <span class="icon-bubble"><i class="fa-solid fa-film"></i></span>
+          <span>Explore Movies</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+
+    </div>
+
+    <footer>
+      © 2026 shivajiamihit.in • All Rights Reserved
+    </footer>
+  </div>
+
+  <!-- Explore Movies Modal -->
+  <div class="modal-overlay" id="movieModal">
+    <div class="modal-clay">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-film"></i> Explore Movies</h2>
+        <button type="button" class="close-btn" id="closeMoviesBtn" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="search-box">
+        <input type="text" id="movieInput" class="search-input" placeholder="Movie ka naam likho (Avatar, Pushpa...)">
+        <button type="button" class="search-btn" id="searchMoviesBtn" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+
+      <div class="movie-results" id="movieResults"></div>
+
+      <div class="credit">Data: <a href="https://www.wikipedia.org" target="_blank" rel="noopener">Wikipedia</a> (open source / CC BY-SA)</div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Save Contact (vCard)
+    function downloadVCard() {
+      const vcard = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        'N:Kumar;Shivaji;;;',
+        'FN:Shivaji Kumar',
+        'ORG:Personal',
+        'TITLE:Packaging Operator & Tech Enthusiast',
+        'TEL;TYPE=CELL,VOICE:+919792156988',
+        'EMAIL;TYPE=INTERNET:shivajiraoamihit786@gmail.com',
+        'URL:https://shivajiamihit.in',
+        'ADR;TYPE=HOME:;;Amihit, Kerakat;Jaunpur;Uttar Pradesh;222142;India',
+        'END:VCARD'
+      ].join('\r\n');
+
+      const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.setAttribute('download', 'Shivaji_Kumar.vcf');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    // Modal control
+    const modal = document.getElementById('movieModal');
+    const openBtn = document.getElementById('openMoviesBtn');
+    const closeBtn = document.getElementById('closeMoviesBtn');
+    const searchBtn = document.getElementById('searchMoviesBtn');
+    const movieInput = document.getElementById('movieInput');
+    const resultsBox = document.getElementById('movieResults');
+    let firstOpen = true;
+
+    function openModal() {
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      if (firstOpen) {
+        firstOpen = false;
+        fetchMovieData('Avengers');
+      }
+      setTimeout(() => movieInput.focus(), 100);
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    function runSearch() {
+      const val = movieInput.value.trim();
+      if (val) fetchMovieData(val);
+    }
+    searchBtn.addEventListener('click', runSearch);
+    movieInput.addEventListener('keydown', e => { if (e.key === 'Enter') runSearch(); });
+
+    // Escape text so API content can never break the page
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    function showMessage(icon, text) {
+      resultsBox.innerHTML = `<div class="error-box"><i class="fa-solid ${icon}"></i>${esc(text)}</div>`;
+    }
+
+    // ---------------------------------------------------------
+    // Movie search: Wikipedia API (open source, free, no key,
+    // CORS enabled). Searches for "<name> film" and keeps pages
+    // whose intro actually describes a film.
+    // ---------------------------------------------------------
+    async function searchWikipedia(query) {
+      const params = new URLSearchParams({
+        action: 'query',
+        format: 'json',
+        origin: '*',
+        generator: 'search',
+        gsrsearch: query + ' film',
+        gsrnamespace: '0',
+        gsrlimit: '20',
+        prop: 'pageimages|extracts',
+        piprop: 'thumbnail',
+        pithumbsize: '240',
+        exintro: '1',
+        explaintext: '1',
+        exsentences: '3',
+        exlimit: 'max'
+      });
+      const res = await fetch('https://en.wikipedia.org/w/api.php?' + params.toString());
+      if (!res.ok) throw new Error('Network error');
+      const data = await res.json();
+      const pages = data.query ? Object.values(data.query.pages) : [];
+      return pages
+        .sort((a, b) => a.index - b.index)
+        .filter(p => /\b(film|movie)\b/i.test(p.extract || '') && !/^(List of|Outline of)/i.test(p.title));
+    }
+
+    let searchToken = 0;
+    async function fetchMovieData(query) {
+      const myToken = ++searchToken;
+      showMessage('fa-spinner fa-spin', 'Movies dhundh rahe hain...');
+
+      try {
+        const pages = await searchWikipedia(query);
+        if (myToken !== searchToken) return; // a newer search is running
+
+        if (!pages.length) {
+          showMessage('fa-circle-question', 'Koi movie nahi mili. Kuch aur search karein.');
+          return;
+        }
+
+        resultsBox.innerHTML = pages.slice(0, 12).map(p => {
+          const yearMatch = (p.extract || '').match(/\b(19|20)\d{2}\b/);
+          const year = yearMatch ? yearMatch[0] : '';
+          const poster = p.thumbnail
+            ? `<img class="movie-poster" src="${esc(p.thumbnail.source)}" alt="${esc(p.title)}" loading="lazy" onerror="this.outerHTML='<div class=&quot;poster-fallback&quot;><i class=&quot;fa-solid fa-film&quot;></i></div>'">`
+            : '<div class="poster-fallback"><i class="fa-solid fa-film"></i></div>';
+          return `
+            <a class="movie-item" href="https://en.wikipedia.org/?curid=${esc(p.pageid)}" target="_blank" rel="noopener">
+              ${poster}
+              <div class="movie-info">
+                <div class="movie-title">${esc(p.title)}</div>
+                <div class="movie-meta">${year ? `<span>${esc(year)}</span>` : ''}<span>Wikipedia</span></div>
+                <div class="movie-summary">${esc(p.extract || '')}</div>
+              </div>
+            </a>`;
+        }).join('');
+      } catch (err) {
+        if (myToken !== searchToken) return;
+        showMessage('fa-triangle-exclamation', 'Movies load nahi ho paayi. Internet check karke dobara try karein.');
+      }
+    }
+  </script>
+
+</body>
+</html>

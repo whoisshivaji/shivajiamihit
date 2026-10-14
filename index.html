@@ -23,7 +23,7 @@
   <meta property="twitter:description" content="Connect with Shivaji. View my portfolio, contact details, and social links.">
   <meta property="twitter:image" content="https://shivajiamihit.in/profile.jpg">
 
-  <!-- Fonts & Icons -->
+  <!-- Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -66,6 +66,7 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
+    /* Profile Photo Styling with Glow & Subtle Breathing Animation */
     .profile-img {
       width: 110px;
       height: 110px;
@@ -73,7 +74,17 @@
       object-fit: cover;
       border: 3px solid var(--accent);
       margin-bottom: 14px;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+      animation: avatarGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes avatarGlow {
+      from {
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+      }
+      to {
+        box-shadow: 0 0 30px rgba(56, 189, 248, 0.6);
+      }
     }
 
     h1 {
@@ -112,6 +123,10 @@
       transform: translateY(-2px);
     }
 
+    .save-contact-btn i {
+      animation: pulseIcon 2s infinite ease-in-out;
+    }
+
     /* Links Container */
     .links-list {
       display: flex;
@@ -131,7 +146,7 @@
       text-decoration: none;
       font-size: 14px;
       font-weight: 500;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
     }
 
     .link-item:hover {
@@ -146,28 +161,45 @@
       gap: 14px;
     }
 
+    /* Icon Animation & Styling */
     .link-left i {
-      font-size: 19px;
-      width: 22px;
+      font-size: 20px;
+      width: 24px;
       text-align: center;
+      display: inline-block;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Platform Colors */
+    /* Floating / Bouncing Animation on hover */
+    .link-item:hover .link-left i {
+      transform: scale(1.25) rotate(-5deg);
+    }
+
+    /* Continuous subtle pulse animation */
+    @keyframes pulseIcon {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
+    /* Brand Colors */
     .fa-whatsapp { color: #25d366; }
     .fa-phone { color: #38bdf8; }
     .fa-envelope { color: #ea4335; }
     .fa-instagram { color: #e1306c; }
-    .fa-telegram { color: #229ed9; }
     .fa-youtube { color: #ff0000; }
+    .fa-telegram { color: #229ed9; }
     .fa-facebook { color: #1877f2; }
-    .fa-linkedin { color: #0a66c2; }
-    .fa-github { color: #ffffff; }
     .fa-x-twitter { color: #f8fafc; }
-    .fa-snapchat { color: #fffc00; }
 
     .fa-chevron-right {
       color: #64748b;
       font-size: 12px;
+      transition: transform 0.2s ease;
+    }
+
+    .link-item:hover .fa-chevron-right {
+      transform: translateX(3px);
+      color: var(--accent);
     }
 
     footer {
@@ -180,6 +212,7 @@
 <body>
 
   <div class="container">
+    <!-- Profile Photo -->
     <img src="profile.jpg" alt="Shivaji" class="profile-img" onerror="this.src='https://ui-avatars.com/api/?name=Shivaji+Kumar&background=38bdf8&color=0b1120&size=200'">
 
     <h1>Shivaji Kumar</h1>
@@ -190,7 +223,7 @@
       <i class="fa-solid fa-address-card"></i> Save Contact
     </button>
 
-    <!-- Complete Links List -->
+    <!-- Links List -->
     <div class="links-list">
 
       <!-- WhatsApp -->
@@ -220,7 +253,7 @@
         <i class="fa-solid fa-chevron-right"></i>
       </a>
 
-      <!-- Instagram (App Deep Link) -->
+      <!-- Instagram -->
       <a href="instagram://user?username=whoisshivaji" onclick="window.location='https://instagram.com/whoisshivaji';" class="link-item">
         <div class="link-left">
           <i class="fa-brands fa-instagram"></i>
@@ -238,25 +271,7 @@
         <i class="fa-solid fa-chevron-right"></i>
       </a>
 
-      <!-- LinkedIn -->
-      <a href="https://www.linkedin.com/in/whoisshivaji" target="_blank" class="link-item">
-        <div class="link-left">
-          <i class="fa-brands fa-linkedin"></i>
-          <span>LinkedIn</span>
-        </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </a>
-
-      <!-- GitHub -->
-      <a href="https://github.com/whoisshivaji" target="_blank" class="link-item">
-        <div class="link-left">
-          <i class="fa-brands fa-github"></i>
-          <span>GitHub</span>
-        </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </a>
-
-      <!-- Telegram (App Deep Link) -->
+      <!-- Telegram -->
       <a href="tg://resolve?domain=whoisshivaji" onclick="window.location='https://t.me/whoisshivaji';" class="link-item">
         <div class="link-left">
           <i class="fa-brands fa-telegram"></i>
@@ -279,15 +294,6 @@
         <div class="link-left">
           <i class="fa-brands fa-x-twitter"></i>
           <span>Twitter (X)</span>
-        </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </a>
-
-      <!-- Snapchat -->
-      <a href="https://www.snapchat.com/add/whoisshivaji" target="_blank" class="link-item">
-        <div class="link-left">
-          <i class="fa-brands fa-snapchat"></i>
-          <span>Snapchat</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </a>

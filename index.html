@@ -4,26 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Primary Meta Tags -->
-  <title>Shivaji | Official Portfolio</title>
-  <meta name="title" content="Shivaji | Official Portfolio">
-  <meta name="description" content="Official personal portfolio of Shivaji - Packaging Operator, Web Developer & Tech Enthusiast.">
+  <!-- Search Engine Meta Tags -->
+  <title>Shivaji Kumar | Official Portfolio</title>
+  <meta name="title" content="Shivaji Kumar | Official Portfolio">
+  <meta name="description" content="Official personal portfolio of Shivaji Kumar - Tech Enthusiast, Packaging Operator & Web Developer.">
 
   <!-- Open Graph / WhatsApp / Facebook Preview Tags -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://shivajiamihit.in/">
-  <meta property="og:title" content="Shivaji | Official Portfolio">
+  <meta property="og:title" content="Shivaji Kumar | Official Portfolio">
   <meta property="og:description" content="Connect with Shivaji. View my portfolio, contact details, and social links.">
   <meta property="og:image" content="https://shivajiamihit.in/profile.jpg">
 
   <!-- Twitter / X Meta Tags -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://shivajiamihit.in/">
-  <meta property="twitter:title" content="Shivaji | Official Portfolio">
+  <meta property="twitter:title" content="Shivaji Kumar | Official Portfolio">
   <meta property="twitter:description" content="Connect with Shivaji. View my portfolio, contact details, and social links.">
   <meta property="twitter:image" content="https://shivajiamihit.in/profile.jpg">
 
-  <!-- Google Fonts & Font Awesome Icons -->
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -31,12 +31,11 @@
 
   <style>
     :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
+      --bg-color: #0b1120;
+      --card-bg: #151e32;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.3);
     }
 
     * {
@@ -53,41 +52,40 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 20px;
+      padding: 24px 16px;
     }
 
     .container {
       width: 100%;
-      max-width: 480px;
+      max-width: 440px;
       background: var(--card-bg);
-      border-radius: 24px;
-      padding: 35px 25px;
+      border-radius: 28px;
+      padding: 32px 20px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .profile-img {
-      width: 120px;
-      height: 120px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       object-fit: cover;
       border: 3px solid var(--accent);
-      box-shadow: 0 0 20px var(--accent-glow);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
     }
 
     h1 {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .subtitle {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-muted);
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     /* Save Contact Button */
@@ -97,49 +95,48 @@
       justify-content: center;
       gap: 10px;
       width: 100%;
-      background: linear-gradient(135deg, #25D366, #128C7E);
+      background: linear-gradient(135deg, #10b981, #059669);
       color: #ffffff;
-      padding: 14px;
-      border-radius: 14px;
-      font-size: 16px;
+      padding: 13px;
+      border-radius: 16px;
+      font-size: 15px;
       font-weight: 600;
       border: none;
       cursor: pointer;
-      box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      margin-bottom: 25px;
+      margin-bottom: 22px;
     }
 
     .save-contact-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
     }
 
-    /* Social Links List */
+    /* Links Container */
     .links-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .link-item {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 18px;
+      padding: 13px 18px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 14px;
       color: var(--text-main);
       text-decoration: none;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
     }
 
     .link-item:hover {
-      background: rgba(56, 189, 248, 0.1);
-      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+      border-color: rgba(56, 189, 248, 0.3);
       transform: translateX(4px);
     }
 
@@ -150,22 +147,32 @@
     }
 
     .link-left i {
-      font-size: 20px;
-      width: 24px;
+      font-size: 19px;
+      width: 22px;
       text-align: center;
     }
 
-    /* Brand Colors */
-    .fa-whatsapp { color: #25D366; }
+    /* Platform Colors */
+    .fa-whatsapp { color: #25d366; }
     .fa-phone { color: #38bdf8; }
     .fa-envelope { color: #ea4335; }
     .fa-instagram { color: #e1306c; }
-    .fa-telegram { color: #229ED9; }
-    .fa-chevron-right { color: var(--text-muted); font-size: 12px; }
+    .fa-telegram { color: #229ed9; }
+    .fa-youtube { color: #ff0000; }
+    .fa-facebook { color: #1877f2; }
+    .fa-linkedin { color: #0a66c2; }
+    .fa-github { color: #ffffff; }
+    .fa-x-twitter { color: #f8fafc; }
+    .fa-snapchat { color: #fffc00; }
+
+    .fa-chevron-right {
+      color: #64748b;
+      font-size: 12px;
+    }
 
     footer {
-      margin-top: 28px;
-      font-size: 12px;
+      margin-top: 24px;
+      font-size: 11px;
       color: var(--text-muted);
     }
   </style>
@@ -173,20 +180,20 @@
 <body>
 
   <div class="container">
-    <!-- Profile Photo (Make sure 'profile.jpg' exists in your repo or replace with your image URL) -->
-    <img src="profile.jpg" alt="Shivaji" class="profile-img" onerror="this.src='https://ui-avatars.com/api/?name=Shivaji+Kumar&background=38bdf8&color=0f172a&size=200'">
+    <img src="profile.jpg" alt="Shivaji" class="profile-img" onerror="this.src='https://ui-avatars.com/api/?name=Shivaji+Kumar&background=38bdf8&color=0b1120&size=200'">
 
     <h1>Shivaji Kumar</h1>
     <p class="subtitle">Operator & Tech Enthusiast | Amihit, Jaunpur</p>
 
-    <!-- One-Click Save Contact Button -->
+    <!-- Save Contact Button -->
     <button onclick="downloadVCard()" class="save-contact-btn">
       <i class="fa-solid fa-address-card"></i> Save Contact
     </button>
 
-    <!-- Social & Contact Deep Links -->
+    <!-- Complete Links List -->
     <div class="links-list">
-      <!-- WhatsApp Direct Chat Link -->
+
+      <!-- WhatsApp -->
       <a href="https://api.whatsapp.com/send?phone=919792156988&text=Hi%20Shivaji!" target="_blank" class="link-item">
         <div class="link-left">
           <i class="fa-brands fa-whatsapp"></i>
@@ -195,7 +202,7 @@
         <i class="fa-solid fa-chevron-right"></i>
       </a>
 
-      <!-- Direct Phone Call -->
+      <!-- Call -->
       <a href="tel:+919792156988" class="link-item">
         <div class="link-left">
           <i class="fa-solid fa-phone"></i>
@@ -204,7 +211,7 @@
         <i class="fa-solid fa-chevron-right"></i>
       </a>
 
-      <!-- Direct Email Link -->
+      <!-- Email -->
       <a href="mailto:shivajiraoamihit786@gmail.com?subject=Contact%20from%20Portfolio" class="link-item">
         <div class="link-left">
           <i class="fa-solid fa-envelope"></i>
@@ -213,7 +220,7 @@
         <i class="fa-solid fa-chevron-right"></i>
       </a>
 
-      <!-- Instagram Direct Deep Link (Username replace karein agar alag ho) -->
+      <!-- Instagram (App Deep Link) -->
       <a href="instagram://user?username=whoisshivaji" onclick="window.location='https://instagram.com/whoisshivaji';" class="link-item">
         <div class="link-left">
           <i class="fa-brands fa-instagram"></i>
@@ -222,7 +229,34 @@
         <i class="fa-solid fa-chevron-right"></i>
       </a>
 
-      <!-- Telegram Direct Link (Username replace karein) -->
+      <!-- YouTube -->
+      <a href="vnd.youtube://www.youtube.com/@whoisshivaji" onclick="window.location='https://youtube.com/@whoisshivaji';" class="link-item">
+        <div class="link-left">
+          <i class="fa-brands fa-youtube"></i>
+          <span>YouTube</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <!-- LinkedIn -->
+      <a href="https://www.linkedin.com/in/whoisshivaji" target="_blank" class="link-item">
+        <div class="link-left">
+          <i class="fa-brands fa-linkedin"></i>
+          <span>LinkedIn</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <!-- GitHub -->
+      <a href="https://github.com/whoisshivaji" target="_blank" class="link-item">
+        <div class="link-left">
+          <i class="fa-brands fa-github"></i>
+          <span>GitHub</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <!-- Telegram (App Deep Link) -->
       <a href="tg://resolve?domain=whoisshivaji" onclick="window.location='https://t.me/whoisshivaji';" class="link-item">
         <div class="link-left">
           <i class="fa-brands fa-telegram"></i>
@@ -230,6 +264,34 @@
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </a>
+
+      <!-- Facebook -->
+      <a href="https://facebook.com/whoisshivaji" target="_blank" class="link-item">
+        <div class="link-left">
+          <i class="fa-brands fa-facebook"></i>
+          <span>Facebook</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <!-- Twitter / X -->
+      <a href="https://x.com/whoisshivaji" target="_blank" class="link-item">
+        <div class="link-left">
+          <i class="fa-brands fa-x-twitter"></i>
+          <span>Twitter (X)</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <!-- Snapchat -->
+      <a href="https://www.snapchat.com/add/whoisshivaji" target="_blank" class="link-item">
+        <div class="link-left">
+          <i class="fa-brands fa-snapchat"></i>
+          <span>Snapchat</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
     </div>
 
     <footer>
@@ -237,7 +299,7 @@
     </footer>
   </div>
 
-  <!-- JavaScript to Generate and Download vCard (.vcf) -->
+  <!-- vCard Script -->
   <script>
     function downloadVCard() {
       const vcard = 

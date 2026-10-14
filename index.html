@@ -79,22 +79,16 @@
     .orb-3 {
       width: 250px;
       height: 250px;
-      background: linear-gradient(135deg, #10b981, #06b6d4);
+      background: linear-gradient(135deg, #e11d48, #fb7185);
       top: 45%;
       left: 60%;
       animation-duration: 10s;
     }
 
     @keyframes floatOrb {
-      0% {
-        transform: translate(0, 0) scale(1);
-      }
-      50% {
-        transform: translate(30px, 40px) scale(1.15);
-      }
-      100% {
-        transform: translate(-30px, -20px) scale(0.95);
-      }
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, 40px) scale(1.15); }
+      100% { transform: translate(-30px, -20px) scale(0.95); }
     }
 
     /* Liquid Glass Card Container */
@@ -116,7 +110,7 @@
       text-align: center;
     }
 
-    /* Profile Avatar with Liquid Glass Ring */
+    /* Profile Avatar */
     .avatar-wrapper {
       position: relative;
       width: 116px;
@@ -156,7 +150,7 @@
       font-weight: 400;
     }
 
-    /* Liquid Glass Save Contact Button */
+    /* Save Contact Button */
     .save-contact-btn {
       width: 100%;
       display: inline-flex;
@@ -182,9 +176,7 @@
 
     .save-contact-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 
-        0 14px 30px rgba(16, 185, 129, 0.5),
-        inset 0 1px 1px rgba(255, 255, 255, 0.6);
+      box-shadow: 0 14px 30px rgba(16, 185, 129, 0.5);
     }
 
     .save-contact-btn i {
@@ -217,6 +209,7 @@
       box-shadow: 
         0 4px 15px rgba(0, 0, 0, 0.15),
         inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      cursor: pointer;
     }
 
     .link-item:hover {
@@ -252,7 +245,18 @@
       50% { transform: scale(1.15); }
     }
 
-    /* Vibrant Brand Colors */
+    /* Special Highlight for Explore Movies Button */
+    .movie-btn-item {
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.18), rgba(168, 85, 247, 0.18));
+      border: 1px solid rgba(244, 63, 94, 0.4);
+    }
+
+    .movie-btn-item:hover {
+      background: linear-gradient(135deg, rgba(225, 29, 72, 0.3), rgba(168, 85, 247, 0.3));
+      border-color: rgba(244, 63, 94, 0.7);
+    }
+
+    /* Brand Colors */
     .fa-whatsapp { color: #25d366; }
     .fa-phone { color: #38bdf8; }
     .fa-envelope { color: #f87171; }
@@ -261,6 +265,7 @@
     .fa-telegram { color: #38bdf8; }
     .fa-youtube { color: #ef4444; }
     .fa-x-twitter { color: #f1f5f9; }
+    .fa-film { color: #fb7185; }
 
     .fa-chevron-right {
       color: rgba(255, 255, 255, 0.3);
@@ -279,6 +284,212 @@
       color: rgba(255, 255, 255, 0.4);
       letter-spacing: 0.3px;
     }
+
+    /* ========================================= */
+    /* Liquid Glass Movies Window / Modal        */
+    /* ========================================= */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(3, 7, 18, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 16px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-glass {
+      width: 100%;
+      max-width: 460px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(30px) saturate(200%);
+      -webkit-backdrop-filter: blur(30px) saturate(200%);
+      border-radius: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+      padding: 22px;
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #f8fafc;
+    }
+
+    .close-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+
+    .close-btn:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #fff;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: #fb7185;
+    }
+
+    .search-btn {
+      background: linear-gradient(135deg, #e11d48, #fb7185);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      padding: 0 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .search-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .movie-results {
+      overflow-y: auto;
+      flex: 1;
+      text-align: left;
+      padding-right: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .movie-results::-webkit-scrollbar {
+      width: 4px;
+    }
+    .movie-results::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    /* Movie Card in Glass style */
+    .movie-item {
+      display: flex;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 10px;
+      transition: all 0.25s ease;
+    }
+
+    .movie-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(251, 113, 133, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .movie-poster {
+      width: 75px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.4);
+      flex-shrink: 0;
+    }
+
+    .movie-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .movie-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+
+    .movie-meta {
+      font-size: 12px;
+      color: #fb7185;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .movie-meta span {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 7px;
+      border-radius: 6px;
+      color: #cbd5e1;
+    }
+
+    .movie-summary {
+      font-size: 11px;
+      color: #94a3b8;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .error-box {
+      text-align: center;
+      padding: 30px 10px;
+      color: #94a3b8;
+      font-size: 13px;
+    }
   </style>
 </head>
 <body>
@@ -288,7 +499,7 @@
   <div class="liquid-orb orb-2"></div>
   <div class="liquid-orb orb-3"></div>
 
-  <!-- Glass Card Container -->
+  <!-- Main Profile Card -->
   <div class="glass-card">
     
     <!-- Profile Photo -->
@@ -299,12 +510,12 @@
     <h1>Shivaji Kumar</h1>
     <p class="subtitle">Operator & Tech Enthusiast | Amihit, Jaunpur</p>
 
-    <!-- One-Click Save Contact Button -->
+    <!-- Save Contact Button -->
     <button onclick="downloadVCard()" class="save-contact-btn">
       <i class="fa-solid fa-address-card"></i> Save Contact
     </button>
 
-    <!-- Social Links -->
+    <!-- Social & Tool Links -->
     <div class="links-list">
 
       <!-- WhatsApp -->
@@ -341,6 +552,158 @@
           <span>Instagram</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <!-- Threads -->
+      <a href="barcelona://user?username=who_is_shivaji" onclick="window.location='https://www.threads.net/@who_is_shivaji';" class="link-item">
+        <div class="link-left">
+          <i class="fa-brands fa-threads"></i>
+          <span>Threads</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <!-- Telegram -->
+      <a href="tg://resolve?domain=Whoisshivaji" onclick="window.location='https://t.me/Whoisshivaji';" class="link-item">
+        <div class="link-left">
+          <i class="fa-brands fa-telegram"></i>
+          <span>Telegram</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <!-- YouTube -->
+      <a href="vnd.youtube://www.youtube.com/@shivajiworld" onclick="window.location='https://youtube.com/@shivajiworld';" class="link-item">
+        <div class="link-left">
+          <i class="fa-brands fa-youtube"></i>
+          <span>YouTube</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <!-- Twitter / X -->
+      <a href="twitter://user?screen_name=who_is_shivaji" onclick="window.location='https://x.com/who_is_shivaji';" class="link-item">
+        <div class="link-left">
+          <i class="fa-brands fa-x-twitter"></i>
+          <span>Twitter (X)</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <!-- Explore Movies Tool Button -->
+      <div class="link-item movie-btn-item" onclick="openMovies()">
+        <div class="link-left">
+          <i class="fa-solid fa-film"></i>
+          <span>Explore Movies</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+
+    </div>
+
+    <footer>
+      © 2026 shivajiamihit.in • All Rights Reserved
+    </footer>
+  </div>
+
+  <!-- Liquid Glass Explore Movies Modal Window -->
+  <div class="modal-overlay" id="movieModal" onclick="closeOnOverlay(event)">
+    <div class="modal-glass">
+      <div class="modal-header">
+        <h2><i class="fa-solid fa-film" style="color:#fb7185;"></i> Explore Movies</h2>
+        <button class="close-btn" onclick="closeMovies()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="search-box">
+        <input type="text" id="movieInput" class="search-input" placeholder="Search movie (e.g. Batman, Avatar)..." onkeypress="handleMovieEnter(event)">
+        <button class="search-btn" onclick="searchMovies()"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+
+      <div class="movie-results" id="movieResults">
+        <div class="error-box">
+          <i class="fa-solid fa-spinner fa-spin" style="font-size:24px; color:#fb7185;"></i>
+          <p style="margin-top:8px;">Loading popular titles...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Save Contact (vCard)
+    function downloadVCard() {
+      const vcard = 
+`BEGIN:VCARD
+VERSION:3.0
+N:Kumar;Shivaji;;;
+FN:Shivaji Kumar
+ORG:Personal
+TITLE:Packaging Operator & Tech Enthusiast
+TEL;TYPE=CELL,VOICE:+919792156988
+EMAIL;TYPE=INTERNET:shivajiraoamihit786@gmail.com
+URL:https://shivajiamihit.in
+ADR;TYPE=HOME:;;Amihit, Kerakat;Jaunpur;Uttar Pradesh;222142;India
+END:VCARD`;
+
+      const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const tempLink = document.createElement('a');
+      tempLink.href = url;
+      tempLink.setAttribute('download', 'Shivaji_Kumar.vcf');
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      document.body.removeChild(tempLink);
+      URL.revokeObjectURL(url);
+    }
+
+    // Modal Window Functions
+    function openMovies() {
+      document.getElementById('movieModal').style.display = 'flex';
+      const input = document.getElementById('movieInput');
+      if (!input.value.trim()) {
+        fetchMovieData('marvel'); // Initial default load
+      }
+      input.focus();
+    }
+
+    function closeMovies() {
+      document.getElementById('movieModal').style.display = 'none';
+    }
+
+    function closeOnOverlay(e) {
+      if (e.target.id === 'movieModal') {
+        closeMovies();
+      }
+    }
+
+    function handleMovieEnter(e) {
+      if (e.key === 'Enter') {
+        searchMovies();
+      }
+    }
+
+    function searchMovies() {
+      const query = document.getElementById('movieInput').value.trim();
+      if (query) {
+        fetchMovieData(query);
+      }
+    }
+
+    // Free Open Movie API Search (TVMaze Open Source Endpoint)
+    async function fetchMovieData(query) {
+      const resultsDiv = document.getElementById('movieResults');
+      resultsDiv.innerHTML = '<div class="error-box"><i class="fa-solid fa-spinner fa-spin" style="font-size:24px; color:#fb7185;"></i><p style="margin-top:8px;">Searching movies...</p></div>';
+
+      try {
+        const response = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(query)}`);
+        if (!response.ok) throw new Error('Network error');
+
+        const data = await response.json();
+
+        if (data.length === 0) {
+          resultsDiv.innerHTML = `
+            <div class="error-box">
+  <i class="fa-solid fa-chevron-right"></i>
       </a>
 
       <!-- Threads -->

@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIP & Lumpsum Calculator | सिप और एकमुश्त कैलकुलेटर</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    /* Minimal monochrome sliders */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+    input[type=range]:focus {
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 6px;
+      cursor: pointer;
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #0f172a;
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      transition: transform 0.1s ease;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+    input[type=range]::-moz-range-track {
+      width: 100%;
+      height: 6px;
+      cursor: pointer;
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    input[type=range]::-moz-range-thumb {
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #0f172a;
+      cursor: pointer;
+      border: none;
+    }
+
+    /* Custom scrollbar for tables */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+  </style>
+</head>
+<body class="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-slate-50 text-slate-900">
+
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <header class="mb-8 border-b border-slate-200 pb-5">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+            SIP & Lumpsum Calculator
+          </h1>
+          <p class="text-sm sm:text-base text-slate-500 mt-1">
+            सिप और एकमुश्त निवेश का सटीक गणितीय विश्लेषण (Minimalist & Detailed)
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold bg-slate-200 text-slate-700">
+            INR (₹) Format
+          </span>
+          <span class="inline-flex items-center px-2.5 py-1 rounded text-xs font-semibold bg-slate-200 text-slate-700">
+            Monochrome + Profit/Loss
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation / Mode Tabs -->
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+      <div class="inline-flex p-1 bg-slate-200 rounded-lg" role="tablist">
+        <button id="tab-sip" type="button" class="px-5 py-2 text-sm font-semibold rounded-md transition-colors bg-slate-900 text-white shadow-sm" role="tab" aria-selected="true">
+          SIP (मासिक निवेश)
+        </button>
+        <button id="tab-lumpsum" type="button" class="px-5 py-2 text-sm font-semibold rounded-md transition-colors text-slate-700 hover:text-slate-900" role="tab" aria-selected="false">
+          Lumpsum (एकमुश्त निवेश)
+        </button>
+      </div>
+
+      <!-- Quick action buttons -->
+      <div class="flex items-center gap-2">
+        <button id="btn-reset" type="button" class="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-300 rounded hover:bg-slate-100 transition">
+          रीसेट (Reset)
+        </button>
+        <button id="btn-export-csv" type="button" class="px-3 py-1.5 text-xs font-medium text-slate-800 bg-white border border-slate-300 rounded hover:bg-slate-100 transition flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          CSV डाउनलोड
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Grid: Calculator Inputs & Output Results -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Left Column: Inputs (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+          <h2 class="text-lg font-bold text-slate-900 mb-5 flex items-center justify-between border-b border-slate-100 pb-3">
+            <span>निवेश विवरण (Investment Details)</span>
+            <span id="current-mode-badge" class="text-xs font-medium uppercase px-2 py-0.5 bg-slate-100 text-slate-700 rounded">SIP</span>
+          </h2>
+
+          <div class="space-y-6">
+            <!-- Investment Amount Field -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label id="lbl-investment" for="num-investment" class="text-sm font-medium text-slate-700">मासिक निवेश (Monthly Investment)</label>
+                <div class="relative">
+                  <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-500 font-medium text-sm">₹</span>
+                  <input id="num-investment" type="number" min="500" max="10000000" step="500" value="10000" class="w-36 pl-7 pr-3 py-1 text-right text-sm font-semibold border border-slate-300 rounded-md focus:border-slate-800 focus:outline-none">
+                </div>
+              </div>
+              <input id="range-investment" type="range" min="500" max="100000" step="500" value="10000" class="w-full">
+              <div class="flex justify-between text-xs text-slate-400 mt-1">
+                <span id="range-min-text">₹500</span>
+                <span id="range-max-text">₹1 Lakh</span>
+              </div>
+            </div>
+
+            <!-- Expected Return Rate Field -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label for="num-rate" class="text-sm font-medium text-slate-700">अपेक्षित रिटर्न (Expected Return)</label>
+                <div class="relative">
+                  <input id="num-rate" type="number" min="-20" max="40" step="0.5" value="12" class="w-24 pr-6 pl-2 py-1 text-right text-sm font-semibold border border-slate-300 rounded-md focus:border-slate-800 focus:outline-none">
+                  <span class="absolute inset-y-0 right-0 pr-2 flex items-center text-slate-500 font-medium text-sm">%</span>
+                </div>
+              </div>
+              <input id="range-rate" type="range" min="-10" max="30" step="0.5" value="12" class="w-full">
+              <div class="flex justify-between text-xs text-slate-400 mt-1">
+                <span>-10% (Loss Scenario)</span>
+                <span>0%</span>
+                <span>30%</span>
+              </div>
+            </div>
+
+            <!-- Time Period Field -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label for="num-years" class="text-sm font-medium text-slate-700">समयावधि (Time Period)</label>
+                <div class="relative">
+                  <input id="num-years" type="number" min="1" max="40" step="1" value="10" class="w-24 pr-8 pl-2 py-1 text-right text-sm font-semibold border border-slate-300 rounded-md focus:border-slate-800 focus:outline-none">
+                  <span class="absolute inset-y-0 right-0 pr-2 flex items-center text-slate-500 font-medium text-sm">वर्ष</span>
+                </div>
+              </div>
+              <input id="range-years" type="range" min="1" max="35" step="1" value="10" class="w-full">
+              <div class="flex justify-between text-xs text-slate-400 mt-1">
+                <span>1 वर्ष</span>
+                <span>35 वर्ष</span>
+              </div>
+            </div>
+
+            <!-- Optional Step-Up SIP (Only visible in SIP mode) -->
+            <div id="step-up-container" class="pt-4 border-t border-slate-100">
+              <div class="flex items-center justify-between mb-3">
+                <label class="text-sm font-medium text-slate-700 cursor-pointer flex items-center gap-2">
+                  <input id="chk-step-up" type="checkbox" class="w-4 h-4 text-slate-900 border-slate-300 rounded focus:ring-0">
+                  <span>वार्षिक स्टेप-अप (Annual Step-Up)</span>
+                </label>
+                <span class="text-xs text-slate-400">हर साल निवेश बढ़ाएं</span>
+              </div>
+
+              <div id="step-up-options" class="hidden pl-6 space-y-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-medium text-slate-600">वार्षिक वृद्धि (Annual Hike):</span>
+                  <div class="relative">
+                    <input id="num-step-up" type="number" min="1" max="50" step="1" value="10" class="w-20 pr-6 pl-2 py-1 text-right text-xs font-semibold border border-slate-300 rounded focus:border-slate-800 focus:outline-none bg-white">
+                    <span class="absolute inset-y-0 right-0 pr-2 flex items-center text-slate-500 text-xs font-semibold">%</span>
+                  </div>
+                </div>
+                <p class="text-[11px] text-slate-500">
+                  हर 12 महीने बाद आपकी मासिक SIP राशि 10% बढ़ जाएगी।
+                </p>
+              </div>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="pt-2">
+              <div class="text-xs font-medium text-slate-500 mb-2">त्वरित विकल्प (Quick Periods):</div>
+              <div class="grid grid-cols-4 gap-2">
+                <button type="button" class="btn-preset-year py-1.5 text-xs font-semibold border border-slate-200 rounded bg-slate-50 hover:bg-slate-100 transition" data-years="5">5 Years</button>
+                <button type="button" class="btn-preset-year py-1.5 text-xs font-semibold border border-slate-200 rounded bg-slate-50 hover:bg-slate-100 transition" data-years="10">10 Years</button>
+                <button type="button" class="btn-preset-year py-1.5 text-xs font-semibold border border-slate-200 rounded bg-slate-50 hover:bg-slate-100 transition" data-years="15">15 Years</button>
+                <button type="button" class="btn-preset-year py-1.5 text-xs font-semibold border border-slate-200 rounded bg-slate-50 hover:bg-slate-100 transition" data-years="20">20 Years</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Formulas & Calculation Info Box -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm text-xs text-slate-600 space-y-2">
+          <div class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            गणितीय सूत्र (Mathematical Formula)
+          </div>
+          <div id="info-sip-formula" class="font-mono bg-slate-50 p-2.5 rounded border border-slate-200 text-slate-800 leading-relaxed">
+            M = P × [ (1 + i)<sup>n</sup> - 1 ] / i × (1 + i)<br>
+            <span class="text-slate-500 text-[11px] font-sans">जहाँ P = मासिक निवेश, i = मासिक दर (r/1200), n = कुल महीने</span>
+          </div>
+          <div id="info-lumpsum-formula" class="hidden font-mono bg-slate-50 p-2.5 rounded border border-slate-200 text-slate-800 leading-relaxed">
+            A = P × (1 + r / 100)<sup>t</sup><br>
+            <span class="text-slate-500 text-[11px] font-sans">जहाँ P = मूलधन राशि, r = वार्षिक रिटर्न %, t = कुल वर्ष</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Outputs, Chart & Analytics (7 Cols) -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- 3 Primary Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <!-- Invested Amount Card (Monochrome Slate) -->
+          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+              कुल निवेश (Invested)
+            </div>
+            <div id="res-invested" class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+              ₹0
+            </div>
+            <div id="res-invested-words" class="text-xs text-slate-400 mt-1 font-medium">
+              -
+            </div>
+          </div>
+
+          <!-- Profit / Loss Card (Strictly GREEN for Profit, RED for Loss) -->
+          <div id="card-returns" class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm transition-colors">
+            <div class="flex items-center justify-between mb-1">
+              <span id="lbl-returns-title" class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                अनुमानित मुनाफा (Profit)
+              </span>
+              <span id="badge-pnl" class="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">
+                PROFIT
+              </span>
+            </div>
+            <div id="res-returns" class="text-xl sm:text-2xl font-extrabold tracking-tight">
+              ₹0
+            </div>
+            <div id="res-returns-words" class="text-xs mt-1 font-medium">
+              -
+            </div>
+          </div>
+
+          <!-- Total Maturity Value Card (Monochrome Slate) -->
+          <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+            <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+              कुल राशि (Total Value)
+            </div>
+            <div id="res-total" class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+              ₹0
+            </div>
+            <div id="res-total-words" class="text-xs text-slate-400 mt-1 font-medium">
+              -
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Analytics & Chart Section -->
+        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-slate-100 gap-2">
+            <h3 class="text-base font-bold text-slate-900">
+              संपत्ति विभाजन एवं विश्लेषण (Asset Breakdown)
+            </h3>
+            <!-- Chart view toggle -->
+            <div class="inline-flex p-0.5 bg-slate-100 rounded border border-slate-200 text-xs">
+              <button id="view-chart-donut" type="button" class="px-2.5 py-1 font-semibold rounded bg-white text-slate-900 shadow-xs">
+                डोनट चार्ट (Donut)
+              </button>
+              <button id="view-chart-bar" type="button" class="px-2.5 py-1 font-semibold rounded text-slate-600 hover:text-slate-900">
+                वार्षिक ग्रोथ (Growth)
+              </button>
+            </div>
+          </div>
+
+          <!-- Donut Chart Container -->
+          <div id="container-donut" class="flex flex-col sm:flex-row items-center justify-center gap-8 py-2">
+            <div class="relative w-56 h-56 flex-shrink-0">
+              <canvas id="chart-donut" width="224" height="224" class="w-full h-full"></canvas>
+              <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center px-4">
+                <span class="text-[11px] text-slate-400 font-medium">कुल मैच्योरिटी</span>
+                <span id="donut-center-total" class="text-sm font-extrabold text-slate-800 truncate max-w-[140px]">₹0</span>
+              </div>
+            </div>
+
+            <div class="space-y-4 w-full sm:w-auto">
+              <!-- Invested Legend (Slate) -->
+              <div class="flex items-center justify-between sm:justify-start gap-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-3.5 h-3.5 rounded-full bg-slate-400 inline-block"></span>
+                  <span class="text-xs font-semibold text-slate-600">कुल निवेश (Invested)</span>
+                </div>
+                <span id="legend-invested-pct" class="text-xs font-bold text-slate-800">50%</span>
+              </div>
+
+              <!-- Profit / Loss Legend (Green for profit, Red for loss) -->
+              <div class="flex items-center justify-between sm:justify-start gap-4">
+                <div class="flex items-center gap-2">
+                  <span id="legend-pnl-color" class="w-3.5 h-3.5 rounded-full inline-block"></span>
+                  <span id="legend-pnl-label" class="text-xs font-semibold text-slate-600">अनुमानित लाभ (Profit)</span>
+                </div>
+                <span id="legend-pnl-pct" class="text-xs font-bold">50%</span>
+              </div>
+
+              <!-- Wealth Multiplier Metric -->
+              <div class="pt-3 border-t border-slate-100 text-xs text-slate-500">
+                <div class="flex justify-between gap-4">
+                  <span>वेल्थ मल्टीप्लायर (Multiplier):</span>
+                  <span id="res-multiplier" class="font-bold text-slate-800">1.0x</span>
+                </div>
+                <div class="flex justify-between gap-4 mt-1">
+                  <span>कुल अवधि (Installments):</span>
+                  <span id="res-installments" class="font-bold text-slate-800">120 महीने</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Growth Bar Chart Container (Hidden by default) -->
+          <div id="container-growth" class="hidden">
+            <div class="relative h-64 w-full">
+              <canvas id="chart-growth" class="w-full h-full"></canvas>
+            </div>
+            <div class="flex items-center justify-center gap-6 mt-3 text-xs">
+              <div class="flex items-center gap-1.5">
+                <span class="w-3 h-3 bg-slate-400 rounded-xs inline-block"></span>
+                <span class="text-slate-600">निवेश राशि (Invested)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span id="growth-legend-pnl" class="w-3 h-3 rounded-xs inline-block"></span>
+                <span id="growth-legend-pnl-txt" class="text-slate-600">मुनाफा / लाभ (Gain)</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Year-by-Year Schedule Table -->
+        <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+          <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">
+                वर्ष-दर-वर्ष विस्तृत विवरण (Year-wise Growth Schedule)
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">
+                हर वर्ष के अंत में निवेश, अर्जित रिटर्न एवं कुल बैलेंस का खाता
+              </p>
+            </div>
+            <span id="table-row-count" class="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-1 rounded">
+              10 वर्ष
+            </span>
+          </div>
+
+          <div class="overflow-x-auto max-h-80">
+            <table class="w-full text-left text-xs text-slate-600">
+              <thead class="text-[11px] uppercase bg-slate-100 text-slate-700 sticky top-0 border-b border-slate-200 font-bold tracking-wider">
+                <tr>
+                  <th scope="col" class="py-2.5 px-3">वर्ष (Year)</th>
+                  <th scope="col" class="py-2.5 px-3">वार्षिक जमा</th>
+                  <th scope="col" class="py-2.5 px-3">कुल संचित निवेश</th>
+                  <th scope="col" class="py-2.5 px-3 text-right">अर्जित रिटर्न</th>
+                  <th scope="col" class="py-2.5 px-3 text-right">कुल बैलेंस (Ending)</th>
+                </tr>
+              </thead>
+              <tbody id="schedule-table-body" class="divide-y divide-slate-100 font-mono">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Footer Note -->
+    <footer class="mt-12 text-center text-xs text-slate-400 pb-8 border-t border-slate-200 pt-6">
+      <p>म्यूचुअल फंड व बाजार निवेश में बाजार जोखिम शामिल होते हैं। यह कैलकुलेटर केवल अनुमान और वित्तीय योजना के लिए है।</p>
+      <p class="mt-1 text-slate-500 font-medium">SIP & Lumpsum Detailed Financial Calculator</p>
+    </footer>
+
+  </div>
+
+  <!-- Application Logic -->
+  <script>
+    // State Management
+    const state = {
+      mode: 'sip', // 'sip' or 'lumpsum'
+      sipAmount: 10000,
+      lumpsumAmount: 100000,
+      annualRate: 12.0,
+      years: 10,
+      stepUpEnabled: false,
+      stepUpRate: 10.0,
+      chartView: 'donut', // 'donut' or 'bar'
+      scheduleData: []
+    };
+
+    // DOM Elements
+    const tabSip = document.getElementById('tab-sip');
+    const tabLumpsum = document.getElementById('tab-lumpsum');
+    const currentModeBadge = document.getElementById('current-mode-badge');
+    const lblInvestment = document.getElementById('lbl-investment');
+    const numInvestment = document.getElementById('num-investment');
+    const rangeInvestment = document.getElementById('range-investment');
+    const rangeMinText = document.getElementById('range-min-text');
+    const rangeMaxText = document.getElementById('range-max-text');
+
+    const numRate = document.getElementById('num-rate');
+    const rangeRate = document.getElementById('range-rate');
+    const numYears = document.getElementById('num-years');
+    const rangeYears = document.getElementById('range-years');
+
+    const stepUpContainer = document.getElementById('step-up-container');
+    const chkStepUp = document.getElementById('chk-step-up');
+    const stepUpOptions = document.getElementById('step-up-options');
+    const numStepUp = document.getElementById('num-step-up');
+
+    const btnReset = document.getElementById('btn-reset');
+    const btnExportCsv = document.getElementById('btn-export-csv');
+
+    const infoSipFormula = document.getElementById('info-sip-formula');
+    const infoLumpsumFormula = document.getElementById('info-lumpsum-formula');
+
+    // Result Elements
+    const resInvested = document.getElementById('res-invested');
+    const resInvestedWords = document.getElementById('res-invested-words');
+    const cardReturns = document.getElementById('card-returns');
+    const lblReturnsTitle = document.getElementById('lbl-returns-title');
+    const badgePnl = document.getElementById('badge-pnl');
+    const resReturns = document.getElementById('res-returns');
+    const resReturnsWords = document.getElementById('res-returns-words');
+    const resTotal = document.getElementById('res-total');
+    const resTotalWords = document.getElementById('res-total-words');
+
+    const resMultiplier = document.getElementById('res-multiplier');
+    const resInstallments = document.getElementById('res-installments');
+
+    // Chart Elements
+    const chartDonutCanvas = document.getElementById('chart-donut');
+    const donutCenterTotal = document.getElementById('donut-center-total');
+    const legendInvestedPct = document.getElementById('legend-invested-pct');
+    const legendPnlColor = document.getElementById('legend-pnl-color');
+    const legendPnlLabel = document.getElementById('legend-pnl-label');
+    const legendPnlPct = document.getElementById('legend-pnl-pct');
+
+    const viewChartDonut = document.getElementById('view-chart-donut');
+    const viewChartBar = document.getElementById('view-chart-bar');
+    const containerDonut = document.getElementById('container-donut');
+    const containerGrowth = document.getElementById('container-growth');
+    const chartGrowthCanvas = document.getElementById('chart-growth');
+    const growthLegendPnl = document.getElementById('growth-legend-pnl');
+    const growthLegendPnlTxt = document.getElementById('growth-legend-pnl-txt');
+
+    // Table
+    const scheduleTableBody = document.getElementById('schedule-table-body');
+    const tableRowCount = document.getElementById('table-row-count');
+
+    // Format Number to Indian Rupee (₹) format
+    function formatINR(val, includeSymbol = true) {
+      const num = Math.round(val);
+      const absVal = Math.abs(num);
+      const formatted = absVal.toLocaleString('en-IN');
+      const sign = num < 0 ? '-' : '';
+      return (includeSymbol ? sign + '₹' : sign) + formatted;
+    }
+
+    // Convert number to Indian words (Lakhs, Crores, Thousand)
+    function numberToIndianWords(val) {
+      const num = Math.round(val);
+      const abs = Math.abs(num);
+      const sign = num < 0 ? 'Minus ' : '';
+
+      if (abs >= 10000000) {
+        return sign + (abs / 10000000).toFixed(2) + ' करोड़ (Cr)';
+      } else if (abs >= 100000) {
+        return sign + (abs / 100000).toFixed(2) + ' लाख (Lakh)';
+      } else if (abs >= 1000) {
+        return sign + (abs / 1000).toFixed(1) + ' हजार (K)';
+      }
+      return sign + abs.toString();
+    }
+
+    // Switch between SIP and Lumpsum Modes
+    function setMode(newMode) {
+      state.mode = newMode;
+      if (newMode === 'sip') {
+        tabSip.className = "px-5 py-2 text-sm font-semibold rounded-md transition-colors bg-slate-900 text-white shadow-sm";
+        tabSip.setAttribute('aria-selected', 'true');
+        tabLumpsum.className = "px-5 py-2 text-sm font-semibold rounded-md transition-colors text-slate-700 hover:text-slate-900";
+        tabLumpsum.setAttribute('aria-selected', 'false');
+
+        currentModeBadge.textContent = "SIP";
+        lblInvestment.textContent = "मासिक निवेश (Monthly Investment)";
+        
+        numInvestment.min = "500";
+        numInvestment.max = "1000000";
+        numInvestment.step = "500";
+        numInvestment.value = state.sipAmount;
+
+        rangeInvestment.min = "500";
+        rangeInvestment.max = "100000";
+        rangeInvestment.step = "500";
+        rangeInvestment.value = state.sipAmount;
+
+        rangeMinText.textContent = "₹500";
+        rangeMaxText.textContent = "₹1 Lakh";
+
+        stepUpContainer.classList.remove('hidden');
+        infoSipFormula.classList.remove('hidden');
+        infoLumpsumFormula.classList.add('hidden');
+      } else {
+        tabLumpsum.className = "px-5 py-2 text-sm font-semibold rounded-md transition-colors bg-slate-900 text-white shadow-sm";
+        tabLumpsum.setAttribute('aria-selected', 'true');
+        tabSip.className = "px-5 py-2 text-sm font-semibold rounded-md transition-colors text-slate-700 hover:text-slate-900";
+        tabSip.setAttribute('aria-selected', 'false');
+
+        currentModeBadge.textContent = "Lumpsum";
+        lblInvestment.textContent = "एकमुश्त निवेश (Total Investment)";
+
+        numInvestment.min = "1000";
+        numInvestment.max = "50000000";
+        numInvestment.step = "1000";
+        numInvestment.value = state.lumpsumAmount;
+
+        rangeInvestment.min = "1000";
+        rangeInvestment.max = "1000000";
+        rangeInvestment.step = "5000";
+        rangeInvestment.value = state.lumpsumAmount;
+
+        rangeMinText.textContent = "₹1,000";
+        rangeMaxText.textContent = "₹10 Lakh";
+
+        stepUpContainer.classList.add('hidden');
+        infoSipFormula.classList.add('hidden');
+        infoLumpsumFormula.classList.remove('hidden');
+      }
+
+      calculateAndRender();
+    }
+
+    // Core Calculation Logic
+    function calculate() {
+      const years = state.years;
+      const r = state.annualRate;
+      const schedule = [];
+      let totalInvested = 0;
+      let totalValue = 0;
+
+      if (state.mode === 'sip') {
+        const monthlyRate = (r / 100) / 12;
+        let currentMonthly = state.sipAmount;
+        let balance = 0;
+
+        for (let y = 1; y <= years; y++) {
+          let yearDeposit = 0;
+          let yearStartBalance = balance;
+
+          for (let m = 1; m <= 12; m++) {
+            balance = (balance + currentMonthly) * (1 + monthlyRate);
+            yearDeposit += currentMonthly;
+            totalInvested += currentMonthly;
+          }
+
+          const yearReturn = balance - (yearStartBalance + yearDeposit);
+          schedule.push({
+            year: y,
+            annualDeposit: yearDeposit,
+            cumulativeInvested: totalInvested,
+            annualReturn: yearReturn,
+            endingBalance: Math.max(0, balance)
+          });
+
+          // Step up after each full year if enabled
+          if (state.stepUpEnabled) {
+            currentMonthly = currentMonthly * (1 + (state.stepUpRate / 100));
+          }
+        }
+
+        totalValue = Math.max(0, balance);
+
+      } else {
+        // Lumpsum Mode
+        const initialInvestment = state.lumpsumAmount;
+        totalInvested = initialInvestment;
+        let balance = initialInvestment;
+
+        for (let y = 1; y <= years; y++) {
+          const yearStartBalance = balance;
+          balance = balance * (1 + (r / 100));
+          const yearReturn = balance - yearStartBalance;
+
+          schedule.push({
+            year: y,
+            annualDeposit: y === 1 ? initialInvestment : 0,
+            cumulativeInvested: initialInvestment,
+            annualReturn: yearReturn,
+            endingBalance: Math.max(0, balance)
+          });
+        }
+
+        totalValue = Math.max(0, balance);
+      }
+
+      const totalReturns = totalValue - totalInvested;
+      const isProfit = totalReturns >= 0;
+
+      return {
+        totalInvested,
+        totalReturns,
+        totalValue,
+        isProfit,
+        schedule
+      };
+    }
+
+    // Render Results and Visuals
+    function calculateAndRender() {
+      const results = calculate();
+      state.scheduleData = results.schedule;
+
+      // Update Metric Cards
+      resInvested.textContent = formatINR(results.totalInvested);
+      resInvestedWords.textContent = numberToIndianWords(results.totalInvested);
+
+      resTotal.textContent = formatINR(results.totalValue);
+      resTotalWords.textContent = numberToIndianWords(results.totalValue);
+
+      // Profit or Loss Styling Constraint:
+      // STRICT REQUIREMENT: Only Green for profit, Only Red for loss.
+      if (results.isProfit) {
+        lblReturnsTitle.textContent = "अनुमानित मुनाफा (Est. Profit)";
+        lblReturnsTitle.className = "text-xs font-semibold uppercase tracking-wider text-emerald-700";
+        badgePnl.textContent = "PROFIT";
+        badgePnl.className = "text-[10px] font-bold px-1.5 py-0.5 rounded uppercase bg-emerald-100 text-emerald-800 border border-emerald-300";
+        resReturns.className = "text-xl sm:text-2xl font-extrabold tracking-tight text-emerald-600";
+        resReturns.textContent = "+" + formatINR(results.totalReturns);
+        resReturnsWords.className = "text-xs mt-1 font-medium text-emerald-700";
+        resReturnsWords.textContent = numberToIndianWords(results.totalReturns);
+        cardReturns.className = "bg-white border-2 border-emerald-500 rounded-xl p-5 shadow-sm transition-colors";
+
+        legendPnlColor.className = "w-3.5 h-3.5 rounded-full inline-block bg-emerald-600";
+        legendPnlLabel.textContent = "अनुमानित लाभ (Profit)";
+        legendPnlPct.className = "text-xs font-bold text-emerald-600";
+        growthLegendPnl.className = "w-3 h-3 rounded-xs inline-block bg-emerald-600";
+        growthLegendPnlTxt.textContent = "अर्जित मुनाफा (Profit)";
+      } else {
+        lblReturnsTitle.textContent = "अनुमानित नुकसान (Est. Loss)";
+        lblReturnsTitle.className = "text-xs font-semibold uppercase tracking-wider text-red-700";
+        badgePnl.textContent = "LOSS";
+        badgePnl.className = "text-[10px] font-bold px-1.5 py-0.5 rounded uppercase bg-red-100 text-red-800 border border-red-300";
+        resReturns.className = "text-xl sm:text-2xl font-extrabold tracking-tight text-red-600";
+        resReturns.textContent = formatINR(results.totalReturns);
+        resReturnsWords.className = "text-xs mt-1 font-medium text-red-700";
+        resReturnsWords.textContent = numberToIndianWords(results.totalReturns);
+        cardReturns.className = "bg-white border-2 border-red-500 rounded-xl p-5 shadow-sm transition-colors";
+
+        legendPnlColor.className = "w-3.5 h-3.5 rounded-full inline-block bg-red-600";
+        legendPnlLabel.textContent = "अनुमानित नुकसान (Loss)";
+        legendPnlPct.className = "text-xs font-bold text-red-600";
+        growthLegendPnl.className = "w-3 h-3 rounded-xs inline-block bg-red-600";
+        growthLegendPnlTxt.textContent = "अर्जित नुकसान (Loss)";
+      }
+
+      // Multipliers & Duration
+      const multiplier = results.totalInvested > 0 ? (results.totalValue / results.totalInvested).toFixed(2) : "0.00";
+      resMultiplier.textContent = multiplier + "x";
+      if (state.mode === 'sip') {
+        resInstallments.textContent = (state.years * 12) + " किस्तें (" + state.years + " वर्ष)";
+      } else {
+        resInstallments.textContent = "1 बार (" + state.years + " वर्ष)";
+      }
+
+      // Legend Percentages
+      const totalPie = results.totalInvested + Math.max(0, results.totalReturns);
+      if (totalPie > 0) {
+        const investedPct = Math.round((results.totalInvested / totalPie) * 100);
+        const pnlPct = 100 - investedPct;
+        legendInvestedPct.textContent = investedPct + "%";
+        legendPnlPct.textContent = pnlPct + "%";
+      } else {
+        legendInvestedPct.textContent = "100%";
+        legendPnlPct.textContent = "0%";
+      }
+      donutCenterTotal.textContent = formatINR(results.totalValue);
+
+      // Render Charts & Table
+      renderDonutChart(results);
+      renderGrowthChart(results);
+      renderTable(results.schedule);
+    }
+
+    // Render Canvas Donut Chart
+    function renderDonutChart(results) {
+      const ctx = chartDonutCanvas.getContext('2d');
+      const width = chartDonutCanvas.width;
+      const height = chartDonutCanvas.height;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const radius = 90;
+      const innerRadius = 64;
+
+      ctx.clearRect(0, 0, width, height);
+
+      const invested = results.totalInvested;
+      const returns = results.totalReturns;
+      const isProfit = results.isProfit;
+
+      let investedShare = 0.5;
+      let returnsShare = 0.5;
+
+      if (invested <= 0 && returns <= 0) {
+        investedShare = 1;
+        returnsShare = 0;
+      } else if (returns <= 0) {
+        // Loss case
+        const lossAbs = Math.abs(returns);
+        const remainingVal = Math.max(0, invested - lossAbs);
+        // Slate for remaining, Red for loss
+        investedShare = remainingVal / (remainingVal + lossAbs || 1);
+        returnsShare = lossAbs / (remainingVal + lossAbs || 1);
+      } else {
+        const total = invested + returns;
+        investedShare = invested / total;
+        returnsShare = returns / total;
+      }
+
+      let startAngle = -0.5 * Math.PI;
+
+      // Draw Slice 1: Invested / Remaining (Neutral Slate: #64748b)
+      const angle1 = investedShare * 2 * Math.PI;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, startAngle, startAngle + angle1);
+      ctx.arc(centerX, centerY, innerRadius, startAngle + angle1, startAngle, true);
+      ctx.closePath();
+      ctx.fillStyle = '#64748b'; // Slate 500
+      ctx.fill();
+
+      // Draw Slice 2: Profit (Green: #16a34a) or Loss (Red: #dc2626)
+      const angle2 = returnsShare * 2 * Math.PI;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, startAngle + angle1, startAngle + angle1 + angle2);
+      ctx.arc(centerX, centerY, innerRadius, startAngle + angle1 + angle2, startAngle + angle1, true);
+      ctx.closePath();
+      ctx.fillStyle = isProfit ? '#16a34a' : '#dc2626'; // Green or Red strictly
+      ctx.fill();
+    }
+
+    // Render Canvas Bar Chart for Growth Trajectory
+    function renderGrowthChart(results) {
+      const canvas = chartGrowthCanvas;
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+
+      // Handle retina canvas sizing
+      if (rect.width > 0 && rect.height > 0) {
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+      } else {
+        canvas.width = 600 * dpr;
+        canvas.height = 250 * dpr;
+      }
+
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      const w = canvas.width / dpr;
+      const h = canvas.height / dpr;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const schedule = results.schedule;
+      if (!schedule.length) return;
+
+      const paddingLeft = 60;
+      const paddingRight = 20;
+      const paddingTop = 25;
+      const paddingBottom = 30;
+      const plotWidth = w - paddingLeft - paddingRight;
+      const plotHeight = h - paddingTop - paddingBottom;
+
+      // Find max balance for scale
+      let maxVal = 0;
+      schedule.forEach(item => {
+        if (item.endingBalance > maxVal) maxVal = item.endingBalance;
+        if (item.cumulativeInvested > maxVal) maxVal = item.cumulativeInvested;
+      });
+      maxVal = maxVal * 1.1 || 1000;
+
+      // Draw horizontal grid lines (Subtle slate)
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '10px Inter, sans-serif';
+      ctx.textAlign = 'right';
+
+      const gridSteps = 4;
+      for (let i = 0; i <= gridSteps; i++) {
+        const yVal = (maxVal / gridSteps) * i;
+        const yPos = paddingTop + plotHeight - (yVal / maxVal) * plotHeight;
+        
+        ctx.beginPath();
+        ctx.moveTo(paddingLeft, yPos);
+        ctx.lineTo(w - paddingRight, yPos);
+        ctx.stroke();
+
+        ctx.fillText(formatINR(yVal), paddingLeft - 8, yPos + 3);
+      }
+
+      const n = schedule.length;
+      const colWidth = Math.min(36, Math.max(8, (plotWidth / n) * 0.7));
+      const step = plotWidth / n;
+
+      schedule.forEach((item, idx) => {
+        const xCenter = paddingLeft + (idx * step) + (step / 2);
+        const xPos = xCenter - (colWidth / 2);
+
+        // Invested height
+        const invH = (item.cumulativeInvested / maxVal) * plotHeight;
+        const totalH = (item.endingBalance / maxVal) * plotHeight;
+
+        // Base Invested Bar (Slate: #64748b)
+        ctx.fillStyle = '#64748b';
+        ctx.fillRect(xPos, paddingTop + plotHeight - invH, colWidth, invH);
+
+        // Profit / Loss segment
+        if (item.endingBalance > item.cumulativeInvested) {
+          // Profit on top (Emerald Green)
+          const profitH = totalH - invH;
+          ctx.fillStyle = '#16a34a';
+          ctx.fillRect(xPos, paddingTop + plotHeight - totalH, colWidth, profitH);
+        } else if (item.endingBalance < item.cumulativeInvested) {
+          // Loss: show deficit in Red
+          const lossH = invH - totalH;
+          ctx.fillStyle = '#dc2626';
+          ctx.fillRect(xPos, paddingTop + plotHeight - invH, colWidth, lossH);
+        }
+
+        // Year labels
+        if (n <= 15 || idx % Math.ceil(n / 10) === 0 || idx === n - 1) {
+          ctx.fillStyle = '#64748b';
+          ctx.textAlign = 'center';
+          ctx.fillText(`Y${item.year}`, xCenter, h - 10);
+        }
+      });
+    }
+
+    // Render Table Body
+    function renderTable(schedule) {
+      tableRowCount.textContent = `${schedule.length} वर्ष (Years)`;
+      let html = '';
+
+      schedule.forEach((row) => {
+        const isAnnualProfit = row.annualReturn >= 0;
+        const returnColorClass = isAnnualProfit ? 'text-emerald-600 font-bold' : 'text-red-600 font-bold';
+        const returnPrefix = isAnnualProfit ? '+' : '';
+
+        html += `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-2.5 px-3 font-semibold text-slate-800">वर्ष ${row.year}</td>
+            <td class="py-2.5 px-3 text-slate-700">${formatINR(row.annualDeposit)}</td>
+            <td class="py-2.5 px-3 text-slate-700">${formatINR(row.cumulativeInvested)}</td>
+            <td class="py-2.5 px-3 text-right ${returnColorClass}">${returnPrefix}${formatINR(row.annualReturn)}</td>
+            <td class="py-2.5 px-3 text-right font-bold text-slate-900">${formatINR(row.endingBalance)}</td>
+          </tr>
+        `;
+      });
+
+      scheduleTableBody.innerHTML = html;
+    }
+
+    // Export CSV Feature
+    function exportToCSV() {
+      if (!state.scheduleData || state.scheduleData.length === 0) return;
+
+      let csv = 'Year,Annual Deposit (INR),Cumulative Invested (INR),Annual Return (INR),Ending Balance (INR)\n';
+      state.scheduleData.forEach(row => {
+        csv += `${row.year},${Math.round(row.annualDeposit)},${Math.round(row.cumulativeInvested)},${Math.round(row.annualReturn)},${Math.round(row.endingBalance)}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `SIP_Lumpsum_Report_${state.mode}_${state.years}Y.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    // Reset Defaults
+    function resetAll() {
+      state.sipAmount = 10000;
+      state.lumpsumAmount = 100000;
+      state.annualRate = 12.0;
+      state.years = 10;
+      state.stepUpEnabled = false;
+      state.stepUpRate = 10.0;
+      
+      chkStepUp.checked = false;
+      stepUpOptions.classList.add('hidden');
+      numStepUp.value = "10";
+
+      numRate.value = "12";
+      rangeRate.value = "12";
+      numYears.value = "10";
+      rangeYears.value = "10";
+
+      setMode('sip');
+    }
+
+    // Event Listeners Initialization
+    function initEvents() {
+      tabSip.addEventListener('click', () => setMode('sip'));
+      tabLumpsum.addEventListener('click', () => setMode('lumpsum'));
+
+      // Investment Amount Synchronization
+      numInvestment.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value) || 0;
+        if (state.mode === 'sip') {
+          state.sipAmount = val;
+        } else {
+          state.lumpsumAmount = val;
+        }
+        rangeInvestment.value = val;
+        calculateAndRender();
+      });
+
+      rangeInvestment.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value) || 0;
+        numInvestment.value = val;
+        if (state.mode === 'sip') {
+          state.sipAmount = val;
+        } else {
+          state.lumpsumAmount = val;
+        }
+        calculateAndRender();
+      });
+
+      // Expected Return Rate Synchronization
+      numRate.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        state.annualRate = isNaN(val) ? 0 : val;
+        rangeRate.value = state.annualRate;
+        calculateAndRender();
+      });
+
+      rangeRate.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        state.annualRate = isNaN(val) ? 0 : val;
+        numRate.value = state.annualRate;
+        calculateAndRender();
+      });
+
+      // Time Period Synchronization
+      numYears.addEventListener('input', (e) => {
+        let val = parseInt(e.target.value) || 1;
+        val = Math.max(1, Math.min(50, val));
+        state.years = val;
+        rangeYears.value = val;
+        calculateAndRender();
+      });
+
+      rangeYears.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value) || 1;
+        state.years = val;
+        numYears.value = val;
+        calculateAndRender();
+      });
+
+      // Step-Up Toggle
+      chkStepUp.addEventListener('change', (e) => {
+        state.stepUpEnabled = e.target.checked;
+        if (state.stepUpEnabled) {
+          stepUpOptions.classList.remove('hidden');
+        } else {
+          stepUpOptions.classList.add('hidden');
+        }
+        calculateAndRender();
+      });
+
+      numStepUp.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value) || 0;
+        state.stepUpRate = val;
+        calculateAndRender();
+      });
+
+      // Preset Buttons
+      document.querySelectorAll('.btn-preset-year').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const y = parseInt(btn.getAttribute('data-years'));
+          state.years = y;
+          numYears.value = y;
+          rangeYears.value = y;
+          calculateAndRender();
+        });
+      });
+
+      // Chart Views Toggle
+      viewChartDonut.addEventListener('click', () => {
+        state.chartView = 'donut';
+        containerDonut.classList.remove('hidden');
+        containerGrowth.classList.add('hidden');
+        viewChartDonut.className = "px-2.5 py-1 font-semibold rounded bg-white text-slate-900 shadow-xs";
+        viewChartBar.className = "px-2.5 py-1 font-semibold rounded text-slate-600 hover:text-slate-900";
+        renderDonutChart(calculate());
+      });
+
+      viewChartBar.addEventListener('click', () => {
+        state.chartView = 'bar';
+        containerDonut.classList.add('hidden');
+        containerGrowth.classList.remove('hidden');
+        viewChartBar.className = "px-2.5 py-1 font-semibold rounded bg-white text-slate-900 shadow-xs";
+        viewChartDonut.className = "px-2.5 py-1 font-semibold rounded text-slate-600 hover:text-slate-900";
+        renderGrowthChart(calculate());
+      });
+
+      // Action Buttons
+      btnReset.addEventListener('click', resetAll);
+      btnExportCsv.addEventListener('click', exportToCSV);
+
+      // Window resize handling for responsive canvas
+      window.addEventListener('resize', () => {
+        if (state.chartView === 'bar') {
+          renderGrowthChart(calculate());
+        }
+      });
+    }
+
+    // Startup
+    document.addEventListener('DOMContentLoaded', () => {
+      initEvents();
+      calculateAndRender();
+    });
+  </script>
+</body>
+</html>

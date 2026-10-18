@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080d18">
+<title>आख़िरी इंतज़ार — राघव और नंदिनी</title>
+<style>
+:root{--bg:#080d18;--panel:rgba(18,26,42,.84);--gold:#e9c47a;--muted:#b9c0cc;--white:#f7f5f0;--line:rgba(255,255,255,.14)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--white);font-family:system-ui,-apple-system,"Noto Sans Devanagari",sans-serif}
+body{overflow-x:hidden}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;position:relative;isolation:isolate;background:radial-gradient(ellipse at 50% 80%,#263047 0%,#101827 35%,#080d18 75%)}
+.grain{position:fixed;inset:0;pointer-events:none;opacity:.08;z-index:10;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E")}
+header{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px clamp(14px,4vw,42px);border-bottom:1px solid var(--line);background:rgba(5,9,17,.6);backdrop-filter:blur(14px)}
+.brand{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:800}
+.headnote{font-size:.78rem;color:var(--muted)}
+main{max-width:1120px;margin:auto;padding:22px clamp(12px,3vw,30px) 40px}
+.movie{border:1px solid var(--line);border-radius:22px;overflow:hidden;background:#090f1b;box-shadow:0 25px 90px #0008}
+.stage{position:relative;aspect-ratio:16/9;min-height:280px;overflow:hidden;background:linear-gradient(#0a1320,#121a27 65%,#060910);isolation:isolate}
+.scene-bg{position:absolute;inset:0;overflow:hidden;transition:filter 1s}
+.sky{position:absolute;inset:0;background:linear-gradient(180deg,#080d18 0%,#111a28 48%,#3c3a3b 100%)}
+.moon{position:absolute;width:8%;aspect-ratio:1;border-radius:50%;top:10%;right:16%;background:#d9d8ca;box-shadow:0 0 35px #d9d8ca66;opacity:.48}
+.fog{position:absolute;inset:35% -10% 0;background:linear-gradient(180deg,transparent,#c2cad01b 50%,#cbd0d014);filter:blur(9px);animation:fog 12s ease-in-out infinite alternate}
+@keyframes fog{from{transform:translateX(-2%) scale(1)}to{transform:translateX(3%) scale(1.06)}}
+.platform{position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(180deg,#222832,#11151d 55%,#080b11);clip-path:polygon(0 8%,100% 0,100% 100%,0 100%)}
+.rail{position:absolute;bottom:0;height:24%;width:100%;opacity:.9}
+.rail:before,.rail:after{content:"";position:absolute;bottom:-10%;height:140%;width:5px;background:linear-gradient(90deg,#252a30,#9b9b93,#33383d);transform-origin:bottom}
+.rail:before{left:42%;transform:rotate(9deg)}.rail:after{right:42%;transform:rotate(-9deg)}
+.sleeper{position:absolute;left:30%;right:30%;bottom:2%;height:24%;background:repeating-linear-gradient(90deg,transparent 0 22px,#05070b 23px 28px,transparent 29px 45px);transform:perspective(100px) rotateX(25deg);opacity:.75}
+.bench{position:absolute;left:14%;bottom:28%;width:24%;height:9%;filter:drop-shadow(0 8px 5px #0008)}
+.bench-seat{position:absolute;left:0;right:0;top:0;height:22%;background:#59483c;border:1px solid #8b7159}
+.bench-back{position:absolute;left:0;right:0;top:-60%;height:55%;border:5px solid #4a4d50;border-bottom:0;background:repeating-linear-gradient(90deg,#2e333a 0 6px,#45494e 7px 10px)}
+.bench-leg{position:absolute;top:20%;height:100%;width:5px;background:#41464c}.bench-leg.l{left:12%}.bench-leg.r{right:12%}
+.person{position:absolute;bottom:27%;left:21%;width:9%;height:29%;transition:all 1s;filter:drop-shadow(0 9px 9px #0009)}
+.person .head{position:absolute;top:0;left:35%;width:30%;aspect-ratio:1;border-radius:50%;background:#a97b60}
+.person .body{position:absolute;top:25%;left:12%;width:76%;height:54%;background:#202a36;border-radius:35% 35% 8% 8%}
+.person .legs{position:absolute;bottom:0;left:20%;width:60%;height:29%;background:#151b24;clip-path:polygon(0 0,42% 0,36% 100%,0 100%,50% 0,100% 0,100% 100%,60% 100%)}
+.person .scarf{position:absolute;top:28%;left:42%;width:16%;height:27%;background:#9c693c;transform:rotate(8deg)}
+.lantern{position:absolute;left:66%;bottom:27%;width:4%;height:12%;opacity:0;transition:opacity 1s}
+.lantern:before{content:"";position:absolute;left:25%;top:10%;width:50%;height:75%;border:2px solid #b8843f;background:#f0b85b33;box-shadow:0 0 24px #ffb84a88}
+.lantern:after{content:"";position:absolute;left:18%;top:0;width:64%;height:13%;border-radius:50%;border:2px solid #b8843f}
+.woman{position:absolute;bottom:27%;right:18%;width:8%;height:31%;opacity:0;transform:translateY(12px);transition:all 1.3s;filter:drop-shadow(0 8px 10px #0009)}
+.woman .head{position:absolute;top:0;left:30%;width:40%;aspect-ratio:1;border-radius:50%;background:#bd9276}
+.woman .hair{position:absolute;top:-2%;left:25%;width:50%;height:25%;border-radius:50% 50% 20% 20%;background:#201b1a}
+.woman .shawl{position:absolute;top:24%;left:5%;width:90%;height:70%;background:linear-gradient(90deg,#a87c3c,#e4c57d,#9c6c30);clip-path:polygon(20% 0,80% 0,100% 100%,0 100%);border-radius:20%}
+.woman .cup{position:absolute;right:-8%;top:46%;width:20%;height:10%;background:#9a5c3d;border-radius:0 0 4px 4px}
+.lamp{position:absolute;top:13%;left:11%;height:44%;width:2px;background:#30343b}
+.lamp:before{content:"";position:absolute;top:0;left:-16px;width:34px;height:12px;background:#f2d79a;box-shadow:0 0 30px 12px #f5d59a55}
+.lamp:after{content:"";position:absolute;top:9px;left:-8px;width:18px;height:42vh;max-height:190px;background:linear-gradient(#f5d59a12,transparent);filter:blur(7px)}
+.lamp.two{left:83%;top:22%;height:35%}.lamp.three{left:48%;top:28%;height:28%;opacity:.6}
+.station-sign{position:absolute;right:7%;top:27%;font-size:clamp(8px,1.4vw,15px);letter-spacing:.14em;color:#d9c7a2;border:1px solid #c5a66a55;padding:5px 9px;background:#0a111bbd;transform:perspective(100px) rotateY(-7deg)}
+.time{position:absolute;left:4%;top:5%;font-variant-numeric:tabular-nums;color:#e8d4a4;font-size:clamp(10px,1.6vw,17px);letter-spacing:.08em}
+.title-overlay{position:absolute;z-index:2;left:5%;right:5%;top:17%;text-align:center;pointer-events:none;text-shadow:0 3px 25px #000}
+.title-overlay small{display:block;color:#d8c18c;letter-spacing:.24em;font-size:clamp(8px,1vw,12px);margin-bottom:8px}
+.title-overlay strong{font-family:Georgia,serif;font-weight:500;letter-spacing:.04em;font-size:clamp(27px,5.3vw,64px);display:block}
+.title-overlay span{font-size:clamp(10px,1.5vw,16px);color:#d1d4db}
+.subtitle{position:absolute;z-index:3;bottom:7%;left:7%;right:7%;text-align:center;font-size:clamp(12px,2vw,22px);line-height:1.55;text-shadow:0 2px 7px #000;background:linear-gradient(90deg,transparent,#05070bc9 15%,#05070bc9 85%,transparent);padding:8px 12px;min-height:2.5em}
+.stage-vignette{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 100px 25px #0009;background:linear-gradient(0deg,#0007,transparent 35%,#0002)}
+.stage[data-scene="oldman"] .lantern{opacity:1}
+.stage[data-scene="oldman"] .person{left:23%}
+.stage[data-scene="nandinientry"] .woman,.stage[data-scene="reunion"] .woman{opacity:1;transform:translateY(0)}
+.stage[data-scene="nandinientry"] .woman{right:19%}
+.stage[data-scene="reunion"] .person{left:34%;bottom:27%;transform:scale(1.08)}
+.stage[data-scene="reunion"] .woman{right:37%;bottom:27%;transform:scale(1.03)}
+.stage[data-scene="reunion"] .bench{opacity:.65}
+.stage[data-scene="departure"] .person{left:44%;bottom:24%;transform:scale(.82)}
+.stage[data-scene="departure"] .woman{opacity:0}
+.stage[data-scene="opening"] .title-overlay{top:28%}
+.stage[data-scene="letter"] .person{left:24%}
+.stage[data-scene="memory"] .scene-bg{filter:sepia(.25) brightness(.82)}
+.stage[data-scene="memory"] .title-overlay strong{font-size:clamp(20px,4vw,44px)}
+.controls{padding:17px;display:grid;gap:14px;background:linear-gradient(180deg,#111a2a,#0b111d)}
+.control-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid #ffffff28;color:var(--white);background:#202b3e;border-radius:999px;padding:10px 16px;font-weight:650;transition:.2s}
+.btn:hover{background:#2d3b53;transform:translateY(-1px)}
+.btn.primary{background:var(--gold);color:#1b1720;border-color:var(--gold)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.progress-wrap{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;color:var(--muted);font-size:.8rem}
+input[type=range]{width:100%;accent-color:var(--gold)}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:.83rem}
+.chapters{margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.chapter{border:1px solid var(--line);background:var(--panel);color:var(--white);text-align:left;padding:13px;border-radius:13px;display:flex;gap:12px;align-items:center}
+.chapter .num{display:grid;place-items:center;flex:0 0 35px;height:35px;border:1px solid #d8bd7a66;border-radius:50%;color:var(--gold);font-size:.8rem}
+.chapter strong{display:block;font-size:.92rem}.chapter small{color:var(--muted);font-size:.77rem}
+.chapter.active{border-color:var(--gold);background:#30291d88}
+.below{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-top:18px}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:18px}
+.card h2{font-size:1rem;margin:0 0 10px;color:var(--gold)}
+.card p{line-height:1.8;color:#d6dbe4;margin:0}
+.note{font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:10px}
+.sound-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.status{color:var(--gold);font-size:.8rem}
+footer{text-align:center;color:#737e90;font-size:.76rem;padding:24px 10px 0}
+@media(max-width:700px){.stage{aspect-ratio:4/3;min-height:300px}.below{grid-template-columns:1fr}.bench{left:10%;width:28%}.person{left:16%;width:12%}.stage[data-scene="reunion"] .person{left:30%}.stage[data-scene="reunion"] .woman{right:30%}.subtitle{left:3%;right:3%;bottom:5%}.headnote{display:none}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="grain"></div>
+<header><div class="brand">CINEMA · SHORT STORY</div><div class="headnote">एक कहानी · एक स्टेशन · दस साल का इंतज़ार</div></header>
+<main>
+<section class="movie" aria-label="Cinematic story player">
+<div class="stage" id="stage" data-scene="opening">
+<div class="scene-bg">
+<div class="sky"></div><div class="moon"></div><div class="fog"></div>
+<div class="lamp"></div><div class="lamp two"></div><div class="lamp three"></div>
+<div class="station-sign">PLATFORM 03</div><div class="time" id="sceneTime">11:40 PM</div>
+<div class="bench"><div class="bench-back"></div><div class="bench-seat"></div><div class="bench-leg l"></div><div class="bench-leg r"></div></div>
+<div class="person" id="raghav"><div class="head"></div><div class="body"></div><div class="scarf"></div><div class="legs"></div></div>
+<div class="lantern"></div>
+<div class="woman"><div class="head"></div><div class="hair"></div><div class="shawl"></div><div class="cup"></div></div>
+<div class="platform"></div><div class="rail"><div class="sleepers"></div></div>
+</div>
+<div class="title-overlay" id="titleOverlay"><small>एक सिनेमैटिक प्रेम कहानी</small><strong>आख़िरी इंतज़ार</strong><span>राघव और नंदिनी</span></div>
+<div class="subtitle" id="subtitle" aria-live="polite">प्लेटफ़ॉर्म नंबर तीन पर उस रात अजीब-सी ठंड थी…</div>
+<div class="stage-vignette"></div>
+</div>
+<div class="controls">
+<div class="progress-wrap"><span id="currentTime">00:00</span><input id="progress" type="range" min="0" max="300" value="0" aria-label="कहानी की प्रगति"><span>05:00</span></div>
+<div class="control-row">
+<button class="btn" id="restartBtn">↺ शुरुआत</button>
+<button class="btn primary" id="playBtn">▶ कहानी चलाएँ</button>
+<button class="btn" id="prevBtn">← पिछला</button>
+<button class="btn" id="nextBtn">अगला →</button>
+<button class="btn" id="muteBtn">🔊 आवाज़ चालू</button>
+</div>
+<div class="meta"><span id="chapterLabel">दृश्य 1 / 8 · प्लेटफ़ॉर्म नंबर तीन</span><span id="audioStatus" class="status">ऑडियो तैयार नहीं — चलाने के लिए बटन दबाएँ</span></div>
+</div>
+</section>
+
+<section class="chapters" id="chapters" aria-label="दृश्य चुनें"></section>
+<section class="below">
+<div class="card"><h2>इस दृश्य की कहानी</h2><p id="sceneDescription">नवंबर की ठंडी रात। राघव प्लेटफ़ॉर्म नंबर तीन की पुरानी बेंच पर बैठा है। उसकी मुट्ठी में नंदिनी के नाम वाला मुड़ा हुआ कागज़ है।</p><div class="note">दृश्य चित्रण CSS से बनाया गया है, इसलिए किसी बाहरी इमेज की ज़रूरत नहीं है। समयरेखा पर क्लिक करके किसी भी हिस्से पर जा सकते हैं।</div></div>
+<div class="card"><h2>आवाज़ और नैरेशन</h2><p>यह पेज आपके ब्राउज़र के Hindi Text-to-Speech का इस्तेमाल करके कहानी पढ़ता है। आवाज़ और उच्चारण आपके डिवाइस में उपलब्ध आवाज़ों पर निर्भर करेंगे।</p><div class="sound-row"><button class="btn" id="voiceBtn">🎙 आवाज़ चुनें</button><label for="rate">बोलने की गति</label><input id="rate" type="range" min="0.7" max="1.15" step="0.05" value="0.88" style="max-width:150px"></div><div class="note" id="voiceInfo">यदि आवाज़ न सुनाई दे, तो डिवाइस का मीडिया वॉल्यूम बढ़ाएँ और फिर कहानी चलाएँ।</div></div>
+</section>
+<footer>आख़िरी इंतज़ार · एक single-file HTML cinematic story experience</footer>
+</main>
+</div>
+<script>
+"use strict";
+const scenes = [
+ {start:0,end:30,time:"11:40 PM",name:"प्लेटफ़ॉर्म नंबर तीन",short:"ठंडी रात",scene:"opening",
+  subtitle:"प्लेटफ़ॉर्म नंबर तीन पर उस रात अजीब-सी ठंड थी…",
+  description:"नवंबर की ठंडी रात। राघव प्लेटफ़ॉर्म नंबर तीन की पुरानी बेंच पर बैठा है। उसकी मुट्ठी में नंदिनी के नाम वाला मुड़ा हुआ कागज़ है।",
+  narration:"प्लेटफ़ॉर्म नंबर तीन पर उस रात अजीब-सी ठंड थी। नवंबर की शुरुआत थी, पर हवा में ऐसी चुभन थी जो हड्डियों तक पहुँच रही थी। राघव अपनी पुरानी लेदर जैकेट की ज़िप गले तक चढ़ाए, बेंच के एक कोने पर बैठा था। सामने लोहे की पटरियाँ दूर अंधेरे में जाकर किसी अंतहीन शून्य में गायब हो रही थीं। उसके हाथ में एक मुड़ा-तुड़ा कागज़ का टुकड़ा था, जिस पर एक नाम लिखा था—नंदिनी।"},
+ {start:30,end:60,time:"11:41 PM",name:"दस साल पुराना ख़त",short:"वापसी",scene:"letter",
+  subtitle:"एक पुराने ख़त ने उसकी सारी कामयाबी बेमानी कर दी थी।",
+  description:"दस साल पहले राघव टूटे सपनों और खाली जेब के साथ इसी स्टेशन से चला गया था। अब उसके पास दौलत और शोहरत है, लेकिन एक ख़त उसे वापस खींच लाया।",
+  narration:"दस साल पहले राघव इसी स्टेशन से भागा था। एक नाकाम लेखक, टूटे हुए सपने और खाली जेब लेकर। आज उसके बैंक अकाउंट में करोड़ों थे, नाम था, शोहरत थी, लेकिन जब दो दिन पहले उसे नंदिनी का एक पुराना ख़त मिला—जो डाकिया शायद दस साल पहले पहुँचाना भूल गया था—तो उसकी सारी कामयाबी एक पल में बेमानी हो गई। ख़त में सिर्फ़ एक लाइन लिखी थी: अगर तुम कभी लौटकर आओ, तो मैं उसी बेंच पर मिलूँगी, जहाँ तुमने मुझे पहली बार अपनी कहानी सुनाई थी।"},
+ {start:60,end:105,time:"11:45 PM",name:"आख़िरी उम्मीद",short:"11:45",scene:"memory",
+  subtitle:"हर सेकंड की टिक-टिक उसके सीने में हथौड़े की तरह बज रही थी।",
+  description:"रात के 11:45। स्टेशन शांत है। राघव सोचता है कि शायद नंदिनी आगे बढ़ चुकी होगी—फिर भी एक आख़िरी उम्मीद उसे रोकती है।",
+  narration:"रात के ठीक ग्यारह बजकर पैंतालीस मिनट हो रहे थे। यह स्टेशन का सबसे शांत वक्त था। लाउडस्पीकर से कोई घोषणा नहीं हो रही थी। राघव ने अपनी कलाई घड़ी देखी। हर सेकंड की टिक-टिक उसके सीने में हथौड़े की तरह बज रही थी। क्या पागलपन है, उसने खुद से बुदबुदाया। दस साल बहुत लंबा वक्त होता है। लोग बदल जाते हैं, शहर बदल जाते हैं, ज़िंदगियाँ आगे बढ़ जाती हैं। नंदिनी ने शादी कर ली होगी, शायद वह इस शहर में रहती भी न हो। फिर वह यहाँ क्यों आया था? शायद उस एक आख़िरी उम्मीद के लिए, जो इंसान को जीते-जी मरने नहीं देती।"},
+ {start:105,end:150,time:"11:47 PM",name:"लालटेन वाला कुली",short:"अजनबी",scene:"oldman",
+  subtitle:"“गाड़ी तो दो घंटे लेट है, बाबू।”",
+  description:"पटरियों के पार से लाल वर्दी पहने एक बूढ़ा कुली आता है। उसके हाथ में सामान नहीं, बल्कि एक पुरानी पीतल की लालटेन है।",
+  narration:"तभी, पटरियों के पार से एक साया उभरता हुआ दिखा। स्टेशन की पीली लाइटों में एक बूढ़ा कुली लाल वर्दी पहने राघव की तरफ़ बढ़ रहा था। उसके सिर पर कोई बोझ नहीं था, बस हाथ में एक पुराना पीतल का लालटेन था। वह आकर राघव की बेंच के पास रुक गया। गाड़ी तो दो घंटे लेट है, बाबू, बूढ़े ने अपनी खाँसती हुई आवाज़ में कहा। राघव ने धीमे से जवाब दिया, मैं गाड़ी का इंतज़ार नहीं कर रहा, चाचा।"},
+ {start:150,end:195,time:"11:50 PM",name:"इंतज़ार का मतलब",short:"अहसास",scene:"oldman",
+  subtitle:"“इंसान थक जाता है, पर अहसास कभी पुराना नहीं होता।”",
+  description:"बूढ़ा राघव से कहता है कि कभी-कभी हम किसी इंसान का नहीं, उस अहसास का इंतज़ार करते हैं जो उससे जुड़ा था।",
+  narration:"बूढ़े ने राघव के हाथ में पकड़े मुड़े हुए कागज़ को देखा और एक हल्की मुस्कान उसके होंठों पर तैर गई। उसने लालटेन को नीचे रखा और राघव के बराबर में बैठ गया। जब कोई गाड़ी का इंतज़ार नहीं करता, तो वो किसी छूटे हुए वक्त का इंतज़ार कर रहा होता है, बूढ़े ने कहा। राघव ने पूछा, दस साल पहले एक लड़की यहाँ मेरा इंतज़ार करती थी। क्या आपको लगता है, कोई इतना लंबा इंतज़ार कर सकता है? बूढ़े ने आसमान की तरफ़ देखा। बाबू, इंतज़ार दो तरह का होता है। एक इंसान का, और दूसरा उस अहसास का जो उस इंसान के साथ जुड़ा था। इंसान थक जाता है, पर अहसास कभी पुराना नहीं होता।"},
+ {start:195,end:240,time:"11:58 PM",name:"पछतावे से विदाई",short:"अलविदा",scene:"departure",
+  subtitle:"“बस देखना ये है कि तुम पहचान पाते हो या नहीं।”",
+  description:"राघव स्वीकार करता है कि वह खाली हाथ होने के डर से चला गया था। बूढ़ा उसे उम्मीद की एक आख़िरी बात कहकर अंधेरे में चला जाता है।",
+  narration:"राघव की आँखें डबडबा गईं। मैंने बहुत देर कर दी, चाचा। मैं भाग गया था क्योंकि मेरे पास उसे देने के लिए कुछ नहीं था। और आज जब सब कुछ है, तो वो नहीं है? बूढ़े ने बेहद सहजता से पूछा। राघव ने ख़ामोशी से सिर झुका लिया। बूढ़ा उठा, लालटेन उठाई और राघव के कंधे पर हाथ रखा। इस स्टेशन पर रोज़ हज़ारों लोग आते हैं, बाबू। कुछ मिलने, कुछ बिछड़ने। लेकिन जो दिल से कभी जुदा नहीं होते, वो किसी न किसी मोड़ पर फिर टकराते हैं। बस देखना ये है कि तुम पहचान पाते हो या नहीं। बूढ़ा अंधेरे में विलीन हो गया। रात के ठीक बारह बज गए। राघव ने एक गहरी साँस ली और उस कागज़ को जेब में रख लिया। उसे लगा कि नंदिनी शायद अब नहीं आएगी, लेकिन यहाँ आकर उसने उस दस साल पुराने पछतावे को हमेशा के लिए अलविदा कह दिया था। वह उठा और बाहर निकलने के लिए सीढ़ियों की तरफ़ मुड़ गया।"},
+ {start:240,end:270,time:"12:00 AM",name:"पीला शॉल",short:"आहट",scene:"nandinientry",
+  subtitle:"सीढ़ियों की ओर बढ़ते ही एक जानी-पहचानी आवाज़ आई…",
+  description:"जाते हुए राघव को बंद चाय की दुकान के पास से आवाज़ सुनाई देती है। पीले शॉल में लिपटी एक औरत हाथ में मिट्टी का कुल्हड़ लिए खड़ी है।",
+  narration:"जैसे ही उसने पहला कदम बढ़ाया, स्टेशन की बंद पड़ी चाय की दुकान के पास से एक आवाज़ आई। वहाँ पीले शॉल में लिपटी एक औरत खड़ी थी, जिसके हाथ में मिट्टी का कुल्हड़ था। उसके चेहरे पर वक्त की कुछ बारीक लकीरें थीं, लेकिन आँखों में वही चमक थी जो राघव ने दस साल पहले देखी थी।"},
+ {start:270,end:300,time:"12:01 AM",name:"दस साल की दूरी",short:"मुलाक़ात",scene:"reunion",
+  subtitle:"“गाड़ी आज फिर लेट है, राघव… तुम्हारी कहानी कितनी बची थी?”",
+  description:"नंदिनी की मुस्कान में दस साल पुरानी पहचान है। कोहरे के बीच दूरी सिमटती है और कहानी अपने सबसे ख़ूबसूरत मोड़ पर ठहर जाती है।",
+  narration:"उस औरत ने चाय का घूँट भरा और एक जानी-पहचानी मुस्कान के साथ बोली—गाड़ी आज फिर लेट है, राघव... तुम्हारी कहानी कितनी बची थी? कोहरे के बीच, स्टेशन की सर्द हवा अचानक ठहर गई, और दस साल की दूरी कुछ ही कदमों में सिमट गई।"}
+];
+const stage=document.getElementById("stage"), subtitle=document.getElementById("subtitle");
+const description=document.getElementById("sceneDescription"), titleOverlay=document.getElementById("titleOverlay");
+const sceneTime=document.getElementById("sceneTime"), progress=document.getElementById("progress");
+const currentTime=document.getElementById("currentTime"), chapterLabel=document.getElementById("chapterLabel");
+const audioStatus=document.getElementById("audioStatus"), playBtn=document.getElementById("playBtn");
+const muteBtn=document.getElementById("muteBtn"), rateInput=document.getElementById("rate");
+const chaptersBox=document.getElementById("chapters");
+let position=0, playing=false, muted=false, timer=null, voice=null, utterance=null, narrationToken=0;
+function fmt(s){s=Math.max(0,Math.floor(s));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function getIndex(t){return scenes.findIndex((s,i)=>t>=s.start && (t<s.end || i===scenes.length-1))}
+function render(t,force=false){
+ position=Math.max(0,Math.min(300,Number(t)||0)); progress.value=position; currentTime.textContent=fmt(position);
+ const idx=Math.max(0,getIndex(position)); const s=scenes[idx];
+ stage.dataset.scene=s.scene; subtitle.textContent=s.subtitle; description.textContent=s.description;
+ sceneTime.textContent=s.time; chapterLabel.textContent=`दृश्य ${idx+1} / ${scenes.length} · ${s.name}`;
+ document.querySelectorAll(".chapter").forEach((el,i)=>el.classList.toggle("active",i===idx));
+ titleOverlay.style.opacity=position<12?"1":"0";
+ if(force && playing) speakCurrent();
+}
+function buildChapters(){
+ scenes.forEach((s,i)=>{
+  const b=document.createElement("button");b.className="chapter";b.type="button";
+  b.innerHTML=`<span class="num">${String(i+1).padStart(2,"0")}</span><span><strong>${s.name}</strong><small>${fmt(s.start)} – ${fmt(s.end)} · ${s.short}</small></span>`;
+  b.addEventListener("click",()=>{pauseSpeech();render(s.start,true);if(playing)speakCurrent()});
+  chaptersBox.appendChild(b);
+ });
+}
+function getHindiVoice(){
+ if(!("speechSynthesis" in window))return null;
+ const voices=speechSynthesis.getVoices();
+ return voices.find(v=>/^hi(-|_)?/i.test(v.lang))||voices.find(v=>/hindi/i.test(v.name))||voices[0]||null;
+}
+function pauseSpeech(){
+ if("speechSynthesis" in window)speechSynthesis.cancel();
+ utterance=null;narrationToken++;
+}
+function speakCurrent(){
+ if(!("speechSynthesis" in window)){audioStatus.textContent="इस ब्राउज़र में Text-to-Speech उपलब्ध नहीं है";return}
+ pauseSpeech();
+ if(muted){audioStatus.textContent="आवाज़ म्यूट है";return}
+ const idx=Math.max(0,getIndex(position));const s=scenes[idx]; const token=narrationToken;
+ utterance=new SpeechSynthesisUtterance(s.narration);utterance.lang="hi-IN";utterance.rate=Number(rateInput.value)||.88;utterance.pitch=.88;utterance.volume=1;
+ voice=getHindiVoice();if(voice)utterance.voice=voice;
+ utterance.onstart=()=>{if(token===narrationToken)audioStatus.textContent="नैरेशन चल रहा है · "+(voice?voice.name:"ब्राउज़र की आवाज़")};
+ utterance.onend=()=>{if(token!==narrationToken)return;if(playing){const next=s.end;if(next>=300){stopPlayback();render(300);return}render(next);speakCurrent()}else audioStatus.textContent="नैरेशन पूरा हुआ"};
+ utterance.onerror=(e)=>{if(token===narrationToken)audioStatus.textContent="ऑडियो शुरू नहीं हुआ: "+e.error};
+ speechSynthesis.speak(utterance);
+}
+function tick(){
+ if(position>=300){stopPlayback();render(300);return}
+ position=Math.min(300,position+0.25);render(position);
+}
+function startPlayback(){
+ if(playing)return;playing=true;playBtn.textContent="Ⅱ रोकें";audioStatus.textContent="कहानी चल रही है…";
+ speakCurrent();timer=setInterval(tick,250);
+}
+function stopPlayback(){
+ playing=false;clearInterval(timer);timer=null;pauseSpeech();playBtn.textContent="▶ कहानी चलाएँ";
+}
+playBtn.addEventListener("click",()=>{if(playing){stopPlayback();audioStatus.textContent="कहानी रोक दी गई"}else startPlayback()});
+progress.addEventListener("input",()=>{pauseSpeech();render(Number(progress.value));if(playing)speakCurrent()});
+document.getElementById("restartBtn").addEventListener("click",()=>{stopPlayback();render(0);audioStatus.textContent="शुरुआत के लिए तैयार"});
+document.getElementById("prevBtn").addEventListener("click",()=>{const idx=Math.max(0,getIndex(position)-1);pauseSpeech();render(scenes[idx].start);if(playing)speakCurrent()});
+document.getElementById("nextBtn").addEventListener("click",()=>{const idx=Math.min(scenes.length-1,getIndex(position)+1);pauseSpeech();render(scenes[idx].start);if(playing)speakCurrent()});
+muteBtn.addEventListener("click",()=>{muted=!muted;muteBtn.textContent=muted?"🔇 आवाज़ बंद":"🔊 आवाज़ चालू";if(muted){pauseSpeech();audioStatus.textContent="आवाज़ म्यूट है"}else{audioStatus.textContent="आवाज़ चालू";if(playing)speakCurrent()}});
+document.getElementById("voiceBtn").addEventListener("click",()=>{
+ if(!("speechSynthesis" in window)){document.getElementById("voiceInfo").textContent="आपके ब्राउज़र में Text-to-Speech समर्थित नहीं है।";return}
+ const v=getHindiVoice();document.getElementById("voiceInfo").textContent=v?`चुनी गई आवाज़: ${v.name} (${v.lang})। आपके डिवाइस की आवाज़ें ब्राउज़र तय करता है।`:"हिंदी आवाज़ नहीं मिली; ब्राउज़र की डिफ़ॉल्ट आवाज़ इस्तेमाल होगी।";
+ if(!v)audioStatus.textContent="हिंदी आवाज़ उपलब्ध नहीं मिली";
+});
+rateInput.addEventListener("input",()=>{if(playing)speakCurrent()});
+if("speechSynthesis" in window){speechSynthesis.onvoiceschanged=()=>{voice=getHindiVoice()}}
+buildChapters();render(0);
+if(!("speechSynthesis" in window))audioStatus.textContent="इस ब्राउज़र में नैरेशन समर्थित नहीं है";
+</script>
+</body>
+</html>

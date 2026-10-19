@@ -13,14 +13,14 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://shivajiamihit.in/">
   <meta property="og:title" content="Shivaji Kumar | Official Portfolio & Tools">
-  <meta property="og:description" content="Connect with Shivaji. Explore personal tools, games, calculators, and social links.">
+  <meta property="og:description" content="Connect with Shivaji. Access personal utilities, smart calculators, and mini web tools.">
   <meta property="og:image" content="https://shivajiamihit.in/profile.jpg">
 
   <!-- Twitter / X Meta Tags -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://shivajiamihit.in/">
   <meta property="twitter:title" content="Shivaji Kumar | Official Portfolio & Tools">
-  <meta property="twitter:description" content="Connect with Shivaji. Explore personal tools, games, calculators, and social links.">
+  <meta property="twitter:description" content="Connect with Shivaji. Access personal utilities, smart calculators, and mini web tools.">
   <meta property="twitter:image" content="https://shivajiamihit.in/profile.jpg">
 
   <!-- Google Fonts & Font Awesome Icons -->
@@ -98,7 +98,7 @@
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 450px;
+      max-width: 440px;
       background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(25px) saturate(190%);
       -webkit-backdrop-filter: blur(25px) saturate(190%);
@@ -260,22 +260,15 @@
     .fa-instagram { color: #f43f5e; }
     .fa-telegram { color: #38bdf8; }
     .fa-x-twitter { color: #f1f5f9; }
-    .fa-film { color: #fb7185; }
     .fa-robot { color: #a855f7; }
-    .fa-comments { color: #06b6d4; }
     .fa-calculator { color: #10b981; }
     .fa-dice { color: #f59e0b; }
     .fa-qrcode { color: #38bdf8; }
-    .fa-circle-play { color: #ef4444; }
 
     /* Tool Item Gradient Styles */
     .tool-aichat {
       background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(99, 102, 241, 0.15));
       border-color: rgba(168, 85, 247, 0.35);
-    }
-    .tool-chat {
-      background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(14, 165, 233, 0.15));
-      border-color: rgba(6, 182, 212, 0.35);
     }
     .tool-calc {
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(34, 197, 94, 0.15));
@@ -288,14 +281,6 @@
     .tool-qr {
       background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(59, 130, 246, 0.15));
       border-color: rgba(56, 189, 248, 0.35);
-    }
-    .tool-video {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(244, 63, 94, 0.15));
-      border-color: rgba(239, 68, 68, 0.35);
-    }
-    .tool-movies {
-      background: linear-gradient(135deg, rgba(225, 29, 72, 0.15), rgba(168, 85, 247, 0.15));
-      border-color: rgba(244, 63, 94, 0.35);
     }
 
     .fa-chevron-right {
@@ -314,189 +299,6 @@
       font-size: 11px;
       color: rgba(255, 255, 255, 0.4);
       letter-spacing: 0.3px;
-    }
-
-    /* Modal Styling */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(3, 7, 18, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 99999;
-      padding: 16px;
-    }
-
-    .modal-overlay.active {
-      display: flex !important;
-      animation: fadeIn 0.25s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.96); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .modal-glass {
-      width: 100%;
-      max-width: 440px;
-      height: 82vh;
-      display: flex;
-      flex-direction: column;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(30px) saturate(200%);
-      -webkit-backdrop-filter: blur(30px) saturate(200%);
-      border-radius: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
-      padding: 20px;
-      position: relative;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      flex-shrink: 0;
-    }
-
-    .modal-header h2 {
-      font-size: 18px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #f8fafc;
-    }
-
-    .close-btn {
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #cbd5e1;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 16px;
-      transition: all 0.2s;
-    }
-
-    .close-btn:hover {
-      background: rgba(239, 68, 68, 0.4);
-      color: #fff;
-    }
-
-    .search-box {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 14px;
-      flex-shrink: 0;
-    }
-
-    .search-input {
-      flex: 1;
-      padding: 12px 14px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 14px;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .search-btn {
-      background: linear-gradient(135deg, #e11d48, #fb7185);
-      border: none;
-      border-radius: 14px;
-      color: #fff;
-      padding: 0 16px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .movie-results {
-      overflow-y: auto;
-      flex: 1;
-      text-align: left;
-      padding-right: 4px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .movie-results::-webkit-scrollbar {
-      width: 4px;
-    }
-    .movie-results::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.25);
-      border-radius: 4px;
-    }
-
-    .movie-item {
-      display: flex;
-      gap: 12px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      padding: 10px;
-    }
-
-    .movie-poster {
-      width: 70px;
-      height: 98px;
-      object-fit: cover;
-      border-radius: 10px;
-      background: rgba(0, 0, 0, 0.4);
-      flex-shrink: 0;
-    }
-
-    .movie-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .movie-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: #f8fafc;
-      margin-bottom: 4px;
-    }
-
-    .movie-meta {
-      font-size: 11px;
-      color: #fb7185;
-      margin-bottom: 6px;
-      display: flex;
-      gap: 6px;
-    }
-
-    .movie-meta span {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 2px 6px;
-      border-radius: 6px;
-      color: #cbd5e1;
-    }
-
-    .movie-summary {
-      font-size: 11px;
-      color: #94a3b8;
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
     }
   </style>
 </head>
@@ -587,8 +389,8 @@
     <div class="section-title"><i class="fa-solid fa-cube"></i> Tools & Web Apps</div>
     <div class="links-list">
 
-      <!-- AI Chat -->
-      <a href="Aichat.html" class="link-item tool-aichat">
+      <!-- AI Chatbot -->
+      <a href="aichatbot" class="link-item tool-aichat">
         <div class="link-left">
           <i class="fa-solid fa-robot"></i>
           <span>AI Chatbot</span>
@@ -596,16 +398,7 @@
         <i class="fa-solid fa-chevron-right"></i>
       </a>
 
-      <!-- Chat Room -->
-      <a href="Chat.html" class="link-item tool-chat">
-        <div class="link-left">
-          <i class="fa-solid fa-comments"></i>
-          <span>Live Chat Room</span>
-        </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </a>
-
-      <!-- Calculator -->
+      <!-- Smart Calculator -->
       <a href="calculator.html" class="link-item tool-calc">
         <div class="link-left">
           <i class="fa-solid fa-calculator"></i>
@@ -632,51 +425,11 @@
         <i class="fa-solid fa-chevron-right"></i>
       </a>
 
-      <!-- Video Tool -->
-      <a href="video.html" class="link-item tool-video">
-        <div class="link-left">
-          <i class="fa-solid fa-circle-play"></i>
-          <span>Video Player</span>
-        </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </a>
-
-      <!-- Explore Movies Modal Button -->
-      <div class="link-item tool-movies" id="openMoviesBtn">
-        <div class="link-left">
-          <i class="fa-solid fa-film"></i>
-          <span>Explore Movies</span>
-        </div>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
-
     </div>
 
     <footer>
       © 2026 shivajiamihit.in • All Rights Reserved
     </footer>
-  </div>
-
-  <!-- Movies Modal -->
-  <div class="modal-overlay" id="movieModal">
-    <div class="modal-glass">
-      <div class="modal-header">
-        <h2><i class="fa-solid fa-film" style="color:#fb7185;"></i> Explore Movies</h2>
-        <button class="close-btn" id="closeMoviesBtn"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-
-      <div class="search-box">
-        <input type="text" id="movieInput" class="search-input" placeholder="Search movie (e.g. Avatar, Avengers)...">
-        <button class="search-btn" id="searchMoviesBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
-      </div>
-
-      <div class="movie-results" id="movieResults">
-        <div style="text-align:center; padding:30px; color:#94a3b8; font-size:13px;">
-          <i class="fa-solid fa-spinner fa-spin" style="font-size:24px; color:#fb7185;"></i>
-          <p style="margin-top:8px;">Loading movies...</p>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Scripts -->
@@ -700,4 +453,13 @@ END:VCARD`;
       const tempLink = document.createElement('a');
       tempLink.href = url;
       tempLink.setAttribute('download', 'Shivaji_Kumar.vcf');
-      document.body.appendC
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      document.body.removeChild(tempLink);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+</body>
+</html>
+

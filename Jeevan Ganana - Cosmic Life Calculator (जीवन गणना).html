@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="hi" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeevan Ganana - Cosmic Life Calculator (जीवन गणना)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+            space: {
+              900: '#070a13',
+              800: '#0d1322',
+              700: '#141c33',
+              600: '#1e294b',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes pulse-slow {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.85; }
+    }
+    .animate-heartbeat {
+      animation: pulse-slow 1.2s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    .animate-float {
+      animation: float 4s ease-in-out infinite;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0d1322;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2a3756;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #40527c;
+    }
+    .glass-card {
+      background: rgba(19, 27, 49, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card-hover {
+      transition: all 0.25s ease;
+    }
+    .glass-card-hover:hover {
+      border-color: rgba(99, 102, 241, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 0 15px -3px rgba(99, 102, 241, 0.15);
+    }
+    @media print {
+      body { background: white !important; color: black !important; }
+      .no-print { display: none !important; }
+      .glass-card { background: white !important; border: 1px solid #ccc !important; color: black !important; }
+      .text-gray-400, .text-slate-400 { color: #555 !important; }
+    }
+  </style>
+</head>
+<body class="bg-space-900 text-slate-100 min-h-screen font-sans selection:bg-indigo-500 selection:text-white">
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed top-5 right-5 z-50 transform transition-all duration-300 translate-y-[-100px] opacity-0 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl bg-indigo-600 text-white font-medium text-sm border border-indigo-400">
+    <span id="toast-icon">✨</span>
+    <span id="toast-message">Notification</span>
+  </div>
+
+  <!-- Header -->
+  <header class="border-b border-slate-800/80 bg-space-800/60 sticky top-0 z-30 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white font-bold text-xl">
+          ⏳
+        </div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-bold bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
+            Jeevan Ganana <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-normal border border-indigo-500/30">Life Calculator</span>
+          </h1>
+          <p class="text-xs text-slate-400 hidden sm:block">Aapke Janam se Aaj Tak ka Sampurna Hisaab (Complete Cosmic & Body Stats)</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button id="btn-sound-toggle" type="button" title="Audio Effects" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors text-sm flex items-center gap-1.5">
+          <span id="sound-icon">🔊</span>
+          <span class="text-xs hidden md:inline" id="sound-label">Audio On</span>
+        </button>
+        <button id="btn-print" type="button" class="no-print p-2 sm:px-3 sm:py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs sm:text-sm font-medium flex items-center gap-1.5 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+          <span class="hidden sm:inline">Print / PDF</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+
+    <!-- Hero Input Box -->
+    <section class="glass-card rounded-2xl p-5 sm:p-7 shadow-xl relative overflow-hidden">
+      <div class="absolute -right-16 -top-16 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-5 border-b border-slate-700/60">
+          <div>
+            <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+              <span>📅</span> Apni Janam Tithi (Date of Birth) Chunein
+            </h2>
+            <p class="text-sm text-slate-400 mt-1">Date of birth daalte hi aapke janam se ab tak ka har ek second, Sunday-Monday, chandrama aur sharir ka hisaab calculate hoga.</p>
+          </div>
+          
+          <!-- Quick Presets -->
+          <div class="flex flex-wrap items-center gap-1.5 text-xs">
+            <span class="text-slate-400 mr-1">Quick Presets:</span>
+            <button type="button" class="preset-btn px-2.5 py-1 rounded-md bg-slate-800 hover:bg-indigo-600/30 border border-slate-700 text-slate-300 transition-colors" data-dob="2000-01-01" data-time="00:00">1 Jan 2000</button>
+            <button type="button" class="preset-btn px-2.5 py-1 rounded-md bg-slate-800 hover:bg-indigo-600/30 border border-slate-700 text-slate-300 transition-colors" data-dob="1995-08-15" data-time="06:30">15 Aug 1995</button>
+            <button type="button" class="preset-btn px-2.5 py-1 rounded-md bg-slate-800 hover:bg-indigo-600/30 border border-slate-700 text-slate-300 transition-colors" data-dob="2005-11-20" data-time="12:00">20 Nov 2005</button>
+            <button type="button" class="preset-btn px-2.5 py-1 rounded-md bg-slate-800 hover:bg-indigo-600/30 border border-slate-700 text-slate-300 transition-colors" data-dob="1990-04-10" data-time="08:15">10 Apr 1990</button>
+          </div>
+        </div>
+
+        <form id="life-form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+          <!-- Name Input -->
+          <div>
+            <label for="input-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+              Aapka Naam (Name) <span class="text-slate-500 font-normal">(Optional)</span>
+            </label>
+            <input type="text" id="input-name" placeholder="Jaise: Rahul / Priya" value="Dost"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-space-800 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition">
+          </div>
+
+          <!-- DOB Input -->
+          <div>
+            <label for="input-dob" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5 flex justify-between">
+              <span>Janam Tithi (Date of Birth) *</span>
+              <span id="dob-validation" class="text-rose-400 text-xs hidden">Future date not allowed</span>
+            </label>
+            <input type="date" id="input-dob" required
+              class="w-full px-3.5 py-2.5 rounded-xl bg-space-800 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition">
+          </div>
+
+          <!-- Birth Time (Optional) -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="input-time" class="block text-xs font-semibold uppercase tracking-wider text-slate-300">
+                Janam Ka Samay (Time)
+              </label>
+              <label class="flex items-center gap-1.5 text-xs text-slate-400 cursor-pointer">
+                <input type="checkbox" id="chk-exact-time" class="rounded bg-space-800 border-slate-700 text-indigo-600 focus:ring-indigo-500" checked>
+                <span>Exact Time</span>
+              </label>
+            </div>
+            <input type="time" id="input-time" value="07:30"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-space-800 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition">
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-2">
+            <button type="submit" id="btn-calculate"
+              class="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition-all transform active:scale-95 text-sm">
+              <span>⚡</span> Calculate Stats
+            </button>
+            <button type="button" id="btn-reset" title="Reset to default"
+              class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors">
+              🔄
+            </button>
+          </div>
+        </form>
+
+        <!-- Live Ticking Bar -->
+        <div class="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              Live Real-Time Active
+            </span>
+            <span id="current-clock" class="text-slate-300 font-mono">--:--:--</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <button type="button" id="btn-copy-summary" class="hover:text-indigo-400 transition flex items-center gap-1">
+              <span>📋</span> Copy Quick Summary
+            </button>
+            <span class="text-slate-600">•</span>
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="checkbox" id="chk-live-tick" checked class="rounded bg-space-800 border-slate-700 text-indigo-600 focus:ring-indigo-500">
+              <span>Live Ticking Updates</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation / Filter Tabs -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-1 no-print border-b border-slate-800">
+      <button type="button" class="tab-btn px-4 py-2 rounded-xl text-sm font-medium transition whitespace-nowrap bg-indigo-600 text-white" data-target="tab-all">🌟 Sab Kuch (Overview)</button>
+      <button type="button" class="tab-btn px-4 py-2 rounded-xl text-sm font-medium transition whitespace-nowrap bg-slate-800/80 hover:bg-slate-700 text-slate-300" data-target="tab-weekdays">🗓️ Sunday-Monday Breakdown</button>
+      <button type="button" class="tab-btn px-4 py-2 rounded-xl text-sm font-medium transition whitespace-nowrap bg-slate-800/80 hover:bg-slate-700 text-slate-300" data-target="tab-cosmic">🌕 Full Moon & Space</button>
+      <button type="button" class="tab-btn px-4 py-2 rounded-xl text-sm font-medium transition whitespace-nowrap bg-slate-800/80 hover:bg-slate-700 text-slate-300" data-target="tab-body">❤️ Heart, Breath & Body</button>
+      <button type="button" class="tab-btn px-4 py-2 rounded-xl text-sm font-medium transition whitespace-nowrap bg-slate-800/80 hover:bg-slate-700 text-slate-300" data-target="tab-milestones">🏆 Milestones & Kundali</button>
+    </div>
+
+    <!-- MAIN DISPLAY CONTENT -->
+    <div id="calculator-results" class="space-y-8">
+
+      <!-- 1. HERO AGE CARD & BIRTHDAY HIGHLIGHT -->
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Big Age Card -->
+        <div class="lg:col-span-2 glass-card rounded-2xl p-6 relative overflow-hidden border border-indigo-500/20">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+            <div>
+              <span class="text-xs uppercase tracking-wider font-semibold text-indigo-400">Sampurna Aayu (Exact Age)</span>
+              <h3 id="display-greeting" class="text-2xl sm:text-3xl font-extrabold text-white mt-1">
+                Namaste Dost! ✨
+              </h3>
+            </div>
+            <!-- Born on weekday pill -->
+            <div id="badge-birth-day" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 text-amber-300 text-xs sm:text-sm font-semibold flex items-center gap-2 self-start sm:self-center">
+              <span>🎂</span> Born on: <span id="birth-weekday-name" class="font-bold">--</span>
+            </div>
+          </div>
+
+          <!-- Years, Months, Days breakdown -->
+          <div class="grid grid-cols-3 gap-3 my-4">
+            <div class="bg-space-800/90 rounded-xl p-3 sm:p-4 text-center border border-slate-700/60">
+              <span id="stat-years" class="text-2xl sm:text-4xl font-extrabold text-indigo-400 font-mono">0</span>
+              <p class="text-xs text-slate-400 mt-1 uppercase font-semibold">Saal (Years)</p>
+            </div>
+            <div class="bg-space-800/90 rounded-xl p-3 sm:p-4 text-center border border-slate-700/60">
+              <span id="stat-months" class="text-2xl sm:text-4xl font-extrabold text-purple-400 font-mono">0</span>
+              <p class="text-xs text-slate-400 mt-1 uppercase font-semibold">Mahine (Months)</p>
+            </div>
+            <div class="bg-space-800/90 rounded-xl p-3 sm:p-4 text-center border border-slate-700/60">
+              <span id="stat-days" class="text-2xl sm:text-4xl font-extrabold text-pink-400 font-mono">0</span>
+              <p class="text-xs text-slate-400 mt-1 uppercase font-semibold">Din (Days)</p>
+            </div>
+          </div>
+
+          <!-- Decimal Age live counter -->
+          <div class="bg-space-900/80 rounded-xl p-3 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+            <span class="text-slate-400 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+              Live Fractional Age (Decimal Years):
+            </span>
+            <span id="stat-decimal-age" class="font-mono text-sm sm:text-base font-bold text-indigo-300">0.000000000</span>
+          </div>
+
+          <!-- Life Expectancy Progress (based on standard 80 years) -->
+          <div class="mt-4 pt-4 border-t border-slate-800/80">
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-1.5">
+              <span>Zindagi ka Safar (Progress based on 80-year average)</span>
+              <span id="stat-life-percent" class="font-semibold text-indigo-400">0%</span>
+            </div>
+            <div class="w-full h-3 rounded-full bg-space-800 overflow-hidden border border-slate-700/60 p-0.5">
+              <div id="stat-life-bar" class="h-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between text-[11px] text-slate-500 mt-1">
+              <span>Janam (0 yr)</span>
+              <span id="stat-life-weeks-lived">0 hafte jiye</span>
+              <span>80 Saal (Target)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next Birthday Countdown Card -->
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between border border-purple-500/20 relative">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs uppercase tracking-wider font-semibold text-purple-400">Agla Janamdin</span>
+              <span class="text-xl">🎉</span>
+            </div>
+            <h4 class="text-lg font-bold text-white">Next Birthday Countdown</h4>
+            <p id="next-birthday-date" class="text-xs text-slate-400 mt-0.5">--</p>
+          </div>
+
+          <!-- Countdown Digits -->
+          <div class="grid grid-cols-4 gap-2 my-4 text-center">
+            <div class="bg-space-800/90 rounded-lg p-2 border border-slate-700/60">
+              <div id="cd-days" class="text-lg sm:text-xl font-bold text-amber-400 font-mono">0</div>
+              <div class="text-[10px] text-slate-400 uppercase">Days</div>
+            </div>
+            <div class="bg-space-800/90 rounded-lg p-2 border border-slate-700/60">
+              <div id="cd-hours" class="text-lg sm:text-xl font-bold text-amber-400 font-mono">0</div>
+              <div class="text-[10px] text-slate-400 uppercase">Hours</div>
+            </div>
+            <div class="bg-space-800/90 rounded-lg p-2 border border-slate-700/60">
+              <div id="cd-mins" class="text-lg sm:text-xl font-bold text-amber-400 font-mono">0</div>
+              <div class="text-[10px] text-slate-400 uppercase">Mins</div>
+            </div>
+            <div class="bg-space-800/90 rounded-lg p-2 border border-slate-700/60">
+              <div id="cd-secs" class="text-lg sm:text-xl font-bold text-amber-400 font-mono">0</div>
+              <div class="text-[10px] text-slate-400 uppercase">Secs</div>
+            </div>
+          </div>
+
+          <div class="bg-purple-950/40 rounded-xl p-3 border border-purple-500/20 text-xs text-purple-200">
+            <p class="font-medium flex items-center gap-1.5">
+              <span>🎁</span> Agle janamdin par aap <span id="cd-next-age" class="font-bold underline">0</span> saal ke ho jayenge!
+            </p>
+            <p id="cd-next-day-name" class="text-purple-300/80 text-[11px] mt-1">Woh din ... hoga.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. TOTAL TIME UNITS (DAYS, HOURS, MINUTES, SECONDS, WEEKS, MONTHS) -->
+      <section id="sec-time-units" class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              <span class="text-indigo-400">⏱️</span> Kul Bita Hua Samay (Total Time Elapsed)
+            </h3>
+            <p class="text-xs text-slate-400">Janam ke pal se lekar abhi tak ke sabhi standard units me accurate count</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          <!-- Total Days -->
+          <div class="glass-card glass-card-hover rounded-xl p-4 border border-slate-700/60">
+            <span class="text-xs font-semibold text-indigo-400 uppercase">Kul Din (Total Days)</span>
+            <div id="stat-total-days" class="text-xl sm:text-2xl font-bold text-white font-mono mt-1">0</div>
+            <p class="text-[11px] text-slate-400 mt-1">Days on Earth</p>
+          </div>
+
+          <!-- Total Hours -->
+          <div class="glass-card glass-card-hover rounded-xl p-4 border border-slate-700/60">
+            <span class="text-xs font-semibold text-purple-400 uppercase">Ghante (Total Hours)</span>
+            <div id="stat-total-hours" class="text-xl sm:text-2xl font-bold text-white font-mono mt-1">0</div>
+            <p class="text-[11px] text-slate-400 mt-1">Ghante bita chuke</p>
+          </div>
+
+          <!-- Total Minutes -->
+          <div class="glass-card glass-card-hover rounded-xl p-4 border border-slate-700/60">
+            <span class="text-xs font-semibold text-pink-400 uppercase">Minutes</span>
+            <div id="stat-total-minutes" class="text-xl sm:text-2xl font-bold text-white font-mono mt-1">0</div>
+            <p class="text-[11px] text-slate-400 mt-1">Minutes of life</p>
+          </div>
+
+          <!-- Total Seconds (Live Ticking) -->
+          <div class="glass-card glass-card-hover rounded-xl p-4 border border-indigo-500/30 bg-indigo-950/20">
+            <span class="text-xs font-semibold text-emerald-400 uppercase flex items-center gap-1">
+              <span>Seconds</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+            </span>
+            <div id="stat-total-seconds" class="text-xl sm:text-2xl font-bold text-emerald-300 font-mono mt-1">0</div>
+            <p class="text-[11px] text-slate-400 mt-1">Ticking every sec</p>
+          </div>
+
+          <!-- Total Weeks -->
+          <div class="glass-card glass-card-hover rounded-xl p-4 border border-slate-700/60">
+            <span class="text-xs font-semibold text-amber-400 uppercase">Kul Hafte (Weeks)</span>
+            <div id="stat-total-weeks" class="text-xl sm:text-2xl font-bold text-white font-mono mt-1">0</div>
+            <p class="text-[11px] text-slate-400 mt-1">Weeks completed</p>
+          </div>
+
+          <!-- Total Months -->
+          <div class="glass-card glass-card-hover rounded-xl p-4 border border-slate-700/60">
+            <span class="text-xs font-semibold text-cyan-400 uppercase">Kul Mahine (Months)</span>
+            <div id="stat-total-months-lived" class="text-xl sm:text-2xl font-bold text-white font-mono mt-1">0</div>
+            <p class="text-[11px] text-slate-400 mt-1">Approx lunar/calendar</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. WEEKDAY BREAKDOWN (SUNDAY TO SATURDAY) - USER SPECIALLY ASKED FOR THIS! -->
+      <section id="sec-weekdays" class="glass-card rounded-2xl p-6 border border-amber-500/20 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-700/60">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 text-xs font-semibold border border-amber-500/20 mb-1">
+              <span>🗓️</span> Requested Special Feature
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-white">
+              Kitne Sunday, Monday, Mangalwar...? (Weekday Breakdown)
+            </h3>
+            <p class="text-xs text-slate-400 mt-0.5">Aapke janam se lekar aaj tak har ek din (Sunday se Saturday) ki exact ginti:</p>
+          </div>
+          
+          <div class="flex items-center gap-3 text-xs bg-space-800 px-3 py-2 rounded-xl border border-slate-700">
+            <div>
+              <span class="text-slate-400">Total Weekends:</span>
+              <span id="stat-total-weekends" class="font-bold text-amber-300 ml-1">0</span>
+            </div>
+            <span class="text-slate-600">|</span>
+            <div>
+              <span class="text-slate-400">Weekdays:</span>
+              <span id="stat-total-workingdays" class="font-bold text-indigo-300 ml-1">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7 Days Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+          <!-- Sunday -->
+          <div class="bg-space-800/90 rounded-xl p-3.5 border border-red-500/20 text-center relative overflow-hidden group hover:border-red-500/50 transition">
+            <div class="text-xs font-semibold text-red-400 uppercase">Ravivar (Sun)</div>
+            <div id="stat-day-sun" class="text-xl sm:text-2xl font-extrabold text-white font-mono my-1">0</div>
+            <span class="text-[10px] text-slate-400">Sundays</span>
+            <div id="bar-day-sun" class="w-full bg-slate-700 h-1 rounded-full mt-2 overflow-hidden">
+              <div class="bg-red-400 h-full" style="width: 14.3%"></div>
+            </div>
+          </div>
+
+          <!-- Monday -->
+          <div class="bg-space-800/90 rounded-xl p-3.5 border border-slate-700 text-center group hover:border-indigo-500/50 transition">
+            <div class="text-xs font-semibold text-indigo-300 uppercase">Somvar (Mon)</div>
+            <div id="stat-day-mon" class="text-xl sm:text-2xl font-extrabold text-white font-mono my-1">0</div>
+            <span class="text-[10px] text-slate-400">Mondays</span>
+            <div id="bar-day-mon" class="w-full bg-slate-700 h-1 rounded-full mt-2 overflow-hidden">
+              <div class="bg-indigo-400 h-full" style="width: 14.3%"></div>
+            </div>
+          </div>
+
+          <!-- Tuesday -->
+          <div class="bg-space-800/90 rounded-xl p-3.5 border border-slate-700 text-center group hover:border-orange-500/50 transition">
+            <div class="text-xs font-semibold text-orange-400 uppercase">Mangalvar (Tue)</div>
+            <div id="stat-day-tue" class="text-xl sm:text-2xl font-extrabold text-white font-mono my-1">0</div>
+            <span class="text-[10px] text-slate-400">Tuesdays</span>
+            <div id="bar-day-tue" class="w-full bg-slate-700 h-1 rounded-full mt-2 overflow-hidden">
+              <div class="bg-orange-400 h-full" style="width: 14.3%"></div>
+            </div>
+          </div>
+
+          <!-- Wednesday -->
+          <div class="bg-space-800/90 rounded-xl p-3.5 border border-slate-700 text-center group hover:border-emerald-500/50 transition">
+            <div class="text-xs font-semibold text-emerald-400 uppercase">Budhvar (Wed)</div>
+            <div id="stat-day-wed" class="text-xl sm:text-2xl font-extrabold text-white font-mono my-1">0</div>
+            <span class="text-[10px] text-slate-400">Wednesdays</span>
+            <div id="bar-day-wed" class="w-full bg-slate-700 h-1 rounded-full mt-2 overflow-hidden">
+              <div class="bg-emerald-400 h-full" style="width: 14.3%"></div>
+            </div>
+          </div>
+
+          <!-- Thursday -->
+          <div class="bg-space-800/90 rounded-xl p-3.5 border border-slate-700 text-center group hover:border-yellow-500/50 transition">
+            <div class="text-xs font-semibold text-yellow-400 uppercase">Guruvar (Thu)</div>
+            <div id="stat-day-thu" class="text-xl sm:text-2xl font-extrabold text-white font-mono my-1">0</div>
+            <span class="text-[10px] text-slate-400">Thursdays</span>
+            <div id="bar-day-thu" class="w-full bg-slate-700 h-1 rounded-full mt-2 overflow-hidden">
+              <div class="bg-yellow-400 h-full" style="width: 14.3%"></div>
+            </div>
+          </div>
+
+          <!-- Friday -->
+          <div class="bg-space-800/90 rounded-xl p-3.5 border border-slate-700 text-center group hover:border-pink-500/50 transition">
+            <div class="text-xs font-semibold text-pink-400 uppercase">Shukravar (Fri)</div>
+            <div id="stat-day-fri" class="text-xl sm:text-2xl font-extrabold text-white font-mono my-1">0</div>
+            <span class="text-[10px] text-slate-400">Fridays</span>
+            <div id="bar-day-fri" class="w-full bg-slate-700 h-1 rounded-full mt-2 overflow-hidden">
+              <div class="bg-pink-400 h-full" style="width: 14.3%"></div>
+            </div>
+          </div>
+
+          <!-- Saturday -->
+          <div class="bg-space-800/90 rounded-xl p-3.5 border border-blue-500/20 text-center group hover:border-blue-500/50 transition">
+            <div class="text-xs font-semibold text-blue-400 uppercase">Shanivar (Sat)</div>
+            <div id="stat-day-sat" class="text-xl sm:text-2xl font-extrabold text-white font-mono my-1">0</div>
+            <span class="text-[10px] text-slate-400">Saturdays</span>
+            <div id="bar-day-sat" class="w-full bg-slate-700 h-1 rounded-full mt-2 overflow-hidden">
+              <div class="bg-blue-400 h-full" style="width: 14.3%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Astrological Day Ruling Info -->
+        <div id="birth-day-fun-fact" class="bg-space-800/60 rounded-xl p-3.5 border border-slate-700/80 text-xs text-slate-300 flex items-start gap-3">
+          <span class="text-xl">✨</span>
+          <div>
+            <span class="font-bold text-amber-300">Aapke Janam Din ki Khas Baat:</span>
+            <span id="birth-day-fact-text">Aap Somwar ko paida hue the, jiska swami Chandrama (Moon) mana jata hai.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. FULL MOONS & SPACE ASTRONOMY - USER SPECIFICALLY ASKED FOR THIS! -->
+      <section id="sec-cosmic" class="space-y-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 text-xs font-semibold border border-purple-500/20 mb-1">
+            <span>🌕</span> Requested Special Feature
+          </div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            Chandrama aur Brahmandiy Safar (Full Moons & Cosmic Journey)
+          </h3>
+          <p class="text-xs text-slate-400">Janam se lekar ab tak kitni Poornima (Full Moons), Amavasya aur kitna antariksh safar kiya</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Full Moons Witnessed -->
+          <div class="glass-card glass-card-hover rounded-xl p-5 border border-purple-500/30 bg-purple-950/20 relative overflow-hidden">
+            <div class="flex items-center justify-between">
+              <span class="text-xs uppercase tracking-wider font-semibold text-purple-300">Poornima (Full Moons)</span>
+              <span class="text-2xl animate-float">🌕</span>
+            </div>
+            <div id="stat-full-moons" class="text-3xl font-extrabold text-white font-mono mt-2">0</div>
+            <p class="text-xs text-slate-300 mt-1">Full Moons witnessed in life</p>
+            <div class="text-[11px] text-purple-400 mt-3 pt-2 border-t border-purple-500/20 flex items-center justify-between">
+              <span>Synodic cycle:</span>
+              <span>~29.53 Days</span>
+            </div>
+          </div>
+
+          <!-- New Moons Witnessed -->
+          <div class="glass-card glass-card-hover rounded-xl p-5 border border-slate-700/60">
+            <div class="flex items-center justify-between">
+              <span class="text-xs uppercase tracking-wider font-semibold text-slate-400">Amavasya (New Moons)</span>
+              <span class="text-2xl">🌑</span>
+            </div>
+            <div id="stat-new-moons" class="text-3xl font-extrabold text-white font-mono mt-2">0</div>
+            <p class="text-xs text-slate-400 mt-1">New Moons in your lifetime</p>
+            <div class="text-[11px] text-slate-400 mt-3 pt-2 border-t border-slate-800 flex items-center justify-between">
+              <span>Lunar eclipses approx:</span>
+              <span id="stat-lunar-eclipses" class="font-bold text-indigo-300">0</span>
+            </div>
+          </div>
+
+          <!-- Moon Phase on Birth Day -->
+          <div class="glass-card glass-card-hover rounded-xl p-5 border border-indigo-500/30 bg-indigo-950/20">
+            <div class="flex items-center justify-between">
+              <span class="text-xs uppercase tracking-wider font-semibold text-indigo-300">Janam Ka Chand (Birth Moon)</span>
+              <span id="moon-phase-emoji" class="text-2xl">🌔</span>
+            </div>
+            <div id="stat-birth-moon-phase" class="text-lg font-bold text-white mt-2">Waxing Gibbous</div>
+            <p id="stat-birth-moon-hindi" class="text-xs text-indigo-300 mt-0.5">Shukla Paksha (Chandrama badhta hua)</p>
+            <div class="text-[11px] text-slate-400 mt-3 pt-2 border-t border-indigo-500/20">
+              Aapke janam din par Chandrama ki aakriti
+            </div>
+          </div>
+
+          <!-- Orbits around Sun -->
+          <div class="glass-card glass-card-hover rounded-xl p-5 border border-amber-500/30">
+            <div class="flex items-center justify-between">
+              <span class="text-xs uppercase tracking-wider font-semibold text-amber-400">Surya Ki Parikrama</span>
+              <span class="text-2xl">☀️</span>
+            </div>
+            <div id="stat-solar-orbits" class="text-3xl font-extrabold text-white font-mono mt-2">0.0</div>
+            <p class="text-xs text-slate-300 mt-1">Complete Solar Orbits (Revolutions)</p>
+            <div class="text-[11px] text-amber-400/90 mt-3 pt-2 border-t border-amber-500/20 flex items-center justify-between">
+              <span>Equinoxes & Solstices:</span>
+              <span id="stat-solstices" class="font-bold">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Space Travel Distances (Live Ticking) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="glass-card rounded-xl p-4 border border-slate-700/60 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-2xl flex-shrink-0">
+              🌍
+            </div>
+            <div class="flex-1 min-w-0">
+              <span class="text-xs text-slate-400 uppercase tracking-wider">Earth ke saath Surya ke charo taraf yatra:</span>
+              <div class="text-lg sm:text-xl font-bold text-white font-mono truncate">
+                <span id="stat-sun-distance" class="text-blue-300">0</span> <span class="text-xs text-slate-400">Kilometers</span>
+              </div>
+              <p class="text-[11px] text-slate-400">(Speed ~107,200 km/h — live distance badh rahi hai!)</p>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl p-4 border border-slate-700/60 flex items-center gap-4">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-2xl flex-shrink-0">
+              🌀
+            </div>
+            <div class="flex-1 min-w-0">
+              <span class="text-xs text-slate-400 uppercase tracking-wider">Earth ki apni dhuri par ghoomne ki yatra:</span>
+              <div class="text-lg sm:text-xl font-bold text-white font-mono truncate">
+                <span id="stat-earth-rotation-distance" class="text-purple-300">0</span> <span class="text-xs text-slate-400">Kilometers</span>
+              </div>
+              <p class="text-[11px] text-slate-400">(Speed ~1,670 km/h at equator due to Earth's rotation)</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. BIOLOGICAL WONDERS (HEARTBEAT, BREATHS, BLINKS, SLEEP, DREAMS, FOOD) -->
+      <section id="sec-body" class="space-y-4">
+        <div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <span class="text-rose-400">❤️</span> Aapka Sharir aur Biological Ajoobe (Body & Biology)
+          </h3>
+          <p class="text-xs text-slate-400">Aapke shareer ne aapke janam se lekar ab tak kitna kaam kiya hai</p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+          <!-- Heartbeats -->
+          <div class="glass-card glass-card-hover rounded-xl p-4 border border-rose-500/30 bg-rose-950/20 relative">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-rose-300 uppercase">Dil ki Dhadkan</span>
+              <span class="animate-heartbeat text-rose-400 text-sm">💓</span>
+            </div>
+            <div id="stat-heartbeats" class="text-lg sm:text-2xl font-bold text-white font-mono mt-1 truncate">0</div>
+            <p class="text-[11px] text-slate-400 mt-1">Total Heartbeats (~75 bpm)</p>
+          </div>
+
+          <!-- Breaths -->
+          <div class="glass-card glass-card-hover rounded-xl p-4 border border-cyan-500/30">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-cyan-300 uppercase">Kul Saansen</span>
+              <span class="text-sm">🫁</span>
+            </div>
+            <div id="stat-breaths" class="text-lg sm:text-2xl font-bold text-white font-mono mt-1 truncate">0</div>
+            <p class="text-[11px] text-slate-400 mt-1">Breaths taken (~16/min)</p>
+          </div>
+
+          <!-- Eye Blinks -->
+          <div class="glass-card glass-card-hover rounded-xl p-4 border border-amber-500/30">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-amber-300 uppercase">Aankh Jhapkana</span>
+              <span class="text-sm">👁️</span>
+            </div>
+            <div id="stat-blinks" class="text-lg sm:text-2xl font-bold text-white font-mono mt-1 truncate">0</div>
+            <p class="text-[11px] text-slate-400 mt-1">Eye blinks (~17/min awake)</p>
+          </div>
+
+          <!-- Sleep Duration -->
+          <div class="glass-card glass-card-hover rounded-xl p-4 border border-indigo-500/30">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-indigo-300 uppercase">Sone Me Bita Samay</span>
+              <span class="text-sm">😴</span>
+            </div>
+            <div id="stat-sleep-years" class="text-lg sm:text-2xl font-bold text-white font-mono mt-1 truncate">0.0 Saal</div>
+            <p id="stat-sleep-hours" class="text-[11px] text-slate-400 mt-1">~0 Ghante neend me</p>
+          </div>
+
+          <!-- Dreams -->
+          <div class="glass-card glass-card-hover rounded-xl p-4 border border-purple-500/30">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-purple-300 uppercase">Dekhe Gaye Sapne</span>
+              <span class="text-sm">💭</span>
+            </div>
+            <div id="stat-dreams" class="text-lg sm:text-2xl font-bold text-white font-mono mt-1 truncate">0</div>
+            <p class="text-[11px] text-slate-400 mt-1">Dreams dreamt (~4-5/night)</p>
+          </div>
+
+          <!-- Distance Walked -->
+          <div class="glass-card glass-card-hover rounded-xl p-4 border border-emerald-500/30">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-emerald-300 uppercase">Pedal Yatra (Walk)</span>
+              <span class="text-sm">🚶</span>
+            </div>
+            <div id="stat-walked-km" class="text-lg sm:text-2xl font-bold text-white font-mono mt-1 truncate">0 km</div>
+            <p id="stat-walked-earth" class="text-[11px] text-slate-400 mt-1">Earth par chakkar</p>
+          </div>
+        </div>
+
+        <!-- Secondary Body Fun Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div class="bg-space-800/80 rounded-xl p-3 border border-slate-700/60">
+            <span class="text-slate-400">🍔 Khana Khaya (Food):</span>
+            <div id="stat-food-tons" class="text-sm font-bold text-white font-mono mt-0.5">0 Tons</div>
+            <span class="text-[10px] text-slate-400">~1.8 kg / day</span>
+          </div>
+          <div class="bg-space-800/80 rounded-xl p-3 border border-slate-700/60">
+            <span class="text-slate-400">💧 Pani Piya (Water):</span>
+            <div id="stat-water-liters" class="text-sm font-bold text-white font-mono mt-0.5">0 Liters</div>
+            <span class="text-[10px] text-slate-400">~2.5 liters / day</span>
+          </div>
+          <div class="bg-space-800/80 rounded-xl p-3 border border-slate-700/60">
+            <span class="text-slate-400">💇 Baalon ki Lambai (Hair):</span>
+            <div id="stat-hair-growth" class="text-sm font-bold text-white font-mono mt-0.5">0 Meters</div>
+            <span class="text-[10px] text-slate-400">~15 cm per year</span>
+          </div>
+          <div class="bg-space-800/80 rounded-xl p-3 border border-slate-700/60">
+            <span class="text-slate-400">💅 Nakhun Uge (Nails):</span>
+            <div id="stat-nail-growth" class="text-sm font-bold text-white font-mono mt-0.5">0 cm</div>
+            <span class="text-[10px] text-slate-400">~3.5 mm per month</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. KUNDALI, ZODIAC & NUMEROLOGY (RASHI & ASTROLOGY) -->
+      <section id="sec-milestones" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Zodiac & Rashi Card -->
+        <div class="glass-card rounded-2xl p-5 border border-indigo-500/20">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-700/60">
+            <h4 class="font-bold text-white text-base flex items-center gap-2">
+              <span>🔮</span> Rashi & Zodiac Sign
+            </h4>
+            <span id="zodiac-symbol" class="text-2xl text-indigo-400">♈</span>
+          </div>
+
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between items-center">
+              <span class="text-slate-400">Western Sun Sign:</span>
+              <span id="zodiac-western" class="font-bold text-indigo-300">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-slate-400">Vedic Rashi (Approx):</span>
+              <span id="zodiac-vedic" class="font-bold text-purple-300">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-slate-400">Tattva (Element):</span>
+              <span id="zodiac-element" class="font-bold text-amber-300">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-slate-400">Chinese Zodiac:</span>
+              <span id="zodiac-chinese" class="font-bold text-emerald-300">--</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-slate-400">Birthstone:</span>
+              <span id="zodiac-stone" class="font-bold text-pink-300">--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Numerology / Life Path Number -->
+        <div class="glass-card rounded-2xl p-5 border border-purple-500/20">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-700/60">
+            <h4 class="font-bold text-white text-base flex items-center gap-2">
+              <span>🔢</span> Bhagyank (Life Path Number)
+            </h4>
+            <div id="numerology-number" class="w-9 h-9 rounded-xl bg-purple-600/30 border border-purple-500 flex items-center justify-center font-extrabold text-purple-300 font-mono text-lg">
+              7
+            </div>
+          </div>
+
+          <p id="numerology-title" class="text-sm font-semibold text-purple-200">The Seeker & Analyst</p>
+          <p id="numerology-desc" class="text-xs text-slate-400 mt-2 leading-relaxed">
+            Date of birth ke sabhi anko ko jod kar banne wala aapka lucky life path number.
+          </p>
+
+          <div class="mt-4 pt-3 border-t border-slate-700/60 text-xs flex justify-between text-slate-400">
+            <span>Calculation:</span>
+            <span id="numerology-calc" class="font-mono text-slate-300">--</span>
+          </div>
+        </div>
+
+        <!-- Golden Milestones Tracker -->
+        <div class="glass-card rounded-2xl p-5 border border-amber-500/20">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-700/60">
+            <h4 class="font-bold text-white text-base flex items-center gap-2">
+              <span>🏆</span> Golden Life Milestones
+            </h4>
+            <span class="text-amber-400">✨</span>
+          </div>
+
+          <div class="space-y-2.5 text-xs">
+            <div class="flex justify-between items-center p-2 rounded-lg bg-space-800/80 border border-slate-700/60">
+              <span class="text-slate-300">10,000 Days Alive:</span>
+              <span id="ms-10k-days" class="font-mono font-bold text-amber-300">--</span>
+            </div>
+            <div class="flex justify-between items-center p-2 rounded-lg bg-space-800/80 border border-slate-700/60">
+              <span class="text-slate-300">20,000 Days Alive:</span>
+              <span id="ms-20k-days" class="font-mono font-bold text-amber-300">--</span>
+            </div>
+            <div class="flex justify-between items-center p-2 rounded-lg bg-space-800/80 border border-slate-700/60">
+              <span class="text-slate-300">500,000 Hours:</span>
+              <span id="ms-500k-hours" class="font-mono font-bold text-indigo-300">--</span>
+            </div>
+            <div class="flex justify-between items-center p-2 rounded-lg bg-space-800/80 border border-slate-700/60">
+              <span class="text-slate-300">1 Billion Seconds:</span>
+              <span id="ms-1b-secs" class="font-mono font-bold text-emerald-300">--</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. LIFE IN WEEKS INTERACTIVE MINI VISUALIZER -->
+      <section class="glass-card rounded-2xl p-6 border border-slate-700/60 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              <span>🟩</span> Zindagi Hafte Dar Hafte (Life in Weeks - 80 Year Map)
+            </h3>
+            <p class="text-xs text-slate-400">Har ek chhota dabba (box) aapki zindagi ka 1 hafta darshata hai (52 hafte prati saal):</p>
+          </div>
+          <div class="flex items-center gap-4 text-xs">
+            <div class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-sm bg-indigo-500 inline-block"></span>
+              <span class="text-slate-300">Bita Hua (Lived)</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-3 h-3 rounded-sm bg-slate-800 border border-slate-700 inline-block"></span>
+              <span class="text-slate-400">Aane Wala (Future)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dot Canvas / Container -->
+        <div id="weeks-grid-container" class="bg-space-900/90 rounded-xl p-3 border border-slate-800 max-h-56 overflow-y-auto">
+          <canvas id="canvas-weeks" class="w-full block"></canvas>
+        </div>
+        <p class="text-[11px] text-slate-400 text-center">
+          "Zindagi lambi nahi, badi honi chahiye!" Har pal aur har hafte ko khulkar jiyein.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 py-8 mt-12 bg-space-900 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 space-y-2">
+      <p class="text-slate-400 font-medium">Jeevan Ganana - Cosmic Life Calculator & Analytics</p>
+      <p>Precision astronomical cycles, weekday distribution & biological estimation engine.</p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // Audio Context Synthesizer (No external audio files)
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function playBeep(freq = 440, type = 'sine', duration = 0.08) {
+      if (!audioEnabled) return;
+      try {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) audioCtx = new AudioContext();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        if (!audioCtx) return;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        // Audio not allowed or failed silently
+      }
+    }
+
+    // Toast function
+    function showToast(message, icon = '✨') {
+      const toast = document.getElementById('toast');
+      const msgEl = document.getElementById('toast-message');
+      const iconEl = document.getElementById('toast-icon');
+      if (!toast || !msgEl || !iconEl) return;
+
+      msgEl.textContent = message;
+      iconEl.textContent = icon;
+      toast.classList.remove('translate-y-[-100px]', 'opacity-0', 'pointer-events-none');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      playBeep(660, 'sine', 0.12);
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-[-100px]', 'opacity-0', 'pointer-events-none');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3000);
+    }
+
+    // Number formatting with Indian commas
+    function formatNumber(num) {
+      if (num === null || num === undefined || isNaN(num)) return '0';
+      return Math.floor(num).toLocaleString('en-IN');
+    }
+
+    function formatDecimal(num, decimals = 1) {
+      if (isNaN(num)) return '0';
+      return num.toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    // Exact calendar age calculation
+    function getExactAge(birthDate, targetDate) {
+      let years = targetDate.getFullYear() - birthDate.getFullYear();
+      let months = targetDate.getMonth() - birthDate.getMonth();
+      let days = targetDate.getDate() - birthDate.getDate();
+
+      if (days < 0) {
+        // Borrow days from previous month
+        const prevMonth = new Date(targetDate.getFullYear(), targetDate.getMonth(), 0);
+        days += prevMonth.getDate();
+        months--;
+      }
+
+      if (months < 0) {
+        months += 12;
+        years--;
+      }
+
+      return { years, months, days };
+    }
+
+    // Astronomical Moon Phase calculation
+    // Known reference full moon epoch: Jan 6, 2000, 18:14 UTC (Julian Date ~ 2451550.26)
+    // Synodic month length = 29.530588853 days
+    function getMoonPhaseInfo(date) {
+      const LUNAR_MONTH = 29.530588853;
+      // Reference date: Jan 6, 2000 is Full Moon (phase = 0.5)
+      // Reference New Moon: Jan 6, 2000 minus 14.765 days = Dec 22, 1999 approx
+      const refNewMoon = new Date(Date.UTC(2000, 0, 6, 18, 14, 0)).getTime() - (LUNAR_MONTH / 2) * 86400000;
+      const diffMs = date.getTime() - refNewMoon;
+      const diffDays = diffMs / 86400000;
+      let phaseRatio = (diffDays % LUNAR_MONTH) / LUNAR_MONTH;
+      if (phaseRatio < 0) phaseRatio += 1;
+
+      // Classify phase (0 to 1)
+      // 0: New Moon, 0.25: First Quarter, 0.5: Full Moon, 0.75: Last Quarter
+      let phaseName = 'New Moon';
+      let hindiName = 'Amavasya (Naya Chand)';
+      let emoji = '🌑';
+
+      if (phaseRatio >= 0.03 && phaseRatio < 0.22) {
+        phaseName = 'Waxing Crescent';
+        hindiName = 'Shukla Paksha (Bal Chandrama)';
+        emoji = '🌒';
+      } else if (phaseRatio >= 0.22 && phaseRatio < 0.28) {
+        phaseName = 'First Quarter';
+        hindiName = 'Shukla Ashtami (Aadha Chand)';
+        emoji = '🌓';
+      } else if (phaseRatio >= 0.28 && phaseRatio < 0.47) {
+        phaseName = 'Waxing Gibbous';
+        hindiName = 'Shukla Paksha (Badhta Chand)';
+        emoji = '🌔';
+      } else if (phaseRatio >= 0.47 && phaseRatio < 0.53) {
+        phaseName = 'Full Moon';
+        hindiName = 'Poornima (Poora Chand)';
+        emoji = '🌕';
+      } else if (phaseRatio >= 0.53 && phaseRatio < 0.72) {
+        phaseName = 'Waning Gibbous';
+        hindiName = 'Krishna Paksha (Ghat-ta Chand)';
+        emoji = '🌖';
+      } else if (phaseRatio >= 0.72 && phaseRatio < 0.78) {
+        phaseName = 'Last Quarter';
+        hindiName = 'Krishna Ashtami (Aadha Chand)';
+        emoji = '🌗';
+      } else if (phaseRatio >= 0.78 && phaseRatio < 0.97) {
+        phaseName = 'Waning Crescent';
+        hindiName = 'Krishna Paksha (Antim Chand)';
+        emoji = '🌘';
+      } else {
+        phaseName = 'New Moon';
+        hindiName = 'Amavasya (Kaali Raat)';
+        emoji = '🌑';
+      }
+
+      return { phaseRatio, phaseName, hindiName, emoji };
+    }
+
+    // Exact count of individual weekdays between two dates
+    function countWeekdaysBetween(startDate, endDate) {
+      // 0: Sun, 1: Mon, 2: Tue, 3: Wed, 4: Thu, 5: Fri, 6: Sat
+      const counts = [0, 0, 0, 0, 0, 0, 0];
+      
+      const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+      const end = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+      
+      const totalDays = Math.round((end.getTime() - start.getTime()) / 86400000);
+      if (totalDays <= 0) return counts;
+
+      const wholeWeeks = Math.floor(totalDays / 7);
+      for (let i = 0; i < 7; i++) {
+        counts[i] = wholeWeeks;
+      }
+
+      const remainderDays = totalDays % 7;
+      let currDay = start.getDay();
+      for (let i = 0; i < remainderDays; i++) {
+        counts[currDay]++;
+        currDay = (currDay + 1) % 7;
+      }
+
+      return counts;
+    }
+
+    // Zodiac and Astrology calculations
+    function getWesternZodiac(month, day) {
+      // month is 1-indexed (1: Jan, 12: Dec)
+      if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return { sign: 'Aries (Mesh)', symbol: '♈', element: 'Agni (Fire)', stone: 'Diamond' };
+      if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return { sign: 'Taurus (Vrishabh)', symbol: '♉', element: 'Prithvi (Earth)', stone: 'Emerald' };
+      if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) return { sign: 'Gemini (Mithun)', symbol: '♊', element: 'Vayu (Air)', stone: 'Pearl' };
+      if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) return { sign: 'Cancer (Kark)', symbol: '♋', element: 'Jal (Water)', stone: 'Ruby' };
+      if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return { sign: 'Leo (Singh)', symbol: '♌', element: 'Agni (Fire)', stone: 'Peridot' };
+      if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return { sign: 'Virgo (Kanya)', symbol: '♍', element: 'Prithvi (Earth)', stone: 'Sapphire' };
+      if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return { sign: 'Libra (Tula)', symbol: '♎', element: 'Vayu (Air)', stone: 'Opal' };
+      if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) return { sign: 'Scorpio (Vrishchik)', symbol: '♏', element: 'Jal (Water)', stone: 'Topaz' };
+      if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) return { sign: 'Sagittarius (Dhanu)', symbol: '♐', element: 'Agni (Fire)', stone: 'Turquoise' };
+      if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) return { sign: 'Capricorn (Makar)', symbol: '♑', element: 'Prithvi (Earth)', stone: 'Garnet' };
+      if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return { sign: 'Aquarius (Kumbh)', symbol: '♒', element: 'Vayu (Air)', stone: 'Amethyst' };
+      return { sign: 'Pisces (Meen)', symbol: '♓', element: 'Jal (Water)', stone: 'Aquamarine' };
+    }
+
+    function getChineseZodiac(year) {
+      const animals = [
+        'Rat (Chuha)', 'Ox (Bail)', 'Tiger (Baagh)', 'Rabbit (Khargosh)', 
+        'Dragon (Ajgar)', 'Snake (Saanp)', 'Horse (Ghoda)', 'Goat (Bakri)', 
+        'Monkey (Bandar)', 'Rooster (Murgi)', 'Dog (Kutta)', 'Pig (Suar)'
+      ];
+      // 1900 was Year of the Rat
+      const index = (year - 1900) % 12;
+      return animals[index >= 0 ? index : index + 12];
+    }
+
+    function getLifePathNumber(dobString) {
+      // e.g. "2000-01-01" -> digits: 2+0+0+0+0+1+0+1 = 4
+      const digits = dobString.replace(/\D/g, '').split('').map(Number);
+      let sum = digits.reduce((a, b) => a + b, 0);
+      const initialSum = sum;
+      
+      while (sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
+        sum = sum.toString().split('').map(Number).reduce((a, b) => a + b, 0);
+      }
+
+      const meanings = {
+        1: { title: 'The Leader & Pioneer (Neta)', desc: 'Swatantra, sahasi aur aage badhne wale vyakti.' },
+        2: { title: 'The Peacemaker & Diplomat (Shanti-Priya)', desc: 'Sahyogi, samvedansheel aur sambandhon ko samajhne wale.' },
+        3: { title: 'The Creator & Communicator (Kalakar)', desc: 'Rachanatmak, aashawadi aur prabhavi bolchal wale.' },
+        4: { title: 'The Builder & Organizer (Vyavasthit)', desc: 'Mehnati, anushasit aur neev mazboot karne wale.' },
+        5: { title: 'The Adventurer & Free Spirit (Yatri)', desc: 'Badlav pasand, aazad khayal aur nayi khoj karne wale.' },
+        6: { title: 'The Nurturer & Protector (Sanrakshak)', desc: 'Parivar-premi, zimmedar aur prem baantne wale.' },
+        7: { title: 'The Seeker & Analyst (Chintak)', desc: 'Gahan vicharak, gyan-pipasu aur aadhyatmik svabhav.' },
+        8: { title: 'The Achiever & Powerhouse (Karmayogi)', desc: 'Vyaparik kshamta, lakshya-kendrit aur yash prapt karne wale.' },
+        9: { title: 'The Humanitarian & Visionary (Danyaveer)', desc: 'Udaar, vishv-kalyan ki soch aur sahanubhuti-purna.' },
+        11: { title: 'Master Number 11: The Intuitive (Divya Drashta)', desc: 'Uchch aadhyaatmik chetna aur prerna-dayak urja.' },
+        22: { title: 'Master Number 22: The Master Builder (Vishwakarma)', desc: 'Bade sapne dekhkar unhe vastavikta me badalne wale.' },
+        33: { title: 'Master Number 33: The Master Teacher (Guru)', desc: 'Prem, nishkam seva aur jagat ko rasta dikhane wale.' }
+      };
+
+      return {
+        number: sum,
+        calc: `${dobString} -> Sum: ${initialSum} -> Single/Master: ${sum}`,
+        details: meanings[sum] || meanings[7]
+      };
+    }
+
+    const WEEKDAY_NAMES = [
+      { hi: 'Ravivar (Sunday)', en: 'Sunday', planet: 'Surya Dev (Sun) - Tejasvi aur aatmbishwas se bhare' },
+      { hi: 'Somvar (Monday)', en: 'Monday', planet: 'Chandrama (Moon) - Shant, bhavuk aur kalpanasheel swabhav' },
+      { hi: 'Mangalvar (Tuesday)', en: 'Tuesday', planet: 'Mangal (Mars) - Urjawan, sahasi aur joshile' },
+      { hi: 'Budhvar (Wednesday)', en: 'Wednesday', planet: 'Budh (Mercury) - Tez dimaag, budhiman aur bolne me chatur' },
+      { hi: 'Guruvar (Thursday)', en: 'Thursday', planet: 'Guru / Brihaspati (Jupiter) - Gyani, aadarneeya aur sabka bhala chahne wale' },
+      { hi: 'Shukravar (Friday)', en: 'Friday', planet: 'Shukra (Venus) - Kala-premi, aakarshak aur sukhi jeevan' },
+      { hi: 'Shanivar (Saturday)', en: 'Saturday', planet: 'Shani Dev (Saturn) - Gambhir, mehnati, dhairyavaan aur nyay-priya' }
+    ];
+
+    // State Variables
+    let currentDOB = '2000-01-01';
+    let currentBirthTime = '07:30';
+    let currentName = 'Dost';
+    let isLiveActive = true;
+    let timerId = null;
+
+    // Life in Weeks Canvas Renderer
+    function drawWeeksGrid(totalWeeksLived, targetWeeks = 80 * 52) {
+      const canvas = document.getElementById('canvas-weeks');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const container = document.getElementById('weeks-grid-container');
+      const width = container ? container.clientWidth - 24 : 600;
+      canvas.width = Math.max(300, width);
+
+      const cols = 52; // 52 weeks in a year
+      const rows = 80; // 80 years
+      const gap = 2;
+      const dotSize = Math.max(2, (canvas.width - (cols * gap)) / cols);
+      canvas.height = rows * (dotSize + gap) + 10;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      let weekIdx = 0;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = c * (dotSize + gap);
+          const y = r * (dotSize + gap);
+
+          if (weekIdx < totalWeeksLived) {
+            ctx.fillStyle = '#6366f1'; // Lived week (indigo)
+          } else {
+            ctx.fillStyle = '#1e293b'; // Future week (slate-800)
+          }
+          ctx.fillRect(x, y, dotSize, dotSize);
+          weekIdx++;
+        }
+      }
+    }
+
+    // Main Update Function
+    function updateCalculations() {
+      const now = new Date();
+      document.getElementById('current-clock').textContent = now.toLocaleTimeString('en-IN');
+
+      const dobInput = document.getElementById('input-dob').value || currentDOB;
+      const timeInput = document.getElementById('input-time').value || '00:00';
+      const exactTimeChecked = document.getElementById('chk-exact-time').checked;
+
+      const [y, m, d] = dobInput.split('-').map(Number);
+      if (!y || !m || !d) return;
+
+      let [th, tm] = [0, 0];
+      if (exactTimeChecked && timeInput) {
+        [th, tm] = timeInput.split(':').map(Number);
+      }
+
+      const birthDate = new Date(y, m - 1, d, th, tm, 0);
+
+      // Validation
+      const valMsg = document.getElementById('dob-validation');
+      if (birthDate > now) {
+        if (valMsg) valMsg.classList.remove('hidden');
+        return;
+      } else {
+        if (valMsg) valMsg.classList.add('hidden');
+      }
+
+      // Name
+      const userName = document.getElementById('input-name').value.trim() || 'Dost';
+      document.getElementById('display-greeting').textContent = `Namaste ${userName}! ✨`;
+
+      // 1. Exact Age (Years, Months, Days)
+      const exactAge = getExactAge(birthDate, now);
+      document.getElementById('stat-years').textContent = exactAge.years;
+      document.getElementById('stat-months').textContent = exactAge.months;
+      document.getElementById('stat-days').textContent = exactAge.days;
+
+      // 2. High Precision Differences
+      const diffMs = now.getTime() - birthDate.getTime();
+      const totalSeconds = diffMs / 1000;
+      const totalMinutes = totalSeconds / 60;
+      const totalHours = totalMinutes / 60;
+      const totalDays = totalHours / 24;
+      const totalWeeks = totalDays / 7;
+      const totalMonthsLived = exactAge.years * 12 + exactAge.months + (exactAge.days / 30.4375);
+      const decimalYears = totalDays / 365.2425;
+
+      // Update Decimal Age
+      document.getElementById('stat-decimal-age').textContent = decimalYears.toFixed(9);
+
+      // Update Standard Units
+      document.getElementById('stat-total-days').textContent = formatNumber(totalDays);
+      document.getElementById('stat-total-hours').textContent = formatNumber(totalHours);
+      document.getElementById('stat-total-minutes').textContent = formatNumber(totalMinutes);
+      document.getElementById('stat-total-seconds').textContent = formatNumber(totalSeconds);
+      document.getElementById('stat-total-weeks').textContent = formatNumber(totalWeeks);
+      document.getElementById('stat-total-months-lived').textContent = formatNumber(totalMonthsLived);
+
+      // 3. Life Expectancy Progress (80 Years)
+      const targetYears = 80;
+      const lifePercent = Math.min(100, Math.max(0, (decimalYears / targetYears) * 100));
+      document.getElementById('stat-life-percent').textContent = `${lifePercent.toFixed(1)}%`;
+      document.getElementById('stat-life-bar').style.width = `${lifePercent}%`;
+      document.getElementById('stat-life-weeks-lived').textContent = `${formatNumber(totalWeeks)} hafte jiye`;
+
+      // 4. Weekday Calculation (Exact Sunday, Monday counts!)
+      const weekdayCounts = countWeekdaysBetween(birthDate, now);
+      document.getElementById('stat-day-sun').textContent = formatNumber(weekdayCounts[0]);
+      document.getElementById('stat-day-mon').textContent = formatNumber(weekdayCounts[1]);
+      document.getElementById('stat-day-tue').textContent = formatNumber(weekdayCounts[2]);
+      document.getElementById('stat-day-wed').textContent = formatNumber(weekdayCounts[3]);
+      document.getElementById('stat-day-thu').textContent = formatNumber(weekdayCounts[4]);
+      document.getElementById('stat-day-fri').textContent = formatNumber(weekdayCounts[5]);
+      document.getElementById('stat-day-sat').textContent = formatNumber(weekdayCounts[6]);
+
+      const weekendsCount = weekdayCounts[0] + weekdayCounts[6];
+      const workingDaysCount = Math.floor(totalDays) - weekendsCount;
+      document.getElementById('stat-total-weekends').textContent = formatNumber(weekendsCount);
+      document.getElementById('stat-total-workingdays').textContent = formatNumber(workingDaysCount);
+
+      // Day of Birth
+      const birthDayOfWeek = birthDate.getDay();
+      const birthDayInfo = WEEKDAY_NAMES[birthDayOfWeek];
+      document.getElementById('birth-weekday-name').textContent = birthDayInfo.hi;
+      document.getElementById('birth-day-fact-text').textContent = `Aapka janam ${birthDayInfo.hi} ko hua tha. Swami Grah: ${birthDayInfo.planet}.`;
+
+      // 5. Next Birthday Countdown
+      let nextBday = new Date(now.getFullYear(), m - 1, d, th, tm, 0);
+      if (nextBday < now) {
+        nextBday = new Date(now.getFullYear() + 1, m - 1, d, th, tm, 0);
+      }
+      const bdayDiffMs = nextBday.getTime() - now.getTime();
+      const bdayDays = Math.floor(bdayDiffMs / 86400000);
+      const bdayHours = Math.floor((bdayDiffMs % 86400000) / 3600000);
+      const bdayMins = Math.floor((bdayDiffMs % 3600000) / 60000);
+      const bdaySecs = Math.floor((bdayDiffMs % 60000) / 1000);
+
+      document.getElementById('cd-days').textContent = bdayDays;
+      document.getElementById('cd-hours').textContent = bdayHours;
+      document.getElementById('cd-mins').textContent = bdayMins;
+      document.getElementById('cd-secs').textContent = bdaySecs;
+
+      const nextAge = (nextBday.getFullYear() - y);
+      document.getElementById('cd-next-age').textContent = nextAge;
+      document.getElementById('next-birthday-date').textContent = `${nextBday.toLocaleDateString('hi-IN', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+      document.getElementById('cd-next-day-name').textContent = `Agla janamdin ${WEEKDAY_NAMES[nextBday.getDay()].hi} ko aayega!`;
+
+      // 6. Cosmic & Moon Stats (Poornima, Amavasya, Moon phase at birth)
+      const LUNAR_MONTH = 29.530588853;
+      const totalFullMoons = Math.floor(totalDays / LUNAR_MONTH);
+      const totalNewMoons = Math.floor(totalDays / LUNAR_MONTH);
+      const lunarEclipses = Math.floor(decimalYears * 2.4); // ~2 to 3 lunar eclipses / yr globally
+
+      document.getElementById('stat-full-moons').textContent = formatNumber(totalFullMoons);
+      document.getElementById('stat-new-moons').textContent = formatNumber(totalNewMoons);
+      document.getElementById('stat-lunar-eclipses').textContent = formatNumber(lunarEclipses);
+
+      const birthMoon = getMoonPhaseInfo(birthDate);
+      document.getElementById('moon-phase-emoji').textContent = birthMoon.emoji;
+      document.getElementById('stat-birth-moon-phase').textContent = birthMoon.phaseName;
+      document.getElementById('stat-birth-moon-hindi').textContent = birthMoon.hindiName;
+
+      // Solar orbits & distance travelled
+      document.getElementById('stat-solar-orbits').textContent = decimalYears.toFixed(2);
+      document.getElementById('stat-solstices').textContent = formatNumber(decimalYears * 4);
+
+      // Earth travels ~940 million km per year around sun (~107,200 km/h)
+      const sunDistanceKm = totalHours * 107200;
+      document.getElementById('stat-sun-distance').textContent = formatNumber(sunDistanceKm);
+
+      // Earth rotation distance (~1670 km/h at equator)
+      const earthRotationKm = totalHours * 1670;
+      document.getElementById('stat-earth-rotation-distance').textContent = formatNumber(earthRotationKm);
+
+      // 7. Biological & Body Statistics
+      // Heartbeats: ~75 beats per minute
+      const totalHeartbeats = totalMinutes * 75;
+      document.getElementById('stat-heartbeats').textContent = formatNumber(totalHeartbeats);
+
+      // Breaths: ~16 breaths per minute
+      const totalBreaths = totalMinutes * 16;
+      document.getElementById('stat-breaths').textContent = formatNumber(totalBreaths);
+
+      // Blinks: ~17 blinks per minute (waking hours: ~16 hrs/day)
+      const wakingHours = totalHours * (16 / 24);
+      const totalBlinks = wakingHours * 60 * 17;
+      document.getElementById('stat-blinks').textContent = formatNumber(totalBlinks);
+
+      // Sleep: ~8 hrs per day (~1/3 of life)
+      const sleepHours = totalHours * (8 / 24);
+      const sleepYears = decimalYears * (8 / 24);
+      document.getElementById('stat-sleep-years').textContent = `${sleepYears.toFixed(1)} Saal`;
+      document.getElementById('stat-sleep-hours').textContent = `~${formatNumber(sleepHours)} Ghante neend me`;
+
+      // Dreams: ~4 dreams per night
+      const totalDreams = totalDays * 4.2;
+      document.getElementById('stat-dreams').textContent = formatNumber(totalDreams);
+
+      // Distance Walked (~5 km/day on average)
+      const walkedKm = totalDays * 5;
+      const earthEquatorKm = 40075;
+      const earthLaps = walkedKm / earthEquatorKm;
+      document.getElementById('stat-walked-km').textContent = `${formatNumber(walkedKm)} km`;
+      document.getElementById('stat-walked-earth').textContent = `~${earthLaps.toFixed(1)} baar Earth ka chakkar!`;
+
+      // Food & Water
+      const foodTons = (totalDays * 1.8) / 1000;
+      const waterLiters = totalDays * 2.5;
+      document.getElementById('stat-food-tons').textContent = `${foodTons.toFixed(1)} Tons`;
+      document.getElementById('stat-water-liters').textContent = `${formatNumber(waterLiters)} Liters`;
+
+      // Hair & Nails
+      const hairGrowthMeters = (decimalYears * 0.15); // ~15 cm/yr
+      const nailGrowthCm = (decimalYears * 12 * 0.35); // ~3.5 mm/month
+      document.getElementById('stat-hair-growth').textContent = `${hairGrowthMeters.toFixed(1)} Meters`;
+      document.getElementById('stat-nail-growth').textContent = `${nailGrowthCm.toFixed(1)} cm`;
+
+      // 8. Zodiac, Kundali & Numerology
+      const zodiac = getWesternZodiac(m, d);
+      document.getElementById('zodiac-symbol').textContent = zodiac.symbol;
+      document.getElementById('zodiac-western').textContent = zodiac.sign;
+      document.getElementById('zodiac-vedic').textContent = zodiac.sign.split('(')[1]?.replace(')', '') || '--';
+      document.getElementById('zodiac-element').textContent = zodiac.element;
+      document.getElementById('zodiac-stone').textContent = zodiac.stone;
+      document.getElementById('zodiac-chinese').textContent = getChineseZodiac(y);
+
+      const numInfo = getLifePathNumber(dobInput);
+      document.getElementById('numerology-number').textContent = numInfo.number;
+      document.getElementById('numerology-title').textContent = numInfo.details.title;
+      document.getElementById('numerology-desc').textContent = numInfo.details.desc;
+      document.getElementById('numerology-calc').textContent = numInfo.calc;
+
+      // 9. Golden Milestones
+      // 10,000 Days
+      const date10k = new Date(birthDate.getTime() + 10000 * 86400000);
+      const isPast10k = date10k < now;
+      document.getElementById('ms-10k-days').textContent = `${date10k.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} ${isPast10k ? '✅' : '⏳'}`;
+
+      // 20,000 Days
+      const date20k = new Date(birthDate.getTime() + 20000 * 86400000);
+      const isPast20k = date20k < now;
+      document.getElementById('ms-20k-days').textContent = `${date20k.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} ${isPast20k ? '✅' : '⏳'}`;
+
+      // 500,000 Hours
+      const date500kHours = new Date(birthDate.getTime() + 500000 * 3600000);
+      const isPast500k = date500kHours < now;
+      document.getElementById('ms-500k-hours').textContent = `${date500kHours.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} ${isPast500k ? '✅' : '⏳'}`;
+
+      // 1 Billion Seconds
+      const date1bSecs = new Date(birthDate.getTime() + 1000000000 * 1000);
+      const isPast1b = date1bSecs < now;
+      document.getElementById('ms-1b-secs').textContent = `${date1bSecs.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} ${isPast1b ? '✅' : '⏳'}`;
+
+      // 10. Draw Life in Weeks grid
+      drawWeeksGrid(Math.floor(totalWeeks));
+    }
+
+    // Tab Navigation Filtering
+    function setupTabs() {
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const sections = {
+        'tab-all': ['sec-time-units', 'sec-weekdays', 'sec-cosmic', 'sec-body', 'sec-milestones'],
+        'tab-weekdays': ['sec-weekdays'],
+        'tab-cosmic': ['sec-cosmic'],
+        'tab-body': ['sec-body'],
+        'tab-milestones': ['sec-milestones']
+      };
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.dataset.target;
+          playBeep(520, 'sine', 0.05);
+
+          tabButtons.forEach(b => {
+            b.classList.remove('bg-indigo-600', 'text-white');
+            b.classList.add('bg-slate-800/80', 'text-slate-300');
+          });
+          btn.classList.remove('bg-slate-800/80', 'text-slate-300');
+          btn.classList.add('bg-indigo-600', 'text-white');
+
+          const allSecIds = ['sec-time-units', 'sec-weekdays', 'sec-cosmic', 'sec-body', 'sec-milestones'];
+          allSecIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+              if (target === 'tab-all' || (sections[target] && sections[target].includes(id))) {
+                el.style.display = '';
+              } else {
+                el.style.display = 'none';
+              }
+            }
+          });
+        });
+      });
+    }
+
+    // Copy Summary to Clipboard
+    function setupCopySummary() {
+      const btn = document.getElementById('btn-copy-summary');
+      if (!btn) return;
+
+      btn.addEventListener('click', () => {
+        const name = document.getElementById('input-name').value.trim() || 'Dost';
+        const years = document.getElementById('stat-years').textContent;
+        const months = document.getElementById('stat-months').textContent;
+        const days = document.getElementById('stat-days').textContent;
+        const totalDays = document.getElementById('stat-total-days').textContent;
+        const totalSeconds = document.getElementById('stat-total-seconds').textContent;
+        const sundays = document.getElementById('stat-day-sun').textContent;
+        const mondays = document.getElementById('stat-day-mon').textContent;
+        const fullMoons = document.getElementById('stat-full-moons').textContent;
+        const heartbeats = document.getElementById('stat-heartbeats').textContent;
+
+        const summaryText = `🌟 Jeevan Ganana (Life Calculator Summary for ${name}) 🌟
+🎂 Exact Age: ${years} Saal, ${months} Mahine, ${days} Din
+📅 Total Days on Earth: ${totalDays} din
+⏱️ Total Seconds Lived: ${totalSeconds} seconds
+🗓️ Sundays lived: ${sundays} | Mondays lived: ${mondays}
+🌕 Full Moons witnessed: ${fullMoons} poornima
+💓 Total Heartbeats: ${heartbeats} beats
+Calculated via Cosmic Life Calculator!`;
+
+        let copied = false;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(summaryText)
+            .then(() => {
+              showToast('Summary clipboard me copy ho gaya!', '📋');
+            })
+            .catch(() => {
+              fallbackCopy(summaryText);
+            });
+        } else {
+          fallbackCopy(summaryText);
+        }
+      });
+    }
+
+    function fallbackCopy(text) {
+      try {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('Summary clipboard me copy ho gaya!', '📋');
+      } catch (err) {
+        showToast('Could not auto-copy, please copy manually', '⚠️');
+      }
+    }
+
+    // Initialize Event Listeners
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set default DOB to 2000-01-01
+      const dobInput = document.getElementById('input-dob');
+      if (dobInput) {
+        dobInput.value = '2000-01-01';
+        // Set max date to today
+        const todayStr = new Date().toISOString().split('T')[0];
+        dobInput.max = todayStr;
+      }
+
+      // Audio Toggle Button
+      const audioBtn = document.getElementById('btn-sound-toggle');
+      if (audioBtn) {
+        audioBtn.addEventListener('click', () => {
+          audioEnabled = !audioEnabled;
+          const icon = document.getElementById('sound-icon');
+          const label = document.getElementById('sound-label');
+          if (audioEnabled) {
+            icon.textContent = '🔊';
+            label.textContent = 'Audio On';
+            playBeep(600, 'sine', 0.1);
+            showToast('Sound effects enabled', '🔊');
+          } else {
+            icon.textContent = '🔇';
+            label.textContent = 'Muted';
+            showToast('Sound muted', '🔇');
+          }
+        });
+      }
+
+      // Print Button
+      const printBtn = document.getElementById('btn-print');
+      if (printBtn) {
+        printBtn.addEventListener('click', () => {
+          playBeep(440, 'sine', 0.05);
+          window.print();
+        });
+      }
+
+      // Reset Button
+      const resetBtn = document.getElementById('btn-reset');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          document.getElementById('input-dob').value = '2000-01-01';
+          document.getElementById('input-time').value = '07:30';
+          document.getElementById('input-name').value = 'Dost';
+          document.getElementById('chk-exact-time').checked = true;
+          playBeep(350, 'triangle', 0.1);
+          updateCalculations();
+          showToast('Default values reset!', '🔄');
+        });
+      }
+
+      // Preset Buttons
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const dob = btn.dataset.dob;
+          const time = btn.dataset.time;
+          if (dob) document.getElementById('input-dob').value = dob;
+          if (time) document.getElementById('input-time').value = time;
+          playBeep(580, 'sine', 0.06);
+          updateCalculations();
+          showToast(`Preset loaded: ${dob}`, '📅');
+        });
+      });
+
+      // Form submission
+      const form = document.getElementById('life-form');
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          playBeep(700, 'sine', 0.1);
+          updateCalculations();
+          showToast('Zindagi ke aakde update ho gaye!', '⚡');
+        });
+      }
+
+      // Input change auto recalculate
+      ['input-dob', 'input-time', 'input-name', 'chk-exact-time'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', () => updateCalculations());
+          el.addEventListener('change', () => updateCalculations());
+        }
+      });
+
+      // Live Ticking Checkbox
+      const liveChk = document.getElementById('chk-live-tick');
+      if (liveChk) {
+        liveChk.addEventListener('change', (e) => {
+          isLiveActive = e.target.checked;
+          if (isLiveActive) {
+            showToast('Live real-time ticking chaloo hai', '⏱️');
+          } else {
+            showToast('Live ticking paused', '⏸️');
+          }
+        });
+      }
+
+      // Tabs & Copy Setup
+      setupTabs();
+      setupCopySummary();
+
+      // Initial Calculation
+      updateCalculations();
+
+      // Run live interval every second
+      timerId = setInterval(() => {
+        if (isLiveActive) {
+          updateCalculations();
+        }
+      }, 1000);
+
+      // Handle window resize for canvas
+      window.addEventListener('resize', () => {
+        const dobInput = document.getElementById('input-dob').value;
+        if (dobInput) {
+          const birthDate = new Date(dobInput);
+          const diffMs = new Date().getTime() - birthDate.getTime();
+          const totalWeeks = Math.floor(diffMs / (86400000 * 7));
+          drawWeeksGrid(totalWeeks);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

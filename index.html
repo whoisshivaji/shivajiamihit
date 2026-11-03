@@ -261,6 +261,7 @@
     .fa-telegram { color: #38bdf8; }
     .fa-x-twitter { color: #f1f5f9; }
     .fa-robot { color: #a855f7; }
+    .fa-heart-pulse { color: #f43f5e; }
     .fa-calculator { color: #10b981; }
     .fa-dice { color: #f59e0b; }
     .fa-qrcode { color: #38bdf8; }
@@ -269,6 +270,10 @@
     .tool-aichat {
       background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(99, 102, 241, 0.15));
       border-color: rgba(168, 85, 247, 0.35);
+    }
+    .tool-lifecalc {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(251, 113, 133, 0.15));
+      border-color: rgba(244, 63, 94, 0.35);
     }
     .tool-calc {
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(34, 197, 94, 0.15));
@@ -390,10 +395,19 @@
     <div class="links-list">
 
       <!-- AI Chatbot -->
-      <a href="aichatbot" class="link-item tool-aichat">
+      <a href="aichatbot.html" class="link-item tool-aichat">
         <div class="link-left">
           <i class="fa-solid fa-robot"></i>
           <span>AI Chatbot</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+      </a>
+
+      <!-- Life Calculator -->
+      <a href="life-calculator.html" class="link-item tool-lifecalc">
+        <div class="link-left">
+          <i class="fa-solid fa-heart-pulse"></i>
+          <span>Life / Age Calculator</span>
         </div>
         <i class="fa-solid fa-chevron-right"></i>
       </a>
@@ -462,4 +476,3 @@ END:VCARD`;
 
 </body>
 </html>
-

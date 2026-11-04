@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b14">
+<title>DSLR Blur Studio — Automatic AI Portrait Blur</title>
+<style>
+:root{color-scheme:dark;--bg:#080b14;--panel:#111827;--panel2:#172033;--line:#26334b;--muted:#9aa8bd;--text:#f5f7fb;--accent:#8b7cff;--accent2:#43d9c5;--danger:#ff8d9b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0%,#1a2050 0,transparent 34%),radial-gradient(circle at 100% 20%,#123d43 0,transparent 27%),var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:var(--text);min-height:100vh}
+.wrap{max-width:1180px;margin:auto;padding:26px 18px 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:22px;box-shadow:0 8px 28px #7168ff55}.brand h1{font-size:19px;margin:0;letter-spacing:.2px}.brand p{margin:3px 0 0;color:var(--muted);font-size:12px}.pill{border:1px solid #355b59;color:#9cf2df;background:#102a2b;padding:8px 12px;border-radius:999px;font-size:12px;white-space:nowrap}
+.hero{margin:20px 0 24px}.hero h2{font-size:clamp(25px,4vw,39px);line-height:1.1;margin:0 0 10px;letter-spacing:-1.2px}.hero h2 span{background:linear-gradient(90deg,#a89cff,#61e8d4);background-clip:text;color:transparent}.hero p{color:var(--muted);max-width:760px;line-height:1.6;margin:0;font-size:14px}
+.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,.85fr);gap:18px;align-items:start}.panel{background:linear-gradient(180deg,#141c2cF2,#0e1523F2);border:1px solid var(--line);border-radius:20px;box-shadow:0 18px 55px #0005;overflow:hidden}.previewHead{padding:15px 17px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);gap:12px}.previewHead strong{font-size:14px}.previewHead span{font-size:11px;color:var(--muted)}.stage{min-height:360px;display:grid;place-items:center;padding:16px;background:radial-gradient(ellipse at center,#202b40,#0a0f19 70%);position:relative}.stage canvas{max-width:100%;max-height:66vh;object-fit:contain;border-radius:10px;display:none;box-shadow:0 12px 40px #0008}.empty{text-align:center;max-width:320px;padding:34px 20px;color:var(--muted)}.empty .glyph{font-size:48px;margin-bottom:10px}.empty b{display:block;color:#e7ecf7;font-size:15px;margin-bottom:6px}.empty p{font-size:12px;line-height:1.6;margin:0}.stage .hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:10px;color:#9aa8bd;background:#0b1020cc;border:1px solid #33415a;padding:6px 10px;border-radius:99px;white-space:nowrap}
+.actions{display:flex;gap:9px;flex-wrap:wrap;padding:14px 16px;border-top:1px solid var(--line)}button,.filebtn{border:0;border-radius:12px;padding:11px 15px;font-weight:700;font-size:12px;cursor:pointer;transition:.18s;display:inline-flex;align-items:center;justify-content:center;gap:7px}.primary{background:linear-gradient(100deg,#8877ff,#4bcfbd);color:#071019}.secondary,.filebtn{background:#202b40;color:#e8edf8;border:1px solid #34435e}.danger{background:#351d2a;color:#ffb3be;border:1px solid #663344}button:disabled{opacity:.42;cursor:not-allowed}button:not(:disabled):hover,.filebtn:hover{transform:translateY(-1px);filter:brightness(1.12)}input[type=file]{display:none}
+.controls{padding:17px}.controls h3{margin:0 0 15px;font-size:15px}.control{padding:13px 0;border-bottom:1px solid #26334b}.control:last-of-type{border:0}.controlTop{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}.control label{font-size:12px;font-weight:700}.value{font-size:12px;color:#a99eff;font-weight:800;font-variant-numeric:tabular-nums}.range{width:100%;accent-color:#9b8cff;cursor:pointer}.scale{display:flex;justify-content:space-between;color:#71809a;font-size:10px;margin-top:5px}.note{font-size:11px;color:var(--muted);line-height:1.55;margin:8px 0 0}.toggleRow{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #26334b;font-size:12px;font-weight:700}.switch{appearance:none;width:39px;height:22px;background:#39465d;border-radius:99px;position:relative;cursor:pointer;transition:.2s}.switch:checked{background:#6b60dc}.switch:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s}.switch:checked:before{left:20px}
+.status{margin:14px 16px 16px;padding:11px 12px;border-radius:12px;background:#0c1422;border:1px solid #26334b;color:#aebbd0;font-size:11px;line-height:1.5;min-height:42px}.status.good{border-color:#28685e;color:#9ce8d6}.status.bad{border-color:#75404c;color:#ffb3be}.progress{height:4px;background:#27344a;border-radius:9px;overflow:hidden;margin-top:8px;display:none}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8b7cff,#43d9c5);transition:width .25s}
+.info{margin-top:18px;padding:16px 18px}.info h3{font-size:14px;margin:0 0 8px}.info p,.info li{font-size:12px;color:var(--muted);line-height:1.65}.info ul{padding-left:18px;margin:8px 0}.foot{text-align:center;color:#64728a;font-size:10px;margin-top:22px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.stage{min-height:290px}.top{align-items:flex-start}.pill{font-size:10px}.controls{order:2}}@media(max-width:480px){.wrap{padding:17px 11px 40px}.hero{margin:17px 0}.brand h1{font-size:16px}.stage{min-height:250px;padding:9px}.actions button,.filebtn{flex:1}.previewHead{padding:13px}.controls{padding:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><div class="logo">◉</div><div><h1>DSLR Blur Studio</h1><p>Automatic AI portrait depth editor</p></div></div>
+    <div class="pill">● ON-DEVICE PROCESSING</div>
+  </header>
+
+  <section class="hero">
+    <h2>Give your photos a <span>DSLR-style depth.</span></h2>
+    <p>Upload a photo and let AI automatically detect the subject and estimate foreground depth. Keep the person crisp, preserve nearby foreground objects where depth allows, and soften the background with a lens-inspired blur.</p>
+  </section>
+
+  <main class="layout">
+    <section class="panel">
+      <div class="previewHead"><strong>Photo Preview</strong><span id="imageMeta">No photo selected</span></div>
+      <div class="stage" id="stage">
+        <div class="empty" id="empty"><div class="glyph">▧</div><b>Your photo will appear here</b><p>Choose a clear photo with a visible person and some background separation for the best result.</p></div>
+        <canvas id="resultCanvas"></canvas>
+        <div class="hint" id="previewHint" style="display:none">Preview · original resolution export</div>
+      </div>
+      <div class="actions">
+        <label class="filebtn" for="fileInput">＋ Upload Photo</label>
+        <input id="fileInput" type="file" accept="image/*">
+        <button class="primary" id="processBtn" disabled>✦ Auto DSLR Blur</button>
+        <button class="secondary" id="downloadBtn" disabled>↓ Download JPG</button>
+        <button class="secondary" id="compareBtn" disabled>◐ Show Original</button>
+        <button class="danger" id="resetBtn" disabled>↺ Reset</button>
+      </div>
+      <div class="status" id="status">Ready. Upload a photo to begin.<div class="progress" id="progress"><i id="progressBar"></i></div></div>
+    </section>
+
+    <aside class="panel controls">
+      <h3>Lens & Depth Controls</h3>
+      <div class="control">
+        <div class="controlTop"><label for="blurRange">Blur Strength</label><span class="value" id="blurValue">35 mm</span></div>
+        <input class="range" id="blurRange" type="range" min="0" max="100" value="35">
+        <div class="scale"><span>0 mm · Sharp</span><span>100 mm · Strong</span></div>
+        <p class="note">Digital blur scale inspired by lens settings; it is not a physical optical measurement.</p>
+      </div>
+      <div class="control">
+        <div class="controlTop"><label for="bokehRange">Bokeh Strength</label><span class="value" id="bokehValue">35%</span></div>
+        <input class="range" id="bokehRange" type="range" min="0" max="100" value="35">
+        <div class="scale"><span>Soft</span><span>Pronounced</span></div>
+      </div>
+      <div class="control">
+        <div class="controlTop"><label for="edgeRange">Edge Smoothness</label><span class="value" id="edgeValue">65%</span></div>
+        <input class="range" id="edgeRange" type="range" min="0" max="100" value="65">
+        <div class="scale"><span>Defined</span><span>Feathered</span></div>
+      </div>
+      <div class="toggleRow"><span>Automatic foreground depth protection</span><input class="switch" id="depthToggle" type="checkbox" checked></div>
+      <div class="toggleRow"><span>Keep person extra sharp</span><input class="switch" id="personToggle" type="checkbox" checked></div>
+      <p class="note">No brush or manual selection. The app combines person segmentation with estimated depth to try to protect nearby objects such as a chair. Results depend on the photo and AI model.</p>
+    </aside>
+  </main>
+
+  <section class="panel info">
+    <h3>How this editor works</h3>
+    <ul>
+      <li><b>Person segmentation:</b> an AI model identifies the person mask.</li>
+      <li><b>Depth estimation:</b> a second model estimates which areas are nearer or farther from the camera. Nearby chair/foreground pixels may be preserved when their estimated depth is close to the person.</li>
+      <li><b>Lens-inspired blur:</b> the background is softened and blended around mask edges to reduce harsh cut-outs.</li>
+    </ul>
+    <p><b>Privacy:</b> image processing runs in your browser. The AI model files are downloaded from public model/CDN hosts the first time; your photo is not uploaded by this page. After the models are cached, offline use may be possible depending on browser cache and hosting.</p>
+    <p><b>Important limitation:</b> a single 2D photo does not contain perfect real-world depth. AI may miss a chair, hair strands, transparent objects, or objects that overlap the subject. This is an automatic editor, so there are no manual selection tools.</p>
+  </section>
+  <div class="foot">DSLR Blur Studio · Single-file HTML · Uses free browser-side AI models</div>
+</div>
+
+<script type="module">
+const $ = id => document.getElementById(id);
+const fileInput=$('fileInput'), canvas=$('resultCanvas'), ctx=canvas.getContext('2d',{willReadFrequently:true});
+const statusBox=$('status'), progress=$('progress'), progressBar=$('progressBar');
+let sourceImage=null, originalCanvas=null, currentURL=null, personMask=null, depthMap=null, lastProcessed=false, showingOriginal=false;
+let segmenter=null, depthPipeline=null, modelsReady=false, processing=false;
+
+function setStatus(message,kind=''){
+  statusBox.className='status '+kind;
+  statusBox.firstChild?.remove?.();
+  statusBox.insertBefore(document.createTextNode(message),statusBox.firstChild);
+}
+function setProgress(value,show=true){progress.style.display=show?'block':'none';progressBar.style.width=value+'%';}
+function updateLabels(){
+  $('blurValue').textContent=$('blurRange').value+' mm';
+  $('bokehValue').textContent=$('bokehRange').value+'%';
+  $('edgeValue').textContent=$('edgeRange').value+'%';
+}
+['blurRange','bokehRange','edgeRange'].forEach(id=>$(id).addEventListener('input',()=>{updateLabels();if(sourceImage&&lastProcessed&&!processing)renderEffect();}));
+$('depthToggle').addEventListener('change',()=>{if(sourceImage&&lastProcessed&&!processing)renderEffect();});
+$('personToggle').addEventListener('change',()=>{if(sourceImage&&lastProcessed&&!processing)renderEffect();});
+updateLabels();
+
+function loadImage(file){
+  if(!file||!file.type.startsWith('image/')){setStatus('Please choose a valid image file.','bad');return;}
+  if(currentURL)URL.revokeObjectURL(currentURL);
+  currentURL=URL.createObjectURL(file);
+  const img=new Image();
+  img.onload=()=>{
+    sourceImage=img;
+    const maxSide=1800,scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight));
+    const w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale));
+    originalCanvas=document.createElement('canvas');originalCanvas.width=w;originalCanvas.height=h;
+    originalCanvas.getContext('2d').drawImage(img,0,0,w,h);
+    canvas.width=w;canvas.height=h;ctx.drawImage(originalCanvas,0,0);
+    canvas.style.display='block';$('empty').style.display='none';$('previewHint').style.display='block';
+    $('imageMeta').textContent=`${img.naturalWidth} × ${img.naturalHeight} px`;
+    $('processBtn').disabled=false;$('downloadBtn').disabled=true;$('compareBtn').disabled=true;$('resetBtn').disabled=false;
+    personMask=null;depthMap=null;lastProcessed=false;showingOriginal=false;
+    setStatus('Photo loaded. Tap “Auto DSLR Blur” to run automatic AI detection.','good');
+  };
+  img.onerror=()=>setStatus('Could not open this image. Try another file.','bad');
+  img.src=currentURL;
+}
+fileInput.addEventListener('change',e=>loadImage(e.target.files[0]));
+
+async function loadModels(){
+  if(modelsReady)return;
+  setStatus('Loading free AI models. First use needs an internet connection…');
+  setProgress(8);
+  // MediaPipe Selfie Segmentation is used for a reliable person mask.
+  const mpSrc='https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation@0.1.1675465747/selfie_segmentation.js';
+  if(!window.SelfieSegmentation){
+    await new Promise((resolve,reject)=>{
+      const s=document.createElement('script');s.src=mpSrc;s.onload=resolve;s.onerror=()=>reject(new Error('Could not load MediaPipe. Check your internet connection.'));document.head.appendChild(s);
+    });
+  }
+  segmenter=new window.SelfieSegmentation({locateFile:(file)=>`https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation@0.1.1675465747/${file}`});
+  segmenter.setOptions({modelSelection:1});
+  // Transformers.js depth model. Model weights are downloaded into the browser cache by the library.
+  const {pipeline,env}=await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.2');
+  env.allowLocalModels=false;
+  env.useBrowserCache=true;
+  depthPipeline=await pipeline('depth-estimation','onnx-community/depth-anything-v2-small',{device:'webgpu'}).catch(async()=>{
+    return await pipeline('depth-estimation','onnx-community/depth-anything-v2-small',{device:'wasm'});
+  });
+  modelsReady=true;setProgress(100,false);
+}
+async function runPersonSegmentation(){
+  return await new Promise((resolve,reject)=>{
+    const handler=results=>{
+      try{
+        const temp=document.createElement('canvas');temp.width=canvas.width;temp.height=canvas.height;
+        const tctx=temp.getContext('2d',{willReadFrequently:true});
+        tctx.drawImage(results.segmentationMask,0,0,temp.width,temp.height);
+        const data=tctx.getImageData(0,0,temp.width,temp.height).data;
+        const mask=new Float32Array(temp.width*temp.height);
+        for(let i=0,j=0;i<data.length;i+=4,j++)mask[j]=data[i]/255;
+        segmenter.onResults(()=>{});resolve(mask);
+      }catch(e){reject(e);}
+    };
+    segmenter.onResults(handler);
+    segmenter.send({image:originalCanvas}).catch(reject);
+  });
+}
+async function runDepthEstimation(){
+  const result=await depthPipeline(sourceImage);
+  const raw=result.depth;
+  const w=raw.width,h=raw.height, data=raw.data;
+  let min=Infinity,max=-Infinity;
+  for(let i=0;i<data.length;i++){const v=Number(data[i]);if(Number.isFinite(v)){min=Math.min(min,v);max=Math.max(max,v);}}
+  const out=new Float32Array(canvas.width*canvas.height);
+  const range=Math.max(1e-6,max-min);
+  for(let y=0;y<canvas.height;y++)for(let x=0;x<canvas.width;x++){
+    const sx=Math.min(w-1,Math.floor(x/canvas.width*w)),sy=Math.min(h-1,Math.floor(y/canvas.height*h));
+    out[y*canvas.width+x]=(Number(data[sy*w+sx])-min)/range;
+  }
+  return out;
+}
+function blurCanvas(input,radius){
+  const out=document.createElement('canvas');out.width=input.width;out.height=input.height;
+  const c=out.getContext('2d');
+  c.filter=`blur(${Math.max(0,radius)}px)`;c.drawImage(input,0,0);c.filter='none';
+  return out;
+}
+function buildProtectionMask(){
+  const n=canvas.width*canvas.height, protect=new Float32Array(n);
+  const usePerson=$('personToggle').checked;
+  if(usePerson&&personMask){for(let i=0;i<n;i++)protect[i]=Math.max(protect[i],personMask[i]);}
+  if($('depthToggle').checked&&depthMap&&personMask){
+    // Estimate the subject's depth from the central, confident person pixels.
+    const samples=[];
+    for(let i=0;i<n;i++)if(personMask[i]>.72)samples.push(depthMap[i]);
+    if(samples.length){
+      samples.sort((a,b)=>a-b);
+      const median=samples[Math.floor(samples.length*.55)];
+      // Depth Anything's normalized relative map is treated as near-to-far. Keep a band
+      // around the subject plane and pixels estimated to be closer to the camera.
+      const tolerance=.12+($('edgeRange').value/100)*.12;
+      for(let i=0;i<n;i++){
+        const d=depthMap[i];
+        const nearOrSame=d>=median-tolerance;
+        if(nearOrSame)protect[i]=Math.max(protect[i],.72);
+      }
+    }
+  }
+  return protect;
+}
+function featherMask(mask,w,h,amount){
+  // Gentle local smoothing of the protection matte to soften hair/edge transitions.
+  const tmp=document.createElement('canvas');tmp.width=w;tmp.height=h;
+  const tc=tmp.getContext('2d');
+  const im=tc.createImageData(w,h);
+  for(let i=0;i<mask.length;i++){const v=Math.round(mask[i]*255);const p=i*4;im.data[p]=im.data[p+1]=im.data[p+2]=v;im.data[p+3]=255;}
+  tc.putImageData(im,0,0);
+  const sm=document.createElement('canvas');sm.width=w;sm.height=h;
+  const sc=sm.getContext('2d');sc.filter=`blur(${Math.max(.2,amount)}px)`;sc.drawImage(tmp,0,0);sc.filter='none';
+  const soft=sc.getImageData(0,0,w,h).data, result=new Float32Array(mask.length);
+  for(let i=0;i<mask.length;i++)result[i]=Math.max(mask[i]*.88,soft[i*4]/255);
+  return result;
+}
+function renderEffect(){
+  if(!originalCanvas||!personMask)return;
+  const w=canvas.width,h=canvas.height;
+  const blurMm=Number($('blurRange').value),bokeh=Number($('bokehRange').value),edge=Number($('edgeRange').value);
+  const radius=blurMm/100*Math.min(w,h)*.075;
+  const blurred=blurCanvas(originalCanvas,radius);
+  // Subtle layered blur creates a softer lens-like falloff instead of a hard cut-out.
+  let blurLayer=blurred;
+  if(bokeh>0){
+    const stronger=blurCanvas(originalCanvas,radius*(1+bokeh/100*.55));
+    const bc=blurLayer.getContext('2d');bc.globalAlpha=bokeh/100*.22;bc.drawImage(stronger,0,0);bc.globalAlpha=1;
+  }
+  const protection=buildProtectionMask();
+  const soft=featherMask(protection,w,h,Math.max(.5,(100-edge)/100*2.8+0.4));
+  const original=originalCanvas.getContext('2d').getImageData(0,0,w,h);
+  const blurredData=blurLayer.getContext('2d').getImageData(0,0,w,h);
+  const out=ctx.createImageData(w,h);
+  for(let i=0;i<protection.length;i++){
+    const alpha=Math.max(0,Math.min(1,soft[i]));
+    const p=i*4;
+    for(let c=0;c<3;c++)out.data[p+c]=Math.round(original.data[p+c]*alpha+blurredData.data[p+c]*(1-alpha));
+    out.data[p+3]=original.data[p+3];
+  }
+  ctx.putImageData(out,0,0);
+  lastProcessed=true;$('downloadBtn').disabled=false;$('compareBtn').disabled=false;
+  $('compareBtn').textContent='◐ Show Original';
+  showingOriginal=false;
+}
+async function processPhoto(){
+  if(!sourceImage||processing)return;
+  processing=true;$('processBtn').disabled=true;$('downloadBtn').disabled=true;
+  try{
+    setProgress(12);await loadModels();
+    setStatus('AI is detecting the person…');setProgress(38);
+    personMask=await runPersonSegmentation();
+    setStatus('Estimating depth and nearby foreground…');setProgress(67);
+    try{depthMap=await runDepthEstimation();}
+    catch(e){depthMap=null;setStatus('Depth model unavailable. Applying person-only protection instead…');}
+    setStatus('Creating natural background blur…');setProgress(88);
+    renderEffect();setProgress(100,false);
+    setStatus(depthMap?'Done! Automatic person and depth-aware foreground protection applied.':'Done! Person segmentation applied. Nearby chair protection may be limited without depth estimation.','good');
+  }catch(error){
+    console.error(error);setProgress(0,false);
+    setStatus('AI could not start: '+(error?.message||'Unknown error')+'. Check internet access, then reload and try again.','bad');
+  }finally{processing=false;$('processBtn').disabled=!sourceImage;}
+}
+$('processBtn').addEventListener('click',processPhoto);
+$('downloadBtn').addEventListener('click',()=>{
+  if(!lastProcessed)return;
+  const a=document.createElement('a');a.download='dslr-blur-edited.jpg';a.href=canvas.toDataURL('image/jpeg',.96);a.click();
+});
+$('compareBtn').addEventListener('click',()=>{
+  if(!lastProcessed)return;
+  showingOriginal=!showingOriginal;
+  if(showingOriginal){ctx.drawImage(originalCanvas,0,0);$('compareBtn').textContent='◐ Show Edited';}
+  else{renderEffect();}
+});
+$('resetBtn').addEventListener('click',()=>{
+  if(!originalCanvas)return;
+  ctx.drawImage(originalCanvas,0,0);lastProcessed=false;personMask=null;depthMap=null;
+  $('downloadBtn').disabled=true;$('compareBtn').disabled=true;$('compareBtn').textContent='◐ Show Original';
+  $('blurRange').value=35;$('bokehRange').value=35;$('edgeRange').value=65;$('depthToggle').checked=true;$('personToggle').checked=true;updateLabels();
+  setStatus('Photo reset to original.'); 
+});
+</script>
+</body>
+</html>

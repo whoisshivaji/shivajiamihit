@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Video & Audio Downloader</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e1b4b);
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 520px;
+            padding: 32px 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #38bdf8;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .supported-tags {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #334155;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #cbd5e1;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #cbd5e1;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 13px 16px;
+            border-radius: 10px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: #38bdf8;
+        }
+
+        .btn-download {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            background: #0284c7;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-download:hover {
+            background: #0369a1;
+        }
+
+        .btn-download:disabled {
+            background: #475569;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        #statusBox {
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: none;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .status-loading {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid #0284c7;
+            color: #38bdf8;
+            display: block !important;
+        }
+
+        .status-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid #16a34a;
+            color: #4ade80;
+            display: block !important;
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #dc2626;
+            color: #f87171;
+            display: block !important;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 12px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>All-in-One Downloader</h1>
+        <p>Instagram Reels, YouTube Videos, Facebook aur bohot kuch</p>
+        <div class="supported-tags">
+            <span class="tag">Instagram</span>
+            <span class="tag">YouTube</span>
+            <span class="tag">Facebook</span>
+            <span class="tag">Twitter/X</span>
+            <span class="tag">TikTok</span>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label for="mediaUrl">Video / Post URL</label>
+        <input type="text" id="mediaUrl" placeholder="Yahan link paste karein (e.g. https://...)" autocomplete="off">
+    </div>
+
+    <div class="input-group">
+        <label for="mediaQuality">Quality / Format</label>
+        <select id="mediaQuality">
+            <option value="max">Best Quality (Max Resolution)</option>
+            <option value="1080">1080p Full HD</option>
+            <option value="720">720p HD</option>
+            <option value="480">480p SD</option>
+            <option value="audio">Sirf Audio (MP3 / Best Audio)</option>
+        </select>
+    </div>
+
+    <button id="dlBtn" class="btn-download" onclick="startDownload()">Download Karein</button>
+
+    <div id="statusBox"></div>
+
+    <div class="footer-note">
+        Direct fast download &bull; Free & Ad-free engine
+    </div>
+</div>
+
+<script>
+// Multiple public Cobalt instances failover system
+const API_INSTANCES = [
+    "https://api.cobalt.tools",
+    "https://cobalt-backend.canine.tools",
+    "https://api.wuk.sh"
+];
+
+async function startDownload() {
+    const urlInput = document.getElementById("mediaUrl");
+    const qualitySelect = document.getElementById("mediaQuality");
+    const statusBox = document.getElementById("statusBox");
+    const dlBtn = document.getElementById("dlBtn");
+
+    const rawUrl = urlInput.value.trim();
+
+    if (!rawUrl) {
+        showStatus("Kripya ek valid video link daalein!", "status-error");
+        return;
+    }
+
+    try {
+        new URL(rawUrl);
+    } catch (_) {
+        showStatus("URL sahi format me nahi hai. Poora link check karein.", "status-error");
+        return;
+    }
+
+    dlBtn.disabled = true;
+    showStatus("Processing... Download link taiyar ho raha hai...", "status-loading");
+
+    const isAudioOnly = qualitySelect.value === "audio";
+    const payload = {
+        url: rawUrl,
+        downloadMode: isAudioOnly ? "audio" : "auto",
+        videoQuality: isAudioOnly ? "720" : qualitySelect.value
+    };
+
+    let downloadUrl = null;
+    let fallbackText = "";
+
+    // Instance fallback loop
+    for (let instance of API_INSTANCES) {
+        try {
+            const endpoint = `${instance}/`;
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.url) {
+                    downloadUrl = data.url;
+                    break;
+                } else if (data.text) {
+                    fallbackText = data.text;
+                }
+            }
+        } catch (e) {
+            console.warn(`Failed with instance: ${instance}`, e);
+        }
+    }
+
+    if (downloadUrl) {
+        showStatus("Download shuru ho gaya hai! Agar download na ho toh <a href='" + downloadUrl + "' target='_blank' style='color:#38bdf8;text-decoration:underline;'>yahan click karein</a>.", "status-success");
+        
+        // Trigger direct browser download
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.setAttribute("download", "");
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    } else {
+        showStatus(fallbackText ? `Error: ${fallbackText}` : "Video fetch nahi ho payi. Link private ya unsupported ho sakta hai.", "status-error");
+    }
+
+    dlBtn.disabled = false;
+}
+
+function showStatus(message, className) {
+    const statusBox = document.getElementById("statusBox");
+    statusBox.className = className;
+    statusBox.innerHTML = message;
+}
+</script>
+
+</body>
+</html>

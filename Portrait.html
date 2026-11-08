@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>Vector Portrait</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: sans-serif;
+    }
+    .card {
+      width: 420px;
+      max-width: 95vw;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      border: 8px solid #ffffff;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #ffd500;
+    }
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    p {
+      color: #aaa;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <svg viewBox="0 0 500 700" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- Gradients for subtle depth -->
+        <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffd600"/>
+          <stop offset="100%" stop-color="#f8c600"/>
+        </linearGradient>
+        
+        <linearGradient id="skinBase" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ebb289"/>
+          <stop offset="100%" stop-color="#cf946d"/>
+        </linearGradient>
+
+        <linearGradient id="neckShadow" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#b87853"/>
+          <stop offset="100%" stop-color="#d69b74"/>
+        </linearGradient>
+
+        <linearGradient id="shirtGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2c242b"/>
+          <stop offset="100%" stop-color="#1d171c"/>
+        </linearGradient>
+
+        <linearGradient id="capGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#3b3236"/>
+          <stop offset="100%" stop-color="#241d21"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Yellow Background -->
+      <rect width="500" height="700" fill="url(#bgGrad)"/>
+
+      <!-- Shirt Base & Shoulders -->
+      <path d="M 0,550 L 80,480 L 170,445 L 210,480 L 290,480 L 330,445 L 420,480 L 500,550 L 500,700 L 0,700 Z" fill="url(#shirtGrad)"/>
+
+      <!-- Shirt Placket Center Line -->
+      <path d="M 235,530 L 235,700 L 265,700 L 265,530 Z" fill="#201a1f"/>
+      <!-- Buttons -->
+      <circle cx="250" cy="565" r="5" fill="#111" stroke="#443c42" stroke-width="1.5"/>
+      <circle cx="250" cy="650" r="5" fill="#111" stroke="#443c42" stroke-width="1.5"/>
+
+      <!-- Neck & Throat -->
+      <path d="M 205,370 L 205,490 C 205,530 295,530 295,490 L 295,370 Z" fill="url(#neckShadow)"/>
+      <path d="M 225,430 Q 250,470 275,430" stroke="#b06f4c" stroke-width="3" fill="none" opacity="0.6"/>
+
+      <!-- Shirt Collars -->
+      <!-- Left Collar -->
+      <polygon points="200,450 170,445 220,530 245,475" fill="#362d35"/>
+      <!-- Right Collar -->
+      <polygon points="300,450 330,445 280,530 255,475" fill="#362d35"/>
+
+      <!-- Ears -->
+      <ellipse cx="170" cy="305" rx="14" ry="25" fill="#cca07e" transform="rotate(-5 170 305)"/>
+      <ellipse cx="170" cy="305" rx="8" ry="15" fill="#aa7556" transform="rotate(-5 170 305)"/>
+      <ellipse cx="330" cy="305" rx="14" ry="25" fill="#cca07e" transform="rotate(5 330 305)"/>
+      <ellipse cx="330" cy="305" rx="8" ry="15" fill="#aa7556" transform="rotate(5 330 305)"/>
+
+      <!-- Face Main Shape -->
+      <path d="M 180,240 
+               C 170,300 175,340 200,380 
+               C 220,410 280,410 300,380 
+               C 325,340 330,300 320,240 
+               Z" fill="url(#skinBase)"/>
+
+      <!-- Eyes & Eyebrows -->
+      <!-- Left Brow -->
+      <path d="M 185,230 Q 215,215 240,225" stroke="#221a18" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <!-- Right Brow -->
+      <path d="M 260,225 Q 285,215 315,230" stroke="#221a18" stroke-width="7" stroke-linecap="round" fill="none"/>
+
+      <!-- Left Eye -->
+      <ellipse cx="215" cy="242" rx="15" ry="10" fill="#ffffff"/>
+      <circle cx="216" cy="242" r="7" fill="#3a2318"/>
+      <circle cx="216" cy="242" r="3.5" fill="#000000"/>
+      <circle cx="214" cy="240" r="2" fill="#ffffff"/>
+      <path d="M 198,242 Q 215,230 232,242" stroke="#2b1a13" stroke-width="2.5" fill="none"/>
+
+      <!-- Right Eye -->
+      <ellipse cx="285" cy="242" rx="15" ry="10" fill="#ffffff"/>
+      <circle cx="284" cy="242" r="7" fill="#3a2318"/>
+      <circle cx="284" cy="242" r="3.5" fill="#000000"/>
+      <circle cx="282" cy="240" r="2" fill="#ffffff"/>
+      <path d="M 268,242 Q 285,230 302,242" stroke="#2b1a13" stroke-width="2.5" fill="none"/>
+
+      <!-- Nose -->
+      <path d="M 250,235 L 245,280 L 235,286 Q 250,296 265,286 L 255,280" fill="#c48a65" opacity="0.8"/>
+      <ellipse cx="242" cy="285" rx="3" ry="2" fill="#382017"/>
+      <ellipse cx="258" cy="285" rx="3" ry="2" fill="#382017"/>
+
+      <!-- Beard & Mustache Base -->
+      <!-- Jawline Beard -->
+      <path d="M 175,280 
+               C 178,350 205,395 250,398 
+               C 295,395 322,350 325,280 
+               C 328,340 295,415 250,418 
+               C 205,415 172,340 175,280 Z" fill="#201a18"/>
+      
+      <!-- Chin Beard Patch -->
+      <path d="M 235,365 C 240,355 260,355 265,365 C 268,385 232,385 235,365 Z" fill="#201a18"/>
+
+      <!-- Mustache -->
+      <path d="M 225,320 Q 250,305 275,320 Q 265,310 250,312 Q 235,310 225,320 Z" fill="#221a18"/>
+
+      <!-- Smile & Teeth -->
+      <path d="M 226,323 Q 250,323 274,323 Q 250,352 226,323 Z" fill="#3d1215"/>
+      <!-- Teeth -->
+      <path d="M 230,324 Q 250,324 270,324 Q 250,338 230,324 Z" fill="#ffffff"/>
+
+      <!-- Cap / Hat -->
+      <!-- Visor / Peak -->
+      <path d="M 160,205 C 190,145 310,145 340,205 C 290,210 210,210 160,205 Z" fill="#1f181c"/>
+      <path d="M 160,205 C 210,190 290,190 340,205 C 310,215 190,215 160,205 Z" fill="#352c32" opacity="0.6"/>
+      <!-- Cap Crown -->
+      <path d="M 172,185 C 175,100 325,100 328,185 C 300,165 200,165 172,185 Z" fill="url(#capGrad)"/>
+      <circle cx="250" cy="115" r="5" fill="#1c1619"/>
+
+    </svg>
+  </div>
+
+  <p>Browser me Ctrl + Scroll karke zoom karein (vector paths stretch nahi honge).</p>
+
+</body>
+</html>

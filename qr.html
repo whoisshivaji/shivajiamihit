@@ -1,458 +1,362 @@
+```html
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Advanced QR Code Generator | Shivaji Tools</title>
-
-  <!-- Google Fonts & Font Awesome -->
+  <title>Minimal Pista QR & Barcode Studio</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- QR Code & Barcode Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <!-- HTML5 QR & Barcode Scanner -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <!-- JSZip for Bulk Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
-  <!-- Production-grade QR Styling Library -->
-  <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            pista: {
+              50: '#f6f9f5',
+              100: '#ebf3e9',
+              200: '#d7e7d2',
+              300: '#b8d6b0',
+              400: '#93c572', /* Signature Pista */
+              500: '#7cb25a',
+              600: '#619143',
+              700: '#4c7235',
+              800: '#3e5c2d',
+              900: '#344c27',
+            },
+            slate: {
+              850: '#1e293b',
+            }
+          }
+        }
+      }
+    }
+  </script>
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
     body {
-      background: #030712;
-      color: #f9fafb;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 24px 16px 50px;
-      position: relative;
-      overflow-x: hidden;
+      background-color: #f7faf6;
+      color: #2c382e;
+    }
+    
+    /* Clean custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #ebf3e9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #b8d6b0;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #93c572;
     }
 
-    /* Floating Liquid Blobs */
-    .liquid-orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(85px);
-      z-index: 0;
-      opacity: 0.5;
-      pointer-events: none;
-      animation: floatOrb 14s infinite alternate ease-in-out;
-    }
-
-    .orb-1 {
-      width: 320px;
-      height: 320px;
-      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
-      top: -60px;
-      left: -60px;
-    }
-
-    .orb-2 {
-      width: 360px;
-      height: 360px;
-      background: linear-gradient(135deg, #6366f1, #a855f7);
-      bottom: -70px;
-      right: -70px;
-      animation-duration: 18s;
-    }
-
-    @keyframes floatOrb {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(30px, 40px) scale(1.1); }
-    }
-
-    /* Container */
-    .wrapper {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      max-width: 520px;
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(28px) saturate(190%);
-      -webkit-backdrop-filter: blur(28px) saturate(190%);
-      border-radius: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
-      padding: 24px 20px;
-    }
-
-    /* Header */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding-bottom: 14px;
-      margin-bottom: 20px;
-    }
-
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: #94a3b8;
-      text-decoration: none;
-      font-size: 13px;
+    .tool-tab-btn.active {
+      background-color: #ebf3e9;
+      color: #3e5c2d;
       font-weight: 600;
-      transition: color 0.2s;
+      border-left: 3px solid #7cb25a;
     }
 
-    .back-btn:hover {
-      color: #38bdf8;
+    #qr-scanner-view video, #barcode-scanner-view video {
+      border-radius: 0.75rem;
+      object-fit: cover;
+      width: 100% !important;
     }
-
-    .header-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: #f8fafc;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* QR Preview Box */
-    .preview-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 22px;
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
-    }
-
-    #qrPreview {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 18px;
-      overflow: hidden;
-      padding: 12px;
-      background: #ffffff;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-    }
-
-    #qrPreview canvas, #qrPreview svg {
-      max-width: 100% !important;
-      height: auto !important;
-      display: block;
-    }
-
-    /* Form Fields */
-    .field-group {
-      margin-bottom: 16px;
-    }
-
-    label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: #cbd5e1;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 8px;
-    }
-
-    .text-input {
-      width: 100%;
-      padding: 13px 15px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 14px;
-      color: #fff;
-      font-size: 14px;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .text-input:focus {
-      border-color: #38bdf8;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    /* Grid Options */
-    .controls-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .select-input {
-      width: 100%;
-      padding: 10px 12px;
-      background: #0f172a;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      color: #f1f5f9;
-      font-size: 13px;
-      outline: none;
-    }
-
-    .color-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 8px 12px;
-    }
-
-    .color-row input[type="color"] {
-      -webkit-appearance: none;
-      border: none;
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      cursor: pointer;
-      background: transparent;
-    }
-
-    .color-row span {
-      font-size: 12px;
-      color: #94a3b8;
-    }
-
-    /* Logo Upload */
-    .file-upload-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      padding: 11px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px dashed rgba(255, 255, 255, 0.25);
-      border-radius: 14px;
-      font-size: 13px;
-      font-weight: 500;
-      color: #94a3b8;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .file-upload-btn:hover {
-      border-color: #38bdf8;
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.05);
-    }
-
-    /* Download Buttons */
-    .action-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 22px;
-    }
-
-    .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 13px;
-      border-radius: 16px;
-      font-size: 13.5px;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn-png {
-      background: linear-gradient(135deg, #0ea5e9, #0284c7);
-      color: #fff;
-      box-shadow: 0 8px 20px rgba(14, 165, 233, 0.35);
-    }
-
-    .btn-svg {
-      background: linear-gradient(135deg, #a855f7, #6366f1);
-      color: #fff;
-      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.35);
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
+    #qr-scanner-view, #barcode-scanner-view {
+      border: none !important;
     }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col font-sans antialiased text-[#2c382e]">
 
-  <div class="liquid-orb orb-1"></div>
-  <div class="liquid-orb orb-2"></div>
-
-  <div class="wrapper">
-    <!-- Top Header -->
-    <div class="header">
-      <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Home</a>
-      <div class="header-title"><i class="fa-solid fa-qrcode" style="color:#38bdf8;"></i> QR Generator</div>
-      <div style="width: 50px;"></div>
-    </div>
-
-    <!-- Live Preview -->
-    <div class="preview-card">
-      <div id="qrPreview"></div>
-    </div>
-
-    <!-- Text Input -->
-    <div class="field-group">
-      <label>Text or URL</label>
-      <input type="text" id="qrText" class="text-input" placeholder="Type text or paste URL..." value="https://shivajiamihit.in">
-    </div>
-
-    <!-- Controls -->
-    <div class="controls-grid">
-      <div class="field-group">
-        <label>Dot Style</label>
-        <select id="dotType" class="select-input">
-          <option value="rounded" selected>Smooth Rounded</option>
-          <option value="dots">Circular Dots</option>
-          <option value="classy">Classy</option>
-          <option value="square">Standard Square</option>
-        </select>
-      </div>
-
-      <div class="field-group">
-        <label>Corner Corners</label>
-        <select id="cornerType" class="select-input">
-          <option value="extra-rounded" selected>Rounded Corners</option>
-          <option value="dot">Dot</option>
-          <option value="square">Square</option>
-        </select>
-      </div>
-
-      <div class="field-group">
-        <label>QR Color</label>
-        <div class="color-row">
-          <input type="color" id="qrColor" value="#030712">
-          <span id="qrColorVal">#030712</span>
+  <!-- Header -->
+  <header class="bg-white/80 backdrop-blur-md border-b border-pista-200 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-pista-100 flex items-center justify-center text-pista-700 border border-pista-300 shadow-sm">
+          <i class="fa-solid fa-qrcode text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-slate-800">QR Code Generator</h1>
         </div>
       </div>
-
-      <div class="field-group">
-        <label>Background</label>
-        <div class="color-row">
-          <input type="color" id="bgColor" value="#ffffff">
-          <span id="bgColorVal">#ffffff</span>
-        </div>
+      
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-pista-100 text-pista-800 border border-pista-200">
+          <span class="w-2 h-2 rounded-full bg-pista-500 animate-pulse"></span>
+          100% Client-Side & Private
+        </span>
       </div>
     </div>
+  </header>
 
-    <!-- Logo Upload -->
-    <div class="field-group">
-      <label>Center Logo (Optional)</label>
-      <label class="file-upload-btn">
-        <i class="fa-solid fa-image"></i>
-        <span id="logoFileName">Upload Center Icon / Logo</span>
-        <input type="file" id="logoInput" accept="image/*" style="display:none;">
-      </label>
-    </div>
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Navigation Sidebar -->
+      <aside class="lg:col-span-3">
+        <div class="bg-white rounded-2xl p-3 border border-pista-200/80 shadow-sm sticky top-24">
+          <div class="px-3 py-2 text-xs font-semibold tracking-wider text-pista-800 uppercase">
+            Available Tools
+          </div>
+          <nav class="mt-1 space-y-1" id="tool-nav">
+            <button onclick="switchTab('qr-gen')" class="tool-tab-btn active w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-pista-50 transition">
+              <i class="fa-solid fa-qrcode w-5 text-pista-600"></i>
+              <span>QR Code Generator</span>
+            </button>
+            <button onclick="switchTab('qr-scan')" class="tool-tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-pista-50 transition">
+              <i class="fa-solid fa-camera w-5 text-pista-600"></i>
+              <span>QR Code Scanner</span>
+            </button>
+            <button onclick="switchTab('wifi-qr')" class="tool-tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-pista-50 transition">
+              <i class="fa-solid fa-wifi w-5 text-pista-600"></i>
+              <span>Wi-Fi QR Generator</span>
+            </button>
+            <button onclick="switchTab('whatsapp-qr')" class="tool-tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-pista-50 transition">
+              <i class="fa-brands fa-whatsapp w-5 text-pista-600"></i>
+              <span>WhatsApp QR</span>
+            </button>
+            <button onclick="switchTab('upi-qr')" class="tool-tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-pista-50 transition">
+              <i class="fa-solid fa-indian-rupee-sign w-5 text-pista-600"></i>
+              <span>UPI Payment QR</span>
+            </button>
+            <button onclick="switchTab('url-qr')" class="tool-tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-pista-50 transition">
+              <i class="fa-solid fa-link w-5 text-pista-600"></i>
+              <span>Website URL QR</span>
+            </button>
+            <button onclick="switchTab('vcard-qr')" class="tool-tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-pista-50 transition">
+              <i class="fa-regular fa-id-card w-5 text-pista-600"></i>
+              <span>vCard Contact QR</span>
+            </button>
+            <button onclick="switchTab('barcode-gen')" class="tool-tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-pista-50 transition">
+              <i class="fa-solid fa-barcode w-5 text-pista-600"></i>
+              <span>Barcode Generator</span>
+            </button>
+            <button onclick="switchTab('barcode-scan')" class="tool-tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-pista-50 transition">
+              <i class="fa-solid fa-expand w-5 text-pista-600"></i>
+              <span>Barcode Scanner</span>
+            </button>
+            <button onclick="switchTab('bulk-qr')" class="tool-tab-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-pista-50 transition">
+              <i class="fa-solid fa-layer-group w-5 text-pista-600"></i>
+              <span>Bulk QR Generator</span>
+            </button>
+          </nav>
+        </div>
+      </aside>
 
-    <!-- Actions -->
-    <div class="action-row">
-      <button class="btn btn-png" id="downloadPngBtn">
-        <i class="fa-solid fa-download"></i> Download PNG
-      </button>
-      <button class="btn btn-svg" id="downloadSvgBtn">
-        <i class="fa-solid fa-file-code"></i> Download SVG
-      </button>
-    </div>
-  </div>
+      <!-- Main Work Area -->
+      <section class="lg:col-span-9">
+        
+        <!-- TOOL 1: QR Generator -->
+        <div id="tab-qr-gen" class="tool-panel">
+          <div class="bg-white rounded-2xl border border-pista-200 p-6 shadow-sm">
+            <div class="flex items-center justify-between pb-4 border-b border-pista-100 mb-6">
+              <div>
+                <h2 class="text-lg font-bold text-slate-800">QR Code Generator</h2>
+                <p class="text-sm text-slate-500">Create standard customized QR codes for any text or data.</p>
+              </div>
+            </div>
 
-  <script>
-    let logoImage = '';
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+              <div class="md:col-span-7 space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Content / Text</label>
+                  <textarea id="qr-input-text" rows="4" placeholder="Enter text, link, note or message..." class="w-full px-3.5 py-2.5 bg-pista-50/50 border border-pista-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-pista-400 focus:bg-white text-sm transition"></textarea>
+                </div>
 
-    const qrCode = new QRCodeStyling({
-      width: 230,
-      height: 230,
-      type: "canvas",
-      data: document.getElementById('qrText').value,
-      dotsOptions: {
-        color: "#030712",
-        type: "rounded"
-      },
-      cornersSquareOptions: {
-        type: "extra-rounded"
-      },
-      backgroundOptions: {
-        color: "#ffffff"
-      },
-      imageOptions: {
-        crossOrigin: "anonymous",
-        margin: 5
-      }
-    });
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Size (px)</label>
+                    <select id="qr-size-select" class="w-full px-3 py-2 bg-pista-50/50 border border-pista-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pista-400">
+                      <option value="180">180 x 180</option>
+                      <option value="256" selected>256 x 256 (Standard)</option>
+                      <option value="360">360 x 360 (High Res)</option>
+                      <option value="512">512 x 512 (Ultra)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Correction Level</label>
+                    <select id="qr-level-select" class="w-full px-3 py-2 bg-pista-50/50 border border-pista-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pista-400">
+                      <option value="L">Low (7%)</option>
+                      <option value="M" selected>Medium (15%)</option>
+                      <option value="Q">Quartile (25%)</option>
+                      <option value="H">High (30%)</option>
+                    </select>
+                  </div>
+                </div>
 
-    const qrContainer = document.getElementById("qrPreview");
-    qrCode.append(qrContainer);
+                <button onclick="generateStandardQR()" class="w-full py-2.5 bg-pista-600 hover:bg-pista-700 text-white font-medium rounded-xl transition shadow-sm flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                  <span>Generate QR Code</span>
+                </button>
+              </div>
 
-    function updateQR() {
-      const textVal = document.getElementById('qrText').value.trim() || ' ';
-      const dotVal = document.getElementById('dotType').value;
-      const cornerVal = document.getElementById('cornerType').value;
-      const qrColor = document.getElementById('qrColor').value;
-      const bgColor = document.getElementById('bgColor').value;
+              <!-- Output Preview -->
+              <div class="md:col-span-5 flex flex-col items-center justify-center p-6 bg-pista-50/70 border border-dashed border-pista-300 rounded-2xl min-h-[280px]">
+                <div id="qr-preview-box" class="bg-white p-3 rounded-xl shadow-sm border border-pista-200 flex items-center justify-center min-h-[160px] min-w-[160px]">
+                  <p class="text-xs text-slate-400">Preview will appear here</p>
+                </div>
+                <div id="qr-download-actions" class="mt-4 flex gap-2 w-full hidden">
+                  <button onclick="downloadQR('png')" class="flex-1 py-2 px-3 text-xs font-semibold bg-white border border-pista-300 text-slate-700 hover:bg-pista-100 rounded-xl transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-download"></i> PNG
+                  </button>
+                  <button onclick="copyQRContent()" class="py-2 px-3 text-xs font-semibold bg-white border border-pista-300 text-slate-700 hover:bg-pista-100 rounded-xl transition">
+                    <i class="fa-regular fa-copy"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      document.getElementById('qrColorVal').textContent = qrColor;
-      document.getElementById('bgColorVal').textContent = bgColor;
+        <!-- TOOL 2: QR Scanner -->
+        <div id="tab-qr-scan" class="tool-panel hidden">
+          <div class="bg-white rounded-2xl border border-pista-200 p-6 shadow-sm">
+            <div class="pb-4 border-b border-pista-100 mb-6">
+              <h2 class="text-lg font-bold text-slate-800">QR Code Scanner</h2>
+              <p class="text-sm text-slate-500">Scan QR codes in real-time via camera or upload an image file.</p>
+            </div>
 
-      qrCode.update({
-        data: textVal,
-        dotsOptions: {
-          color: qrColor,
-          type: dotVal
-        },
-        cornersSquareOptions: {
-          type: cornerVal
-        },
-        backgroundOptions: {
-          color: bgColor
-        },
-        image: logoImage
-      });
-    }
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+              <div class="md:col-span-6 space-y-4">
+                <div class="flex gap-2">
+                  <button id="btn-start-qr-cam" onclick="startQRScannerCamera()" class="flex-1 py-2 px-4 bg-pista-600 hover:bg-pista-700 text-white rounded-xl text-sm font-medium transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-video"></i> Start Camera
+                  </button>
+                  <button id="btn-stop-qr-cam" onclick="stopQRScannerCamera()" class="hidden py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-sm font-medium transition">
+                    Stop
+                  </button>
+                </div>
 
-    // Input Event Listeners
-    document.getElementById('qrText').addEventListener('input', updateQR);
-    document.getElementById('dotType').addEventListener('change', updateQR);
-    document.getElementById('cornerType').addEventListener('change', updateQR);
-    document.getElementById('qrColor').addEventListener('input', updateQR);
-    document.getElementById('bgColor').addEventListener('input', updateQR);
+                <div class="relative flex py-2 items-center">
+                  <div class="flex-grow border-t border-pista-200"></div>
+                  <span class="flex-shrink mx-3 text-xs text-slate-400 font-medium">OR UPLOAD IMAGE</span>
+                  <div class="flex-grow border-t border-pista-200"></div>
+                </div>
 
-    // Center Logo Handler
-    document.getElementById('logoInput').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        document.getElementById('logoFileName').textContent = file.name;
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          logoImage = event.target.result;
-          updateQR();
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+                <div>
+                  <label class="border-2 border-dashed border-pista-300 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-pista-50/50 transition">
+                    <i class="fa-regular fa-image text-3xl text-pista-600 mb-2"></i>
+                    <span class="text-sm font-semibold text-slate-700">Choose QR code image</span>
+                    <span class="text-xs text-slate-400 mt-1">PNG, JPG, WEBP, or SVG</span>
+                    <input type="file" id="qr-file-input" accept="image/*" class="hidden" onchange="scanQRFromFile(event)">
+                  </label>
+                </div>
 
-    // Downloads
-    document.getElementById('downloadPngBtn').addEventListener('click', () => {
-      qrCode.download({ name: "shivaji-qrcode", extension: "png" });
-    });
+                <!-- Camera viewport -->
+                <div id="qr-scanner-view" class="overflow-hidden rounded-xl bg-slate-900 aspect-video hidden"></div>
+              </div>
 
-    document.getElementById('downloadSvgBtn').addEventListener('click', () => {
-      qrCode.download({ name: "shivaji-qrcode", extension: "svg" });
-    });
-  </script>
+              <!-- Scanner Results -->
+              <div class="md:col-span-6">
+                <div class="bg-pista-50/70 border border-pista-200 rounded-2xl p-5 h-full flex flex-col">
+                  <span class="text-xs font-bold text-pista-800 uppercase tracking-wider mb-2">Decoded Content</span>
+                  <div id="qr-scan-result-container" class="bg-white border border-pista-200 rounded-xl p-4 flex-1 text-sm text-slate-600 break-words font-mono whitespace-pre-wrap select-all flex items-center justify-center text-center">
+                    No QR code scanned yet.
+                  </div>
+                  <div id="qr-scan-actions" class="mt-4 flex gap-2 hidden">
+                    <button onclick="copyDecodedText('qr-scan-result-container')" class="flex-1 py-2 bg-pista-600 hover:bg-pista-700 text-white rounded-xl text-xs font-medium transition flex items-center justify-center gap-1.5">
+                      <i class="fa-regular fa-copy"></i> Copy Result
+                    </button>
+                    <a id="qr-scan-link" href="#" target="_blank" class="hidden px-4 py-2 bg-white border border-pista-300 text-pista-800 hover:bg-pista-100 rounded-xl text-xs font-medium transition items-center gap-1">
+                      <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Link
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-</body>
-</html>
+        <!-- TOOL 3: Wi-Fi QR Generator -->
+        <div id="tab-wifi-qr" class="tool-panel hidden">
+          <div class="bg-white rounded-2xl border border-pista-200 p-6 shadow-sm">
+            <div class="pb-4 border-b border-pista-100 mb-6">
+              <h2 class="text-lg font-bold text-slate-800">Wi-Fi Connection QR Generator</h2>
+              <p class="text-sm text-slate-500">Allow guests to scan and connect directly to your wireless network.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+              <div class="md:col-span-7 space-y-4">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Network Name (SSID)</label>
+                  <input type="text" id="wifi-ssid" placeholder="e.g. Home_5G_Network" class="w-full px-3.5 py-2.5 bg-pista-50/50 border border-pista-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pista-400">
+                </div>
+
+                <div>
+                  <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Password</label>
+                  <div class="relative">
+                    <input type="password" id="wifi-pass" placeholder="Network password" class="w-full px-3.5 py-2.5 bg-pista-50/50 border border-pista-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pista-400">
+                    <button type="button" onclick="togglePasswordVisibility('wifi-pass')" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 text-sm">
+                      <i class="fa-regular fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Security Encryption</label>
+                    <select id="wifi-sec" class="w-full px-3 py-2 bg-pista-50/50 border border-pista-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pista-400">
+                      <option value="WPA" selected>WPA / WPA2 / WPA3</option>
+                      <option value="WEP">WEP</option>
+                      <option value="nopass">No Password (Open)</option>
+                    </select>
+                  </div>
+                  <div class="flex items-center pt-6">
+                    <label class="inline-flex items-center cursor-pointer select-none">
+                      <input type="checkbox" id="wifi-hidden" class="rounded border-pista-300 text-pista-600 focus:ring-pista-400 w-4 h-4">
+                      <span class="ml-2 text-xs font-medium text-slate-700">Hidden SSID</span>
+                    </label>
+                  </div>
+                </div>
+
+                <button onclick="generateWifiQR()" class="w-full py-2.5 bg-pista-600 hover:bg-pista-700 text-white font-medium rounded-xl transition shadow-sm flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-wifi"></i> Generate Wi-Fi QR
+                </button>
+              </div>
+
+              <div class="md:col-span-5 flex flex-col items-center justify-center p-6 bg-pista-50/70 border border-dashed border-pista-300 rounded-2xl min-h-[280px]">
+                <div id="wifi-preview-box" class="bg-white p-3 rounded-xl shadow-sm border border-pista-200 flex items-center justify-center min-h-[160px] min-w-[160px]">
+                  <p class="text-xs text-slate-400">Wi-Fi QR will appear here</p>
+                </div>
+                <div id="wifi-download-actions" class="mt-4 flex gap-2 w-full hidden">
+                  <button onclick="downloadSpecificQR('wifi-preview-box', 'wifi_qr.png')" class="flex-1 py-2 px-3 text-xs font-semibold bg-white border border-pista-300 text-slate-700 hover:bg-pista-100 rounded-xl transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-download"></i> Download PNG
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOOL 4: WhatsApp QR -->
+        <div id="tab-whatsapp-qr" class="tool-panel hidden">
+          <div class="bg-whi

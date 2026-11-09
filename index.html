@@ -4,18 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Meta Tags -->
-  <title>SHIVAJI | Web Apps & Tools</title>
-  <meta name="title" content="SHIVAJI | Web Apps & Tools">
-  <meta name="description" content="Personal app launcher and tools dashboard by Shivaji.">
+  <title>SHIVAJI | Tools & Apps</title>
+  <meta name="title" content="SHIVAJI | Tools & Apps">
+  <meta name="description" content="Personal minimal tools hub by Shivaji.">
 
-  <!-- Fonts & Icons -->
+  <!-- Google Fonts & Font Awesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
+    :root {
+      --bg-color: #f1f7f3;
+      --card-bg: #ffffff;
+      --pista-primary: #52796f;
+      --pista-dark: #2f3e46;
+      --pista-light: #84a98c;
+      --pista-subtle: #cad2c5;
+      --pista-accent: #354f52;
+      --text-main: #1f2d27;
+      --text-muted: #5c7166;
+      --border-color: #d8e2dc;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -25,359 +37,363 @@
     }
 
     body {
-      background: #030712;
-      color: #f9fafb;
+      background-color: var(--bg-color);
+      color: var(--text-main);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 20px 16px 40px;
-      position: relative;
-      overflow-x: hidden;
+      padding: 24px 16px 40px;
     }
 
-    /* Ambient Liquid Orbs */
-    .liquid-orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(85px);
-      z-index: 0;
-      opacity: 0.5;
-      pointer-events: none;
-      animation: floatOrb 15s infinite alternate ease-in-out;
-    }
-
-    .orb-1 {
-      width: 300px;
-      height: 300px;
-      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
-      top: -50px;
-      left: -50px;
-    }
-
-    .orb-2 {
-      width: 340px;
-      height: 340px;
-      background: linear-gradient(135deg, #6366f1, #a855f7);
-      bottom: -70px;
-      right: -70px;
-      animation-duration: 18s;
-    }
-
-    .orb-3 {
-      width: 240px;
-      height: 240px;
-      background: linear-gradient(135deg, #10b981, #06b6d4);
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      animation-duration: 12s;
-    }
-
-    @keyframes floatOrb {
-      0% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(25px, 35px) scale(1.1); }
-      100% { transform: translate(-25px, -20px) scale(0.95); }
-    }
-
-    /* Main Container */
-    .app-container {
-      position: relative;
-      z-index: 1;
+    .container {
       width: 100%;
-      max-width: 480px;
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(28px) saturate(190%);
-      -webkit-backdrop-filter: blur(28px) saturate(190%);
-      border-radius: 30px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      box-shadow: 
-        0 20px 50px rgba(0, 0, 0, 0.6),
-        inset 0 1px 1px rgba(255, 255, 255, 0.2);
-      padding: 20px 18px 28px;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
-    /* Top Bar: Mini Avatar + Name */
+    /* Top Profile Header */
     .top-header {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 12px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 6px 8px 18px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
-      margin-bottom: 22px;
+      box-shadow: 0 2px 8px rgba(47, 62, 70, 0.04);
     }
 
-    .user-profile {
+    .profile-group {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
     .avatar-mini {
-      position: relative;
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--pista-light);
+      background: var(--pista-subtle);
     }
 
     .avatar-mini img {
       width: 100%;
       height: 100%;
-      border-radius: 50%;
       object-fit: cover;
-      border: 2px solid rgba(56, 189, 248, 0.6);
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.35);
+      display: block;
     }
 
-    .online-badge {
-      position: absolute;
-      bottom: 1px;
-      right: 1px;
-      width: 11px;
-      height: 11px;
-      background: #10b981;
-      border: 2px solid #030712;
-      border-radius: 50%;
-    }
-
-    .brand-name {
-      font-size: 19px;
+    .brand-title {
+      font-size: 17px;
       font-weight: 800;
-      letter-spacing: 1.5px;
-      background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      letter-spacing: 1.2px;
+      color: var(--pista-dark);
       text-transform: uppercase;
     }
 
-    .hub-status {
+    .badge-status {
       font-size: 11px;
-      padding: 5px 11px;
-      border-radius: 20px;
-      background: rgba(56, 189, 248, 0.12);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: #38bdf8;
       font-weight: 600;
-      letter-spacing: 0.5px;
+      color: var(--pista-primary);
+      background: #e3ede6;
+      padding: 4px 10px;
+      border-radius: 30px;
+      border: 1px solid var(--border-color);
+    }
+
+    /* Precision Clock Card */
+    .clock-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(47, 62, 70, 0.04);
+    }
+
+    .date-display {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+
+    .time-main {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--pista-dark);
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+
+    .time-nano {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--pista-primary);
+      background: #eef5f0;
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 8px;
+      margin-top: 6px;
+      border: 1px solid var(--border-color);
     }
 
     /* Section Header */
-    .section-headline {
+    .section-title {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 4px;
-      margin-bottom: 16px;
-    }
-
-    .section-headline span {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
-      color: #cbd5e1;
-      letter-spacing: 0.8px;
+      color: var(--text-muted);
       text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      letter-spacing: 1px;
+      padding: 4px 4px 0;
     }
 
     .app-counter {
-      font-size: 11px;
-      color: #94a3b8;
-      background: rgba(255, 255, 255, 0.08);
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
       padding: 2px 8px;
-      border-radius: 12px;
+      border-radius: 10px;
+      font-size: 10.5px;
+      color: var(--pista-dark);
+      font-weight: 600;
     }
 
-    /* Mobile App Grid (2 Columns) */
+    /* Apps Grid (2 Columns, Minimal Pista Design) */
     .apps-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      min-height: 180px;
+      gap: 12px;
+      min-height: 150px;
     }
 
-    /* App Card Styling */
     .app-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 18px 12px;
+      text-decoration: none;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px 12px;
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      border-radius: 22px;
-      text-decoration: none;
-      color: #f1f5f9;
-      transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-      animation: fadeIn 0.3s ease-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .app-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(47, 62, 70, 0.03);
     }
 
     .app-card:hover, .app-card:active {
-      transform: translateY(-4px) scale(1.02);
-      border-color: rgba(255, 255, 255, 0.25);
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+      transform: translateY(-2px);
+      border-color: var(--pista-light);
+      box-shadow: 0 6px 15px rgba(82, 121, 111, 0.1);
     }
 
-    /* Squircle App Icon */
     .app-icon {
-      width: 54px;
-      height: 54px;
-      border-radius: 17px;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: #edf4ef;
+      border: 1px solid var(--border-color);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      margin-bottom: 12px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transition: transform 0.3s ease;
+      font-size: 19px;
+      color: var(--pista-primary);
+      margin-bottom: 10px;
+      transition: background 0.2s, color 0.2s;
     }
 
     .app-card:hover .app-icon {
-      transform: scale(1.1) rotate(-4deg);
+      background: var(--pista-primary);
+      color: #ffffff;
     }
 
     .app-title {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 600;
-      color: #f8fafc;
+      color: var(--text-main);
       text-align: center;
       line-height: 1.3;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
-    .app-subtitle {
-      font-size: 10.5px;
-      color: #94a3b8;
+    .app-desc {
+      font-size: 10px;
+      color: var(--text-muted);
       text-transform: capitalize;
     }
 
-    /* Vibrant Themes */
-    .icon-cyan   { background: linear-gradient(135deg, #06b6d4, #0284c7); color: #fff; }
-    .icon-emerald{ background: linear-gradient(135deg, #10b981, #059669); color: #fff; }
-    .icon-purple { background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; }
-    .icon-amber  { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
-    .icon-rose   { background: linear-gradient(135deg, #f43f5e, #e11d48); color: #fff; }
-    .icon-blue   { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff; }
-    .icon-teal   { background: linear-gradient(135deg, #14b8a6, #0d9488); color: #fff; }
-
-    .loading-state {
+    .loading-box {
       grid-column: span 2;
       text-align: center;
-      padding: 40px 10px;
-      color: #94a3b8;
+      padding: 30px;
+      color: var(--text-muted);
       font-size: 13px;
     }
 
+    /* Footer with Small Circular Instagram Logo */
     footer {
-      text-align: center;
-      margin-top: 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 14px;
+      padding-top: 10px;
+    }
+
+    .insta-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--pista-primary);
+      text-decoration: none;
+      font-size: 15px;
+      box-shadow: 0 2px 6px rgba(47, 62, 70, 0.05);
+      transition: all 0.2s ease;
+    }
+
+    .insta-btn:hover {
+      background: var(--pista-primary);
+      color: #ffffff;
+      border-color: var(--pista-primary);
+      transform: scale(1.08);
+    }
+
+    .copyright-text {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.35);
-      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Ambient Glowing Blobs -->
-  <div class="liquid-orb orb-1"></div>
-  <div class="liquid-orb orb-2"></div>
-  <div class="liquid-orb orb-3"></div>
-
-  <!-- App Drawer Container -->
-  <div class="app-container">
+  <div class="container">
     
-    <!-- Top Bar: Avatar & Brand -->
+    <!-- Top Header: Avatar + SHIVAJI -->
     <header class="top-header">
-      <div class="user-profile">
+      <div class="profile-group">
         <div class="avatar-mini">
-          <img src="profile.jpg" alt="Shivaji" onerror="this.src='https://ui-avatars.com/api/?name=Shivaji&background=0284c7&color=ffffff'">
-          <span class="online-badge"></span>
+          <img src="profile.jpg" alt="Shivaji" onerror="this.src='https://ui-avatars.com/api/?name=Shivaji&background=cad2c5&color=2f3e46'">
         </div>
-        <div class="brand-name">SHIVAJI</div>
+        <div class="brand-title">SHIVAJI</div>
       </div>
-      <div class="hub-status">App Hub</div>
+      <div class="badge-status">Online</div>
     </header>
 
-    <!-- Apps Header -->
-    <div class="section-headline">
-      <span><i class="fa-solid fa-shapes" style="color: #38bdf8;"></i> All Applications</span>
+    <!-- Real-time Precision Clock (Date + Time + Sec + Micro + Nano) -->
+    <div class="clock-card">
+      <div class="date-display" id="dateDisplay">Loading date...</div>
+      <div class="time-main" id="timeDisplay">00:00:00</div>
+      <div class="time-nano" id="nanoDisplay">.000000000 s</div>
+    </div>
+
+    <!-- Section Title -->
+    <div class="section-title">
+      <span>Applications</span>
       <span class="app-counter" id="appCounter">Syncing...</span>
     </div>
 
-    <!-- Live Dynamic Apps Grid -->
+    <!-- Dynamic Apps Grid (Live GitHub Sync) -->
     <div class="apps-grid" id="appsGrid">
-      <div class="loading-state">
-        <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 26px; color: #38bdf8; margin-bottom: 10px;"></i>
-        <p>Loading your apps...</p>
+      <div class="loading-box">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size: 20px; color: var(--pista-primary); margin-bottom: 8px;"></i>
+        <p>Loading tools...</p>
       </div>
     </div>
 
+    <!-- Footer: Small Circular Instagram Link -->
     <footer>
-      © 2026 SHIVAJI • Apps Hub
+      <a href="https://instagram.com/who_is_shivaji" target="_blank" rel="noopener noreferrer" class="insta-btn" title="Follow on Instagram">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+      <div class="copyright-text">© 2026 SHIVAJI</div>
     </footer>
 
   </div>
 
-  <!-- Real-Time GitHub Sync Script -->
   <script>
+    // --- 1. Real-Time High Precision Clock ---
+    let perfOrigin = performance.timeOrigin || performance.timing.navigationStart;
+
+    function updatePrecisionClock() {
+      const now = new Date();
+
+      // Format Date
+      const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+      document.getElementById('dateDisplay').textContent = now.toLocaleDateString('en-IN', options);
+
+      // Time: HH:MM:SS
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('timeDisplay').textContent = `${hh}:${mm}:${ss}`;
+
+      // Microseconds & Nanoseconds via High-Resolution Timer
+      const accurateMs = (perfOrigin + performance.now()) % 1000;
+      const ms = Math.floor(accurateMs);
+      const frac = accurateMs - ms;
+      const micros = Math.floor(frac * 1000);
+      const nanos = Math.floor((frac * 1000 - micros) * 1000);
+
+      const msStr = String(ms).padStart(3, '0');
+      const usStr = String(micros).padStart(3, '0');
+      const nsStr = String(nanos).padStart(3, '0');
+
+      document.getElementById('nanoDisplay').textContent = `.${msStr}${usStr}${nsStr} ns`;
+
+      requestAnimationFrame(updatePrecisionClock);
+    }
+    requestAnimationFrame(updatePrecisionClock);
+
+    // --- 2. Live GitHub Dynamic Tool Sync (Add & Remove) ---
     const GITHUB_USER = 'whoisshivaji';
     const GITHUB_REPO = 'shivajiamihit';
     const grid = document.getElementById('appsGrid');
     const counter = document.getElementById('appCounter');
 
-    // Tool name, icon, and theme detector
     function resolveAppInfo(filename) {
       const lower = filename.toLowerCase();
-      
-      if (lower.includes('ludo')) return { title: 'Play Ludo 🎲', desc: 'Game', icon: 'fa-dice', color: 'icon-amber' };
-      if (lower.includes('aichat')) return { title: 'AI Chatbot', desc: 'Smart AI', icon: 'fa-robot', color: 'icon-purple' };
-      if (lower.includes('life')) return { title: 'Life Calculator', desc: 'Age & Stats', icon: 'fa-heart-pulse', color: 'icon-rose' };
-      if (lower.includes('calc')) return { title: 'Smart Calculator', desc: 'Math Utility', icon: 'fa-calculator', color: 'icon-blue' };
-      if (lower.includes('dslr') || lower.includes('blur')) return { title: 'DSLR Blur', desc: 'Photo Editor', icon: 'fa-camera-retro', color: 'icon-cyan' };
-      if (lower.includes('download')) return { title: 'Downloader', desc: 'Media Tool', icon: 'fa-circle-arrow-down', color: 'icon-emerald' };
-      if (lower.includes('vector')) return { title: 'Vector Portrait', desc: 'Art Utility', icon: 'fa-palette', color: 'icon-purple' };
-      if (lower.includes('portrait')) return { title: 'Portrait Tool', desc: 'Photo FX', icon: 'fa-wand-magic-sparkles', color: 'icon-rose' };
-      if (lower.includes('qr')) return { title: 'QR Tool', desc: 'Code Utility', icon: 'fa-qrcode', color: 'icon-teal' };
-      if (lower.includes('video') || lower.includes('player')) return { title: 'Video Player', desc: 'Media Stream', icon: 'fa-circle-play', color: 'icon-rose' };
-      if (lower.includes('chat')) return { title: 'Live Chat', desc: 'Messenger', icon: 'fa-comments', color: 'icon-cyan' };
 
-      // Default fallback for any newly uploaded HTML file
+      if (lower.includes('ludo')) return { title: 'Play Ludo 🎲', desc: 'Game', icon: 'fa-dice' };
+      if (lower.includes('aichat')) return { title: 'AI Chatbot', desc: 'Smart Assistant', icon: 'fa-robot' };
+      if (lower.includes('life')) return { title: 'Life Calculator', desc: 'Age & Stats', icon: 'fa-heart-pulse' };
+      if (lower.includes('calc')) return { title: 'Smart Calculator', desc: 'Math Utility', icon: 'fa-calculator' };
+      if (lower.includes('dslr') || lower.includes('blur')) return { title: 'DSLR Blur', desc: 'Photo Editor', icon: 'fa-camera-retro' };
+      if (lower.includes('download')) return { title: 'Downloader', desc: 'Media Tool', icon: 'fa-circle-arrow-down' };
+      if (lower.includes('vector')) return { title: 'Vector Portrait', desc: 'Vector Utility', icon: 'fa-palette' };
+      if (lower.includes('portrait')) return { title: 'Portrait Tool', desc: 'Photo FX', icon: 'fa-wand-magic-sparkles' };
+      if (lower.includes('qr')) return { title: 'QR Tool', desc: 'Code Generator', icon: 'fa-qrcode' };
+      if (lower.includes('video')) return { title: 'Video Player', desc: 'Media Stream', icon: 'fa-circle-play' };
+      if (lower.includes('chat')) return { title: 'Live Chat', desc: 'Messenger', icon: 'fa-comments' };
+
       const cleanName = filename.replace(/\.html$/i, '').replace(/[-_]/g, ' ');
       const capitalized = cleanName.charAt(0).toUpperCase() + cleanName.slice(1);
-      return { title: capitalized, desc: 'Web App', icon: 'fa-cube', color: 'icon-cyan' };
+      return { title: capitalized, desc: 'Web App', icon: 'fa-cube' };
     }
 
     async function syncApps() {
       try {
-        // Cache bypass timestamp to fetch real-time state from GitHub
         const response = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/?t=${Date.now()}`);
         if (!response.ok) throw new Error('API fetch error');
         const files = await response.json();
 
-        // Filter only valid HTML tools, excluding index and duplicates
         const validTools = files.filter(file => {
           if (file.type !== 'file') return false;
           const name = file.name.toLowerCase();
@@ -391,21 +407,18 @@
           card.href = file.name;
           card.className = 'app-card';
           card.innerHTML = `
-            <div class="app-icon ${meta.color}"><i class="fa-solid ${meta.icon}"></i></div>
+            <div class="app-icon"><i class="fa-solid ${meta.icon}"></i></div>
             <div class="app-title">${meta.title}</div>
-            <div class="app-subtitle">${meta.desc}</div>
+            <div class="app-desc">${meta.desc}</div>
           `;
           grid.appendChild(card);
         });
 
         counter.textContent = validTools.length + ' Apps';
-        
-        // Save to localStorage for instant offline/cached rendering next time
-        localStorage.setItem('cached_tools', JSON.stringify(validTools.map(f => f.name)));
+        localStorage.setItem('cached_pista_tools', JSON.stringify(validTools.map(f => f.name)));
 
       } catch (err) {
-        // Fallback to cached tools if GitHub API rate limits or network issues occur
-        const cached = JSON.parse(localStorage.getItem('cached_tools') || '[]');
+        const cached = JSON.parse(localStorage.getItem('cached_pista_tools') || '[]');
         if (cached.length > 0) {
           grid.innerHTML = '';
           cached.forEach(fileName => {
@@ -414,15 +427,15 @@
             card.href = fileName;
             card.className = 'app-card';
             card.innerHTML = `
-              <div class="app-icon ${meta.color}"><i class="fa-solid ${meta.icon}"></i></div>
+              <div class="app-icon"><i class="fa-solid ${meta.icon}"></i></div>
               <div class="app-title">${meta.title}</div>
-              <div class="app-subtitle">${meta.desc}</div>
+              <div class="app-desc">${meta.desc}</div>
             `;
             grid.appendChild(card);
           });
           counter.textContent = cached.length + ' Apps';
         } else {
-          grid.innerHTML = '<div class="loading-state"><p>Unable to load apps. Please refresh.</p></div>';
+          grid.innerHTML = '<div class="loading-box"><p>Unable to load apps. Please refresh.</p></div>';
         }
       }
     }

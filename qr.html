@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced QR Code Generator | Shivaji Tools</title>
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Production-grade QR Styling Library -->
+  <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #030712;
+      color: #f9fafb;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px 16px 50px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Floating Liquid Blobs */
+    .liquid-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(85px);
+      z-index: 0;
+      opacity: 0.5;
+      pointer-events: none;
+      animation: floatOrb 14s infinite alternate ease-in-out;
+    }
+
+    .orb-1 {
+      width: 320px;
+      height: 320px;
+      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+      top: -60px;
+      left: -60px;
+    }
+
+    .orb-2 {
+      width: 360px;
+      height: 360px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      bottom: -70px;
+      right: -70px;
+      animation-duration: 18s;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 40px) scale(1.1); }
+    }
+
+    /* Container */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 520px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border-radius: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+      padding: 24px 20px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .back-btn:hover {
+      color: #38bdf8;
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* QR Preview Box */
+    .preview-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 22px;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
+
+    #qrPreview {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 18px;
+      overflow: hidden;
+      padding: 12px;
+      background: #ffffff;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    #qrPreview canvas, #qrPreview svg {
+      max-width: 100% !important;
+      height: auto !important;
+      display: block;
+    }
+
+    /* Form Fields */
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+
+    .text-input {
+      width: 100%;
+      padding: 13px 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 14px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .text-input:focus {
+      border-color: #38bdf8;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Grid Options */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .select-input {
+      width: 100%;
+      padding: 10px 12px;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      color: #f1f5f9;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 8px 12px;
+    }
+
+    .color-row input[type="color"] {
+      -webkit-appearance: none;
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    .color-row span {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    /* Logo Upload */
+    .file-upload-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 11px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px dashed rgba(255, 255, 255, 0.25);
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .file-upload-btn:hover {
+      border-color: #38bdf8;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    /* Download Buttons */
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px;
+      border-radius: 16px;
+      font-size: 13.5px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-png {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(14, 165, 233, 0.35);
+    }
+
+    .btn-svg {
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.35);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="liquid-orb orb-1"></div>
+  <div class="liquid-orb orb-2"></div>
+
+  <div class="wrapper">
+    <!-- Top Header -->
+    <div class="header">
+      <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Home</a>
+      <div class="header-title"><i class="fa-solid fa-qrcode" style="color:#38bdf8;"></i> QR Generator</div>
+      <div style="width: 50px;"></div>
+    </div>
+
+    <!-- Live Preview -->
+    <div class="preview-card">
+      <div id="qrPreview"></div>
+    </div>
+
+    <!-- Text Input -->
+    <div class="field-group">
+      <label>Text or URL</label>
+      <input type="text" id="qrText" class="text-input" placeholder="Type text or paste URL..." value="https://shivajiamihit.in">
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-grid">
+      <div class="field-group">
+        <label>Dot Style</label>
+        <select id="dotType" class="select-input">
+          <option value="rounded" selected>Smooth Rounded</option>
+          <option value="dots">Circular Dots</option>
+          <option value="classy">Classy</option>
+          <option value="square">Standard Square</option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label>Corner Corners</label>
+        <select id="cornerType" class="select-input">
+          <option value="extra-rounded" selected>Rounded Corners</option>
+          <option value="dot">Dot</option>
+          <option value="square">Square</option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label>QR Color</label>
+        <div class="color-row">
+          <input type="color" id="qrColor" value="#030712">
+          <span id="qrColorVal">#030712</span>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Background</label>
+        <div class="color-row">
+          <input type="color" id="bgColor" value="#ffffff">
+          <span id="bgColorVal">#ffffff</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logo Upload -->
+    <div class="field-group">
+      <label>Center Logo (Optional)</label>
+      <label class="file-upload-btn">
+        <i class="fa-solid fa-image"></i>
+        <span id="logoFileName">Upload Center Icon / Logo</span>
+        <input type="file" id="logoInput" accept="image/*" style="display:none;">
+      </label>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-row">
+      <button class="btn btn-png" id="downloadPngBtn">
+        <i class="fa-solid fa-download"></i> Download PNG
+      </button>
+      <button class="btn btn-svg" id="downloadSvgBtn">
+        <i class="fa-solid fa-file-code"></i> Download SVG
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let logoImage = '';
+
+    const qrCode = new QRCodeStyling({
+      width: 230,
+      height: 230,
+      type: "canvas",
+      data: document.getElementById('qrText').value,
+      dotsOptions: {
+        color: "#030712",
+        type: "rounded"
+      },
+      cornersSquareOptions: {
+        type: "extra-rounded"
+      },
+      backgroundOptions: {
+        color: "#ffffff"
+      },
+      imageOptions: {
+        crossOrigin: "anonymous",
+        margin: 5
+      }
+    });
+
+    const qrContainer = document.getElementById("qrPreview");
+    qrCode.append(qrContainer);
+
+    function updateQR() {
+      const textVal = document.getElementById('qrText').value.trim() || ' ';
+      const dotVal = document.getElementById('dotType').value;
+      const cornerVal = document.getElementById('cornerType').value;
+      const qrColor = document.getElementById('qrColor').value;
+      const bgColor = document.getElementById('bgColor').value;
+
+      document.getElementById('qrColorVal').textContent = qrColor;
+      document.getElementById('bgColorVal').textContent = bgColor;
+
+      qrCode.update({
+        data: textVal,
+        dotsOptions: {
+          color: qrColor,
+          type: dotVal
+        },
+        cornersSquareOptions: {
+          type: cornerVal
+        },
+        backgroundOptions: {
+          color: bgColor
+        },
+        image: logoImage
+      });
+    }
+
+    // Input Event Listeners
+    document.getElementById('qrText').addEventListener('input', updateQR);
+    document.getElementById('dotType').addEventListener('change', updateQR);
+    document.getElementById('cornerType').addEventListener('change', updateQR);
+    document.getElementById('qrColor').addEventListener('input', updateQR);
+    document.getElementById('bgColor').addEventListener('input', updateQR);
+
+    // Center Logo Handler
+    document.getElementById('logoInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        document.getElementById('logoFileName').textContent = file.name;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          logoImage = event.target.result;
+          updateQR();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Downloads
+    document.getElementById('downloadPngBtn').addEventListener('click', () => {
+      qrCode.download({ name: "shivaji-qrcode", extension: "png" });
+    });
+
+    document.getElementById('downloadSvgBtn').addEventListener('click', () => {
+      qrCode.download({ name: "shivaji-qrcode", extension: "svg" });
+    });
+  </script>
+
+</body>
+</html>

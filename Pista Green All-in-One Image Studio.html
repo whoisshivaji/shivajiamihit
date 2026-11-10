@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Pista Green Image Studio — All-in-One 10 Tools</title>
+  <style>
+    :root {
+      --bg-primary: #f4fbf5;
+      --bg-secondary: #e8f7ec;
+      --card-bg: rgba(255, 255, 255, 0.88);
+      --card-border: #c8e9cf;
+      --pista-light: #daf0df;
+      --pista-mid: #a5dcb3;
+      --pista-accent: #3d8a57;
+      --pista-deep: #1f492d;
+      --text-main: #183823;
+      --text-muted: #4e735a;
+      --shadow-soft: 0 8px 24px rgba(39, 82, 53, 0.08);
+      --shadow-hover: 0 12px 30px rgba(39, 82, 53, 0.14);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: radial-gradient(circle at 10% 10%, #ffffff 0%, #edf9f0 40%, #e2f4e6 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 12px 40px;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      margin: 10px 0 16px;
+      max-width: 640px;
+      width: 100%;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      background: var(--pista-light);
+      color: var(--pista-deep);
+      border-radius: 99px;
+      border: 1px solid var(--pista-mid);
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--pista-deep);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    p.subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Main Container */
+    .app-container {
+      width: 100%;
+      max-width: 980px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Upload & Image Info Header Card */
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      padding: 16px;
+      transition: all 0.25s ease;
+    }
+
+    .dropzone {
+      border: 2px dashed var(--pista-mid);
+      border-radius: var(--radius-sm);
+      padding: 24px 16px;
+      text-align: center;
+      background: #fbfefc;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .dropzone:active, .dropzone.dragover {
+      background: var(--pista-light);
+      border-color: var(--pista-accent);
+      transform: scale(0.995);
+    }
+
+    .dropzone input[type="file"] {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .dropzone-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--pista-light);
+      color: var(--pista-accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .dropzone-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--pista-deep);
+    }
+
+    .dropzone-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* Status Bar Info */
+    .status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      background: #edf8f0;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      margin-top: 10px;
+      font-size: 0.78rem;
+      gap: 8px;
+    }
+
+    .status-tag {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .status-tag strong {
+      color: var(--pista-deep);
+    }
+
+    /* Tools Pill Selector (Horizontal scrollable on mobile) */
+    .tool-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tool-nav::-webkit-scrollbar { display: none; }
+
+    .tool-btn {
+      flex: 0 0 auto;
+      padding: 9px 15px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: 99px;
+      border: 1px solid var(--card-border);
+      background: #ffffff;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    .tool-btn:hover {
+      background: var(--pista-light);
+      color: var(--pista-deep);
+    }
+
+    .tool-btn.active {
+      background: var(--pista-accent);
+      color: #ffffff;
+      border-color: var(--pista-accent);
+      box-shadow: 0 4px 12px rgba(61, 138, 87, 0.35);
+    }
+
+    /* Workspace Layout: Split into Controls & Live Preview */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 820px) {
+      .workspace {
+        grid-template-columns: 360px 1fr;
+        align-items: start;
+      }
+    }
+
+    /* Tool Options Panel */
+    .control-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tool-section {
+      display: none;
+    }
+    .tool-section.active {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .input-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--pista-deep);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 4px;
+      background: var(--pista-light);
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--pista-accent);
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+
+    input[type="number"], input[type="text"], select {
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border);
+      background: #fbfefc;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      outline: none;
+      transition: border 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: var(--pista-accent);
+    }
+
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .pill-presets {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .preset-chip {
+      padding: 5px 10px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--pista-deep);
+    }
+    .preset-chip:active, .preset-chip.active {
+      background: var(--pista-accent);
+      color: #fff;
+      border-color: var(--pista-accent);
+    }
+
+    /* Color picker helper */
+    .color-swatches {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .swatch {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    input[type="color"] {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+
+    /* Preview Canvas Area */
+    .preview-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 280px;
+      background: #f8fdf9;
+      border: 1.5px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 14px;
+      overflow: hidden;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      max-width: 100%;
+      max-height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-image: 
+        linear-gradient(45deg, #eee 25%, transparent 25%), 
+        linear-gradient(-45deg, #eee 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #eee 75%), 
+        linear-gradient(-45deg, transparent 75%, #eee 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      max-width: 100%;
+      max-height: 440px;
+      height: auto;
+      object-fit: contain;
+    }
+
+    /* Cropping overlay */
+    #cropOverlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      display: none;
+    }
+    #cropBox {
+      position: absolute;
+      border: 2px dashed #ffffff;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+      cursor: move;
+      pointer-events: auto;
+      touch-action: none;
+    }
+    .crop-handle {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: var(--pista-accent);
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      bottom: -8px;
+      right: -8px;
+      cursor: se-resize;
+      touch-action: none;
+    }
+
+    /* Bottom Action Bar */
+    .actions-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      width: 100%;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 13px 18px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3d8a57 0%, #29603c 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(41, 96, 60, 0.3);
+    }
+    .btn-primary:active {
+      transform: scale(0.98);
+      filter: brightness(0.95);
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      border: 1.5px solid var(--pista-mid);
+      color: var(--pista-deep);
+    }
+    .btn-outline:active {
+      background: var(--pista-light);
+    }
+
+    /* Placeholder screen when no image */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+    .empty-icon {
+      font-size: 40px;
+      margin-bottom: 8px;
+      opacity: 0.8;
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(40px);
+      background: var(--pista-deep);
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 99px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      pointer-events: none;
+      z-index: 100;
+    }
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="badge">100% Client-Side • Ultra Lightweight</span>
+    <h1>Pista Green Image Studio</h1>
+    <p class="subtitle">Compress, Resize, Crop, Convert, Watermark & Make Passport Photos instantly on any phone</p>
+  </header>
+
+  <div class="app-container">
+    
+    <!-- Top Card: File Upload & Status -->
+    <div class="glass-card">
+      <div class="dropzone" id="dropzone">
+        <input type="file" id="fileInput" accept="image/*">
+        <div class="dropzone-icon">🍃</div>
+        <div class="dropzone-title">Upload Image or Drag & Drop</div>
+        <div class="dropzone-sub">Supports JPG, PNG, WEBP, GIF, BMP (Runs 100% offline)</div>
+      </div>
+
+      <!-- Real-time Image Stats -->
+      <div class="status-bar" id="statusBar">
+        <div class="status-tag">Original: <strong id="origMeta">—</strong></div>
+        <div class="status-tag">Output: <strong id="outMeta">—</strong></div>
+        <div class="status-tag">Est. Size: <strong id="estSize">—</strong></div>
+      </div>
+    </div>
+
+    <!-- 10 Tools Navigator Bar -->
+    <div class="tool-nav" id="toolNav">
+      <button class="tool-btn active" data-tool="compressor">🗜️ Compressor</button>
+      <button class="tool-btn" data-tool="resizer">📐 Resizer</button>
+      <button class="tool-btn" data-tool="cropper">✂️ Cropper</button>
+      <button class="tool-btn" data-tool="toJpg">🖼️ To JPG</button>
+      <button class="tool-btn" data-tool="toPng">💎 To PNG</button>
+      <button class="tool-btn" data-tool="toWebp">⚡ To WebP</button>
+      <button class="tool-btn" data-tool="bgChanger">🎨 BG Color</button>
+      <button class="tool-btn" data-tool="blur">💧 Blur Tool</button>
+      <button class="tool-btn" data-tool="watermark">🏷️ Watermark</button>
+      <button class="tool-btn" data-tool="passport">📸 Passport Photo</button>
+    </div>
+
+    <!-- Interactive Workspace -->
+    <div class="workspace">
+      
+      <!-- Left: Dynamic Tool Controls -->
+      <div class="glass-card control-panel">
+
+        <!-- 1. Compressor -->
+        <div class="tool-section active" id="sec-compressor">
+          <div class="input-group">
+            <div class="input-label">
+              <span>Compression Quality</span>
+              <span id="compressVal">80%</span>
+            </div>
+            <input type="range" id="compressQuality" min="5" max="100" value="80">
+          </div>
+          <div class="input-group">
+            <div class="input-label">
+              <span>Target Max Size (Optional KB)</span>
+            </div>
+            <input type="number" id="targetKb" placeholder="e.g. 100 (Leave empty for slider)">
+          </div>
+          <div class="pill-presets">
+            <span class="preset-chip" onclick="setKb(50)">50 KB</span>
+            <span class="preset-chip" onclick="setKb(100)">100 KB</span>
+            <span class="preset-chip" onclick="setKb(200)">200 KB</span>
+            <span class="preset-chip" onclick="setKb(500)">500 KB</span>
+          </div>
+        </div>
+
+        <!-- 2. Resizer -->
+        <div class="tool-section" id="sec-resizer">
+          <div class="row-2">
+            <div class="input-group">
+              <label class="input-label">Width (px)</label>
+              <input type="number" id="resizeW">
+            </div>
+            <div class="input-group">
+              <label class="input-label">Height (px)</label>
+              <input type="number" id="resizeH">
+            </div>
+          </div>
+          <label style="font-size:0.8rem; display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" id="aspectRatioLock" checked> Keep Aspect Ratio
+          </label>
+          <div class="pill-presets">
+            <span class="preset-chip" onclick="scaleImage(0.25)">25%</span>
+            <span class="preset-chip" onclick="scaleImage(0.50)">50%</span>
+            <span class="preset-chip" onclick="scaleImage(0.75)">75%</span>
+            <span class="preset-chip" onclick="scaleImage(1.0)">100%</span>
+          </div>
+        </div>
+
+        <!-- 3. Cropper -->
+        <div class="tool-section" id="sec-cropper">
+          <div class="input-group">
+            <label class="input-label">Aspect Ratio Preset</label>
+            <select id="cropRatioSelect">
+              <option value="free">Freehand</option>
+              <option value="1:1">1:1 (Square)</option>
+              <option value="4:3">4:3 (Standard)</option>
+              <option value="16:9">16:9 (Landscape)</option>
+              <option value="9:16">9:16 (Story/Reel)</option>
+            </select>
+          </div>
+          <p style="font-size:0.75rem; color:var(--text-muted);">
+            Drag and resize the crop box directly on the preview to select your crop region.
+          </p>
+          <button class="btn btn-outline" id="btnApplyCrop" style="margin-top:4px;">Apply Crop</button>
+        </div>
+
+        <!-- 4. Image to JPG -->
+        <div class="tool-section" id="sec-toJpg">
+          <p style="font-size:0.8rem; color:var(--text-muted);">
+            Converts any PNG, WEBP, or transparent image into a standardized .JPG file.
+          </p>
+          <div class="input-group">
+            <div class="input-label">
+              <span>JPG Quality</span>
+              <span id="jpgQualVal">90%</span>
+            </div>
+            <input type="range" id="jpgQuality" min="10" max="100" value="90">
+          </div>
+          <div class="input-group">
+            <label class="input-label">Transparent Fill Color</label>
+            <input type="color" id="jpgBgColor" value="#ffffff">
+          </div>
+        </div>
+
+        <!-- 5. JPG to PNG -->
+        <div class="tool-section" id="sec-toPng">
+          <p style="font-size:0.8rem; color:var(--text-muted);">
+            Converts photos to lossless PNG format with crisp detail preservation.
+          </p>
+          <label style="font-size:0.8rem; display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" id="pngOptimize" checked> Lossless Optimization
+          </label>
+        </div>
+
+        <!-- 6. PNG to WebP -->
+        <div class="tool-section" id="sec-toWebp">
+          <p style="font-size:0.8rem; color:var(--text-muted);">
+            Converts to ultra-efficient WebP for fast websites and smaller mobile sizes.
+          </p>
+          <div class="input-group">
+            <div class="input-label">
+              <span>WebP Quality</span>
+              <span id="webpQualVal">85%</span>
+            </div>
+            <input type="range" id="webpQuality" min="10" max="100" value="85">
+          </div>
+        </div>
+
+        <!-- 7. Background Color Changer -->
+        <div class="tool-section" id="sec-bgChanger">
+          <label class="input-label">Choose Solid Background Color</label>
+          <div class="color-swatches">
+            <div class="swatch" style="background:#ffffff;" onclick="setBgColor('#ffffff')"></div>
+            <div class="swatch" style="background:#cbf3d2;" onclick="setBgColor('#cbf3d2')"></div>
+            <div class="swatch" style="background:#9bd4e4;" onclick="setBgColor('#9bd4e4')"></div>
+            <div class="swatch" style="background:#fce38a;" onclick="setBgColor('#fce38a')"></div>
+            <div class="swatch" style="background:#1f492d;" onclick="setBgColor('#1f492d')"></div>
+            <input type="color" id="customBgColor" value="#cbf3d2">
+          </div>
+          <div class="input-group" style="margin-top:6px;">
+            <div class="input-label">
+              <span>White/Key Replacement Tolerance</span>
+              <span id="tolVal">15%</span>
+            </div>
+            <input type="range" id="bgTolerance" min="0" max="80" value="15">
+          </div>
+        </div>
+
+        <!-- 8. Image Blur Tool -->
+        <div class="tool-section" id="sec-blur">
+          <div class="input-group">
+            <div class="input-label">
+              <span>Blur Radius</span>
+              <span id="blurVal">6px</span>
+            </div>
+            <input type="range" id="blurRadius" min="0" max="30" value="6">
+          </div>
+        </div>
+
+        <!-- 9. Image Watermark Tool -->
+        <div class="tool-section" id="sec-watermark">
+          <div class="input-group">
+            <label class="input-label">Watermark Text</label>
+            <input type="text" id="wmText" value="Pista Studio" placeholder="Type watermark text...">
+          </div>
+          <div class="row-2">
+            <div class="input-group">
+              <label class="input-label">Position</label>
+              <select id="wmPosition">
+                <option value="bottom-right">Bottom Right</option>
+                <option value="bottom-left">Bottom Left</option>
+                <option value="top-right">Top Right</option>
+                <option value="top-left">Top Left</option>
+                <option value="center">Center</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Color</label>
+              <input type="color" id="wmColor" value="#ffffff">
+            </div>
+          </div>
+          <div class="input-group">
+            <div class="input-label">
+              <span>Watermark Size</span>
+              <span id="wmSizeVal">28px</span>
+            </div>
+            <input type="range" id="wmSize" min="12" max="96" value="28">
+          </div>
+          <div class="input-group">
+            <div class="input-label">
+              <span>Opacity</span>
+              <span id="wmOpacityVal">60%</span>
+            </div>
+            <input type="range" id="wmOpacity" min="10" max="100" value="60">
+          </div>
+        </div>
+
+        <!-- 10. Passport Photo Maker -->
+        <div class="tool-section" id="sec-passport">
+          <div class="input-group">
+            <label class="input-label">Standard Aspect Ratio</label>
+            <select id="passportRatio">
+              <option value="35:45">Standard (35mm × 45mm)</option>
+              <option value="2:2">US Visa (2 × 2 Inch / 51x51mm)</option>
+              <option value="30:40">Small (30mm × 40mm)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Passport Background Color</label>
+            <div class="color-swatches">
+              <div class="swatch" style="background:#ffffff;" onclick="setPassportBg('#ffffff')"></div>
+              <div class="swatch" style="background:#d4e9f7;" onclick="setPassportBg('#d4e9f7')"></div>
+              <div class="swatch" style="background:#d8eedf;" onclick="setPassportBg('#d8eedf')"></div>
+              <input type="color" id="passportBgColor" value="#ffffff">
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Output Layout</label>
+            <select id="passportLayout">
+              <option value="single">Single Photo (High Res)</option>
+              <option value="sheet8">8-Photos Sheet (Printable 4×6 inch)</option>
+            </select>
+          </div>
+          <label style="font-size:0.8rem; display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" id="passportBorder" checked> Add Thin Cutting Border
+          </label>
+        </div>
+
+        <!-- Download & Reset Action Buttons -->
+        <div class="actions-bar">
+          <button class="btn btn-outline" id="btnReset">Reset</button>
+          <button class="btn btn-primary" id="btnDownload">
+            <span>💾 Download</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Live Canvas Preview -->
+      <div class="preview-card">
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">🍃</div>
+          <strong>No image loaded yet</strong>
+          <span style="font-size:0.75rem; margin-top:4px;">Tap upload above to begin instant editing</span>
+        </div>
+
+        <div class="canvas-wrapper" id="canvasWrapper" style="display:none;">
+          <canvas id="mainCanvas"></canvas>
+          <div id="cropOverlay">
+            <div id="cropBox">
+              <div class="crop-handle" id="cropHandle"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast">Downloaded Successfully!</div>
+
+  <script>
+    // State Management
+    let sourceImage = null;
+    let originalFile = null;
+    let currentTool = 'compressor';
+    
+    // Canvas & context
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const emptyState = document.getElementById('emptyState');
+    const canvasWrapper = document.getElementById('canvasWrapper');
+    const toast = document.getElementById('toast');
+
+    // DOM References
+    const fileInput = document.getElementById('fileInput');
+    const dropzone = document.getElementById('dropzone');
+    const origMeta = document.getElementById('origMeta');
+    const outMeta = document.getElementById('outMeta');
+    const estSize = document.getElementById('estSize');
+
+    // Load Default Placeholder Graphic on start
+    function initDefaultImage() {
+      const offCanvas = document.createElement('canvas');
+      offCanvas.width = 800;
+      offCanvas.height = 800;
+      const offCtx = offCanvas.getContext('2d');
+
+      // Soft pista gradient
+      const grad = offCtx.createLinearGradient(0, 0, 800, 800);
+      grad.addColorStop(0, '#c7eccf');
+      grad.addColorStop(1, '#8ed3a1');
+      offCtx.fillStyle = grad;
+      offCtx.fillRect(0, 0, 800, 800);
+
+      // Cute playful sample card
+      offCtx.fillStyle = '#ffffff';
+      offCtx.beginPath();
+      offCtx.roundRect(140, 140, 520, 520, 36);
+      offCtx.fill();
+
+      offCtx.fillStyle = '#1f492d';
+      offCtx.font = 'bold 44px -apple-system, sans-serif';
+      offCtx.textAlign = 'center';
+      offCtx.fillText('Pista Image Studio', 400, 360);
+
+      offCtx.fillStyle = '#4e735a';
+      offCtx.font = '24px -apple-system, sans-serif';
+      offCtx.fillText('Upload any photo to edit', 400, 420);
+
+      const img = new Image();
+      img.onload = () => {
+        sourceImage = img;
+        emptyState.style.display = 'none';
+        canvasWrapper.style.display = 'flex';
+        origMeta.textContent = '800 × 800 px';
+        document.getElementById('resizeW').value = 800;
+        document.getElementById('resizeH').value = 800;
+        renderCurrentTool();
+      };
+      img.src = offCanvas.toDataURL('image/png');
+    }
+
+    window.onload = initDefaultImage;
+
+    // File Upload Handling
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) handleIncomingFile(file);
+    });
+
+    // Drag and Drop
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleIncomingFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    function handleIncomingFile(file) {
+      if (!file.type.startsWith('image/')) {
+        showToast('Please select a valid image file');
+        return;
+      }
+      originalFile = file;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          sourceImage = img;
+          emptyState.style.display = 'none';
+          canvasWrapper.style.display = 'flex';
+
+          const sizeKb = (file.size / 1024).toFixed(1);
+          origMeta.textContent = `${img.width} × ${img.height} (${sizeKb} KB)`;
+
+          // Initialize resizer defaults
+          document.getElementById('resizeW').value = img.width;
+          document.getElementById('resizeH').value = img.height;
+
+          renderCurrentTool();
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Tool Switcher logic
+    const toolNav = document.getElementById('toolNav');
+    toolNav.addEventListener('click', (e) => {
+      const btn = e.target.closest('.tool-btn');
+      if (!btn) return;
+
+      document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tool-section').forEach(s => s.classList.remove('active'));
+
+      btn.classList.add('active');
+      currentTool = btn.dataset.tool;
+
+      const sec = document.getElementById(`sec-${currentTool}`);
+      if (sec) sec.classList.add('active');
+
+      // Toggle cropper box overlay
+      const cropOverlay = document.getElementById('cropOverlay');
+      if (currentTool === 'cropper') {
+        cropOverlay.style.display = 'block';
+        initCropBox();
+      } else {
+        cropOverlay.style.display = 'none';
+      }
+
+      renderCurrentTool();
+    });
+
+    // Main Renderer Dispatcher
+    function renderCurrentTool() {
+      if (!sourceImage) return;
+
+      switch (currentTool) {
+        case 'compressor':
+          renderNormalImage();
+          estimateCompressedSize(parseFloat(document.getElementById('compressQuality').value) / 100);
+          break;
+        case 'resizer':
+          renderResizedImage();
+          break;
+        case 'cropper':
+          renderNormalImage();
+          break;
+        case 'toJpg':
+          renderConvertedFormat('image/jpeg', document.getElementById('jpgBgColor').value);
+          break;
+        case 'toPng':
+          renderConvertedFormat('image/png');
+          break;
+        case 'toWebp':
+          renderConvertedFormat('image/webp');
+          break;
+        case 'bgChanger':
+          renderBgChanger();
+          break;
+        case 'blur':
+          renderBlur();
+          break;
+        case 'watermark':
+          renderWatermark();
+          break;
+        case 'passport':
+          renderPassportPhoto();
+          break;
+      }
+    }
+
+    // 1. Compressor
+    function renderNormalImage() {
+      canvas.width = sourceImage.width;
+      canvas.height = sourceImage.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(sourceImage, 0, 0);
+      updateOutputStats('image/jpeg', parseFloat(document.getElementById('compressQuality').value) / 100);
+    }
+
+    function estimateCompressedSize(quality) {
+      const targetKb = parseFloat(document.getElementById('targetKb').value);
+      if (targetKb && targetKb > 0) {
+        // Approximate binary search for quality matching target KB
+        findBestQualityForSize(targetKb);
+        return;
+      }
+      canvas.toBlob((blob) => {
+        if (blob) {
+          estSize.textContent = `~${(blob.size / 1024).toFixed(1)} KB`;
+          outMeta.textContent = `${canvas.width} × ${canvas.height} px`;
+        }
+      }, 'image/jpeg', quality);
+    }
+
+    function findBestQualityForSize(targetKb) {
+      let low = 0.05, high = 1.0, bestQ = 0.8;
+      function step(trials) {
+        if (trials <= 0) {
+          canvas.toBlob((blob) => {
+            if (blob) {
+              estSize.textContent = `~${(blob.size / 1024).toFixed(1)} KB`;
+              outMeta.textContent = `${canvas.width} × ${canvas.height} px`;
+            }
+          }, 'image/jpeg', bestQ);
+          return;
+        }
+        const mid = (low + high) / 2;
+        canvas.toBlob((b) => {
+          if (!b) return;
+          const kb = b.size / 1024;
+          if (kb > targetKb) high = mid;
+          else {
+            bestQ = mid;
+            low = mid;
+          }
+          document.getElementById('compressQuality').value = Math.round(bestQ * 100);
+          document.getElementById('compressVal').textContent = `${Math.round(bestQ * 100)}%`;
+          step(trials - 1);
+        }, 'image/jpeg', mid);
+      }
+      step(6);
+    }
+
+    window.setKb = function(kb) {
+      document.getElementById('targetKb').value = kb;
+      renderCurrentTool();
+    };
+
+    document.getElementById('compressQuality').addEventListener('input', (e) => {
+      document.getElementById('compressVal').textContent = `${e.target.value}%`;
+      document.getElementById('targetKb').value = '';
+      renderCurrentTool();
+    });
+    document.getElementById('targetKb').addEventListener('input', () => renderCurrentTool());
+
+    // 2. Resizer
+    const resizeW = document.getElementById('resizeW');
+    const resizeH = document.getElementById('resizeH');
+    const aspectLock = document.getElementById('aspectRatioLock');
+
+    resizeW.addEventListener('input', () => {
+      if (aspectLock.checked && sourceImage) {
+        const ratio = sourceImage.height / sourceImage.width;
+        resizeH.value = Math.round(resizeW.value * ratio);
+      }
+      renderCurrentTool();
+    });
+
+    resizeH.addEventListener('input', () => {
+      if (aspectLock.checked && sourceImage) {
+        const ratio = sourceImage.width / sourceImage.height;
+        resizeW.value = Math.round(resizeH.value * ratio);
+      }
+      renderCurrentTool();
+    });
+
+    window.scaleImage = function(scale) {
+      if (!sourceImage) return;
+      resizeW.value = Math.round(sourceImage.width * scale);
+      resizeH.value = Math.round(sourceImage.height * scale);
+      renderCurrentTool();
+    };
+
+    function renderResizedImage() {
+      const w = parseInt(resizeW.value) || sourceImage.width;
+      const h = parseInt(resizeH.value) || sourceImage.height;
+      canvas.width = Math.max(1, w);
+      canvas.height = Math.max(1, h);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(sourceImage, 0, 0, canvas.width, canvas.height);
+      updateOutputStats('image/png');
+    }
+
+    // 3. Cropper
+    const cropBox = document.getElementById('cropBox');
+    const cropHandle = document.getElementById('cropHandle');
+    let cropRect = { x: 40, y: 40, w: 160, h: 160 };
+
+    function initCropBox() {
+      const wrapRect = canvasWrapper.getBoundingClientRect();
+      const w = Math.min(220, wrapRect.width * 0.7);
+      const h = Math.min(220, wrapRect.height * 0.7);
+      cropRect = {
+        x: (wrapRect.width - w) / 2,
+        y: (wrapRect.height - h) / 2,
+        w: w,
+        h: h
+      };
+      applyCropBoxCSS();
+    }
+
+    function applyCropBoxCSS() {
+      cropBox.style.left = `${cropRect.x}px`;
+      cropBox.style.top = `${cropRect.y}px`;
+      cropBox.style.width = `${cropRect.w}px`;
+      cropBox.style.height = `${cropRect.h}px`;
+    }
+
+    // Drag crop box
+    let isDraggingCrop = false;
+    let isResizingCrop = false;
+    let dragStart = { x: 0, y: 0 };
+
+    cropBox.addEventListener('pointerdown', (e) => {
+      if (e.target === cropHandle) return;
+      isDraggingCrop = true;
+      dragStart = { x: e.clientX - cropRect.x, y: e.clientY - cropRect.y };
+      cropBox.setPointerCapture(e.pointerId);
+    });
+
+    cropHandle.addEventListener('pointerdown', (e) => {
+      isResizingCrop = true;
+      dragStart = { x: e.clientX, y: e.clientY, w: cropRect.w, h: cropRect.h };
+      cropHandle.setPointerCapture(e.pointerId);
+      e.stopPropagation();
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      const wrapRect = canvasWrapper.getBoundingClientRect();
+      if (isDraggingCrop) {
+        cropRect.x = Math.max(0, Math.min(wrapRect.width - cropRect.w, e.clientX - dragStart.x));
+        cropRect.y = Math.max(0, Math.min(wrapRect.height - cropRect.h, e.clientY - dragStart.y));
+        applyCropBoxCSS();
+      } else if (isResizingCrop) {
+        const dx = e.clientX - dragStart.x;
+        const dy = e.clientY - dragStart.y;
+        let newW = Math.max(40, dragStart.w + dx);
+        let newH = Math.max(40, dragStart.h + dy);
+
+        const ratio = document.getElementById('cropRatioSelect').value;
+        if (ratio === '1:1') newH = newW;
+        else if (ratio === '4:3') newH = newW * (3/4);
+        else if (ratio === '16:9') newH = newW * (9/16);
+        else if (ratio === '9:16') newH = newW * (16/9);
+
+        if (cropRect.x + newW <= wrapRect.width && cropRect.y + newH <= wrapRect.height) {
+          cropRect.w = newW;
+          cropRect.h = newH;
+          applyCropBoxCSS();
+        }
+      }
+    });
+
+    window.addEventListener('pointerup', () => {
+      isDraggingCrop = false;
+      isResizingCrop = false;
+    });
+
+    document.getElementById('btnApplyCrop').addEventListener('click', () => {
+      if (!sourceImage) return;
+      const wrapRect = canvasWrapper.getBoundingClientRect();
+      const scaleX = sourceImage.width / wrapRect.width;
+      const scaleY = sourceImage.height / wrapRect.height;
+
+      const sx = cropRect.x * scaleX;
+      const sy = cropRect.y * scaleY;
+      const sw = cropRect.w * scaleX;
+      const sh = cropRect.h * scaleY;
+
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = sw;
+      tempCanvas.height = sh;
+      const tCtx = tempCanvas.getContext('2d');
+      tCtx.drawImage(sourceImage, sx, sy, sw, sh, 0, 0, sw, sh);
+
+      const croppedImg = new Image();
+      croppedImg.onload = () => {
+        sourceImage = croppedImg;
+        resizeW.value = Math.round(sw);
+        resizeH.value = Math.round(sh);
+        initCropBox();
+        renderCurrentTool();
+        showToast('Crop Applied!');
+      };
+      croppedImg.src = tempCanvas.toDataURL('image/png');
+    });
+
+    // 4, 5, 6. Format Converters (JPG, PNG, WebP)
+    function renderConvertedFormat(mimeType, fallbackBg = '#ffffff') {
+      canvas.width = sourceImage.width;
+      canvas.height = sourceImage.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (mimeType === 'image/jpeg') {
+        ctx.fillStyle = fallbackBg;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      ctx.drawImage(sourceImage, 0, 0);
+
+      let quality = 0.9;
+      if (mimeType === 'image/jpeg') {
+        quality = parseFloat(document.getElementById('jpgQuality').value) / 100;
+      } else if (mimeType === 'image/webp') {
+        quality = parseFloat(document.getElementById('webpQuality').value) / 100;
+      }
+      updateOutputStats(mimeType, quality);
+    }
+
+    document.getElementById('jpgQuality').addEventListener('input', (e) => {
+      document.getElementById('jpgQualVal').textContent = `${e.target.value}%`;
+      renderCurrentTool();
+    });
+    document.getElementById('jpgBgColor').addEventListener('input', () => renderCurrentTool());
+    document.getElementById('webpQuality').addEventListener('input', (e) => {
+      document.getElementById('webpQualVal').textContent = `${e.target.value}%`;
+      renderCurrentTool();
+    });
+
+    // 7. Background Color Changer (Solid Fill / Near-White Background Replacement)
+    window.setBgColor = function(color) {
+      document.getElementById('customBgColor').value = color;
+      renderCurrentTool();
+    };
+
+    function renderBgChanger() {
+      const bgColor = document.getElementById('customBgColor').value;
+      const tolerance = parseInt(document.getElementById('bgTolerance').value);
+
+      canvas.width = sourceImage.width;
+      canvas.height = sourceImage.height;
+
+      // Draw background
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Create offscreen image with tolerance keying (replaces near-white or transparent background)
+      const off = document.createElement('canvas');
+      off.width = canvas.width;
+      off.height = canvas.height;
+      const oCtx = off.getContext('2d');
+      oCtx.drawImage(sourceImage, 0, 0);
+
+      const imgData = oCtx.getImageData(0, 0, off.width, off.height);
+      const data = imgData.data;
+      const threshold = 255 - (tolerance * 2.5);
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+        // If transparent or very bright white background, blend out
+        if (a < 50 || (r > threshold && g > threshold && b > threshold)) {
+          data[i+3] = 0; // make transparent so background color shows through
+        }
+      }
+      oCtx.putImageData(imgData, 0, 0);
+      ctx.drawImage(off, 0, 0);
+      updateOutputStats('image/jpeg', 0.92);
+    }
+
+    document.getElementById('customBgColor').addEventListener('input', () => renderCurrentTool());
+    document.getElementById('bgTolerance').addEventListener('input', (e) => {
+      document.getElementById('tolVal').textContent = `${e.target.value}%`;
+      renderCurrentTool();
+    });
+
+    // 8. Image Blur Tool
+    function renderBlur() {
+      const radius = parseInt(document.getElementById('blurRadius').value);
+      canvas.width = sourceImage.width;
+      canvas.height = sourceImage.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (radius > 0) {
+        ctx.filter = `blur(${radius}px)`;
+      } else {
+        ctx.filter = 'none';
+      }
+      ctx.drawImage(sourceImage, 0, 0);
+      ctx.filter = 'none'; // reset filter
+      updateOutputStats('image/jpeg', 0.9);
+    }
+
+    document.getElementById('blurRadius').addEventListener('input', (e) => {
+      document.getElementById('blurVal').textContent = `${e.target.value}px`;
+      renderCurrentTool();
+    });
+
+    // 9. Watermark Tool
+    function renderWatermark() {
+      canvas.width = sourceImage.width;
+      canvas.height = sourceImage.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(sourceImage, 0, 0);
+
+      const text = document.getElementById('wmText').value;
+      if (!text) return;
+
+      const size = parseInt(document.getElementById('wmSize').value);
+      const opacity = parseInt(document.getElementById('wmOpacity').value) / 100;
+      const pos = document.getElementById('wmPosition').value;
+      const color = document.getElementById('wmColor').value;
+
+      ctx.save();
+      ctx.font = `bold ${size}px -apple-system, sans-serif`;
+      ctx.fillStyle = color;
+      ctx.globalAlpha = opacity;
+      ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      ctx.shadowBlur = 6;
+
+      const textWidth = ctx.measureText(text).width;
+      let x = 30, y = size + 30;
+
+      if (pos === 'top-right') {
+        x = canvas.width - textWidth - 30;
+      } else if (pos === 'bottom-left') {
+        y = canvas.height - 30;
+      } else if (pos === 'bottom-right') {
+        x = canvas.width - textWidth - 30;
+        y = canvas.height - 30;
+      } else if (pos === 'center') {
+        x = (canvas.width - textWidth) / 2;
+        y = canvas.height / 2;
+      }
+
+      ctx.fillText(text, x, y);
+      ctx.restore();
+      updateOutputStats('image/png');
+    }
+
+    ['wmText', 'wmPosition', 'wmColor'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => renderCurrentTool());
+    });
+    document.getElementById('wmSize').addEventListener('input', (e) => {
+      document.getElementById('wmSizeVal').textContent = `${e.target.value}px`;
+      renderCurrentTool();
+    });
+    document.getElementById('wmOpacity').addEventListener('input', (e) => {
+      document.getElementById('wmOpacityVal').textContent = `${e.target.value}%`;
+      renderCurrentTool();
+    });
+
+    // 10. Passport Photo Maker
+    window.setPassportBg = function(c) {
+      document.getElementById('passportBgColor').value = c;
+      renderCurrentTool();
+    };
+
+    function renderPassportPhoto() {
+      const ratio = document.getElementById('passportRatio').value;
+      const layout = document.getElementById('passportLayout').value;
+      const bgColor = document.getElementById('passportBgColor').value;
+      const addBorder = document.getElementById('passportBorder').checked;
+
+      // Base dimensions for 1 passport photo (high dpi printable)
+      let photoW = 413, photoH = 531; // 35mm x 45mm @ 300 DPI
+      if (ratio === '2:2') { photoW = 600; photoH = 600; }
+      else if (ratio === '30:40') { photoW = 354; photoH = 472; }
+
+      if (layout === 'single') {
+        canvas.width = photoW;
+        canvas.height = photoH;
+        drawSinglePassport(0, 0, photoW, photoH, bgColor, addBorder);
+      } else {
+        // 8-Photo Printable Sheet (4x6 inch standard photographic print @ 300 DPI = 1200x1800)
+        canvas.width = 1800;
+        canvas.height = 1200;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 4 cols x 2 rows
+        const cols = 4, rows = 2;
+        const gapX = (canvas.width - (cols * photoW)) / (cols + 1);
+        const gapY = (canvas.height - (rows * photoH)) / (rows + 1);
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const px = gapX + c * (photoW + gapX);
+            const py = gapY + r * (photoH + gapY);
+            drawSinglePassport(px, py, photoW, photoH, bgColor, addBorder);
+          }
+        }
+      }
+      updateOutputStats('image/jpeg', 0.95);
+    }
+
+    function drawSinglePassport(x, y, w, h, bg, border) {
+      ctx.save();
+      // Background fill
+      ctx.fillStyle = bg;
+      ctx.fillRect(x, y, w, h);
+
+      // Crop & Center image using cover aspect fit
+      const scale = Math.max(w / sourceImage.width, h / sourceImage.height);
+      const sw = sourceImage.width * scale;
+      const sh = sourceImage.height * scale;
+      const sx = x + (w - sw) / 2;
+      const sy = y + (h - sh) / 2;
+
+      ctx.beginPath();
+      ctx.rect(x, y, w, h);
+      ctx.clip();
+      ctx.drawImage(sourceImage, sx, sy, sw, sh);
+
+      // Cutting guide border
+      if (border) {
+        ctx.strokeStyle = '#cccccc';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x + 1, y + 1, w - 2, h - 2);
+      }
+      ctx.restore();
+    }
+
+    document.getElementById('passportRatio').addEventListener('change', () => renderCurrentTool());
+    document.getElementById('passportLayout').addEventListener('change', () => renderCurrentTool());
+    document.getElementById('passportBgColor').addEventListener('input', () => renderCurrentTool());
+    document.getElementById('passportBorder').addEventListener('change', () => renderCurrentTool());
+
+    // Output stats updater helper
+    function updateOutputStats(mimeType, quality = 0.9) {
+      canvas.toBlob((blob) => {
+        if (blob) {
+          outMeta.textContent = `${canvas.width} × ${canvas.height} px`;
+          estSize.textContent = `~${(blob.size / 1024).toFixed(1)} KB`;
+        }
+      }, mimeType, quality);
+    }
+
+    // Reset button
+    document.getElementById('btnReset').addEventListener('click', () => {
+      if (originalFile) {
+        handleIncomingFile(originalFile);
+      } else {
+        initDefaultImage();
+      }
+      showToast('Reset to original');
+    });
+
+    // 1-Tap Download Button
+    document.getElementById('btnDownload').addEventListener('click', () => {
+      let mimeType = 'image/jpeg';
+      let ext = 'jpg';
+      let quality = 0.92;
+
+      if (currentTool === 'compressor') {
+        mimeType = 'image/jpeg';
+        quality = parseFloat(document.getElementById('compressQuality').value) / 100;
+      } else if (currentTool === 'toPng' || currentTool === 'cropper') {
+        mimeType = 'image/png';
+        ext = 'png';
+      } else if (currentTool === 'toWebp') {
+        mimeType = 'image/webp';
+        ext = 'webp';
+        quality = parseFloat(document.getElementById('webpQuality').value) / 100;
+      } else if (currentTool === 'passport') {
+        mimeType = 'image/jpeg';
+        ext = 'jpg';
+        quality = 0.98;
+      }
+
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const link = document.createElement('a');
+        link.download = `pista_${currentTool}_${Date.now()}.${ext}`;
+        link.href = URL.createObjectURL(blob);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast('Downloaded Successfully! 🎉');
+      }, mimeType, quality);
+    });
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2400);
+    }
+  </script>
+</body>
+</html>

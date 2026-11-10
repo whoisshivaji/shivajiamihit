@@ -1,0 +1,343 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Minimalist Pista Green 3D Dice</title>
+  <style>
+    /* Reset & Base Setup */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #edf8f0 0%, #d8eedf 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+      color: #244b33;
+    }
+
+    /* Container for 3D Perspective */
+    .dice-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      perspective: 700px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Soft dynamic floor shadow */
+    .dice-shadow {
+      position: absolute;
+      bottom: -36px;
+      width: 120px;
+      height: 26px;
+      background: radial-gradient(ellipse at center, rgba(36, 75, 51, 0.28) 0%, rgba(36, 75, 51, 0) 70%);
+      border-radius: 50%;
+      filter: blur(4px);
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .rolling .dice-shadow {
+      animation: shadowPulse 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    }
+
+    @keyframes shadowPulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.6;
+      }
+      50% {
+        transform: scale(0.65) translateY(12px);
+        opacity: 0.2;
+      }
+    }
+
+    /* 3D Dice Cube */
+    .cube {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateX(-24deg) rotateY(32deg);
+      transition: transform 1.1s cubic-bezier(0.18, 0.89, 0.32, 1.18);
+      z-index: 2;
+    }
+
+    /* Individual Dice Face */
+    .face {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      background: #ffffff;
+      border: 2px solid #c2e2cc;
+      border-radius: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      padding: 14px;
+      box-shadow: inset 0 0 16px rgba(45, 90, 62, 0.08), 0 4px 10px rgba(0, 0, 0, 0.05);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    /* 3D transforms for 6 faces (each face translated 60px out) */
+    .face-1 { transform: rotateY(0deg) translateZ(60px); }
+    .face-6 { transform: rotateY(180deg) translateZ(60px); }
+    .face-2 { transform: rotateY(-90deg) translateZ(60px); }
+    .face-5 { transform: rotateY(90deg) translateZ(60px); }
+    .face-3 { transform: rotateX(90deg) translateZ(60px); }
+    .face-4 { transform: rotateX(-90deg) translateZ(60px); }
+
+    /* Dice Pips (Dots) in rich pista green */
+    .pip {
+      width: 18px;
+      height: 18px;
+      background: radial-gradient(circle at 35% 35%, #4a8d63 0%, #244b33 100%);
+      border-radius: 50%;
+      align-self: center;
+      justify-self: center;
+      box-shadow: inset 0 2px 3px rgba(0,0,0,0.25), 0 1px 2px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Pip Positions on the 3x3 Grid */
+    .pip:nth-child(1) { grid-area: auto; }
+    
+    /* Center Pip (used for 1, 3, 5) */
+    .pos-center { grid-area: 2 / 2; }
+    .pos-tl { grid-area: 1 / 1; }
+    .pos-tr { grid-area: 1 / 3; }
+    .pos-ml { grid-area: 2 / 1; }
+    .pos-mr { grid-area: 2 / 3; }
+    .pos-bl { grid-area: 3 / 1; }
+    .pos-br { grid-area: 3 / 3; }
+
+    /* Minimalist Guidance Text */
+    .hint-label {
+      margin-top: 54px;
+      font-size: 0.95rem;
+      letter-spacing: 0.05em;
+      font-weight: 500;
+      color: #3b6b4d;
+      opacity: 0.85;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.3s ease;
+      cursor: pointer;
+    }
+
+    .hint-label:active {
+      transform: scale(0.97);
+    }
+
+    /* Small result badge */
+    .outcome-pill {
+      margin-top: 14px;
+      padding: 4px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(45, 90, 62, 0.08);
+      color: #244b33;
+      border-radius: 999px;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .outcome-pill.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dice Interactive Area -->
+  <div class="dice-container" id="diceContainer" title="Tap to Roll">
+    <div class="cube" id="cube">
+      <!-- Face 1 -->
+      <div class="face face-1">
+        <div class="pip pos-center"></div>
+      </div>
+
+      <!-- Face 2 -->
+      <div class="face face-2">
+        <div class="pip pos-tl"></div>
+        <div class="pip pos-br"></div>
+      </div>
+
+      <!-- Face 3 -->
+      <div class="face face-3">
+        <div class="pip pos-tl"></div>
+        <div class="pip pos-center"></div>
+        <div class="pip pos-br"></div>
+      </div>
+
+      <!-- Face 4 -->
+      <div class="face face-4">
+        <div class="pip pos-tl"></div>
+        <div class="pip pos-tr"></div>
+        <div class="pip pos-bl"></div>
+        <div class="pip pos-br"></div>
+      </div>
+
+      <!-- Face 5 -->
+      <div class="face face-5">
+        <div class="pip pos-tl"></div>
+        <div class="pip pos-tr"></div>
+        <div class="pip pos-center"></div>
+        <div class="pip pos-bl"></div>
+        <div class="pip pos-br"></div>
+      </div>
+
+      <!-- Face 6 -->
+      <div class="face face-6">
+        <div class="pip pos-tl"></div>
+        <div class="pip pos-tr"></div>
+        <div class="pip pos-ml"></div>
+        <div class="pip pos-mr"></div>
+        <div class="pip pos-bl"></div>
+        <div class="pip pos-br"></div>
+      </div>
+    </div>
+
+    <!-- Soft 3D Ground Shadow -->
+    <div class="dice-shadow" id="shadow"></div>
+  </div>
+
+  <!-- Minimal instruction -->
+  <div class="hint-label" id="hint">
+    <span>Tap dice to roll</span>
+  </div>
+
+  <div class="outcome-pill" id="outcome">Rolled: 1</div>
+
+  <script>
+    // State variables
+    const cube = document.getElementById('cube');
+    const container = document.getElementById('diceContainer');
+    const hint = document.getElementById('hint');
+    const outcome = document.getElementById('outcome');
+    
+    let isRolling = false;
+    let currentX = -24;
+    let currentY = 32;
+
+    // Angles required to face the camera flat
+    const faceRotations = {
+      1: { x: 0,   y: 0   },
+      2: { x: 0,   y: 90  },
+      3: { x: -90, y: 0   },
+      4: { x: 90,  y: 0   },
+      5: { x: 0,   y: -90 },
+      6: { x: 0,   y: 180 }
+    };
+
+    // Ultra-lightweight Web Audio API for organic rolling sound (Zero external audio file needed)
+    let audioCtx = null;
+
+    function playRattleSound() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        const now = audioCtx.currentTime;
+        const clicks = 5;
+
+        for (let i = 0; i < clicks; i++) {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc.type = 'triangle';
+          // Pitch variation mimicking wooden/plastic dice tumbling
+          osc.frequency.setValueAtTime(320 + Math.random() * 160, now + (i * 0.16));
+
+          gain.gain.setValueAtTime(0.08, now + (i * 0.16));
+          gain.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.16) + 0.05);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(now + (i * 0.16));
+          osc.stop(now + (i * 0.16) + 0.06);
+        }
+      } catch (e) {
+        // AudioContext restricted or unavailable
+      }
+    }
+
+    // Roll Functionality
+    function rollDice() {
+      if (isRolling) return;
+      isRolling = true;
+
+      // Haptic feedback for tactile feel on mobile
+      if ('vibrate' in navigator) {
+        try {
+          navigator.vibrate([15, 30, 20]);
+        } catch (err) {}
+      }
+
+      // Play synthesized roll sound
+      playRattleSound();
+
+      container.classList.add('rolling');
+      outcome.classList.remove('show');
+
+      // Pick a random number between 1 and 6
+      const result = Math.floor(Math.random() * 6) + 1;
+      const target = faceRotations[result];
+
+      // Add full multi-rotations (e.g. 720deg or 1080deg) to give realistic rolling spin
+      const extraSpins = 3; 
+      currentX += extraSpins * 360 + (target.x - (currentX % 360));
+      currentY += extraSpins * 360 + (target.y - (currentY % 360));
+
+      cube.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
+
+      // When roll ends
+      setTimeout(() => {
+        container.classList.remove('rolling');
+        isRolling = false;
+        outcome.textContent = `Rolled: ${result}`;
+        outcome.classList.add('show');
+
+        // Light landing vibration
+        if ('vibrate' in navigator) {
+          try {
+            navigator.vibrate(35);
+          } catch (err) {}
+        }
+      }, 1100);
+    }
+
+    // Event listeners for mobile touch & desktop click
+    container.addEventListener('click', rollDice);
+    hint.addEventListener('click', rollDice);
+  </script>
+</body>
+</html>
+```

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Ball Sort Puzzle</title>
+  <style>
+    :root {
+      --bg-color: #17162b;
+      --tube-border: rgba(255, 255, 255, 0.45);
+      --tube-bg: rgba(255, 255, 255, 0.05);
+      --tube-glow: rgba(147, 197, 253, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at center, #262447 0%, #131224 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      overflow-x: hidden;
+      padding: 16px 10px;
+    }
+
+    /* Top Bar */
+    header {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 12px;
+    }
+
+    .level-info {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .stats {
+      font-size: 14px;
+      font-weight: 600;
+      color: #a5b4fc;
+    }
+
+    /* Action Controls */
+    .controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    /* Tubes Container */
+    #tubes-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-content: center;
+      gap: 20px 14px;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px 8px 10px;
+      flex-grow: 1;
+    }
+
+    /* Test Tube Design */
+    .tube {
+      position: relative;
+      width: 54px;
+      height: 200px;
+      border: 3px solid var(--tube-border);
+      border-top: none;
+      border-radius: 0 0 27px 27px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
+      box-shadow: inset 0 0 10px var(--tube-glow), 0 8px 20px rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      padding-bottom: 7px;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /* Tube Rim */
+    .tube::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: -6px;
+      right: -6px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 4px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+
+    /* Selected Tube Glow */
+    .tube.selected {
+      border-color: #60a5fa;
+      box-shadow: inset 0 0 15px rgba(96, 165, 250, 0.5), 0 0 18px rgba(96, 165, 250, 0.6);
+      transform: translateY(-6px);
+    }
+
+    /* Glass Reflection Highlight */
+    .tube::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 4px;
+      bottom: 22px;
+      width: 3px;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.05));
+      border-radius: 2px;
+      pointer-events: none;
+    }
+
+    /* Ball Styling (3D Glossy Sphere) */
+    .ball {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      margin-top: 3px;
+      position: relative;
+      box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.55),
+                  inset 4px 4px 8px rgba(255, 255, 255, 0.6),
+                  0 4px 8px rgba(0, 0, 0, 0.4);
+      transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
+      flex-shrink: 0;
+    }
+
+    /* Lifted animation for selected top ball */
+    .ball.lifted {
+      transform: translateY(-44px);
+    }
+
+    /* Color Definitions with Vivid Gradients */
+    .color-orange { background: radial-gradient(circle at 32% 28%, #ffb347 0%, #ff6f00 65%, #c43e00 100%); }
+    .color-yellow { background: radial-gradient(circle at 32% 28%, #fff575 0%, #ffd600 65%, #f57f17 100%); }
+    .color-green  { background: radial-gradient(circle at 32% 28%, #81c784 0%, #00e676 65%, #1b5e20 100%); }
+    .color-blue   { background: radial-gradient(circle at 32% 28%, #80d8ff 0%, #2979ff 65%, #0d47a1 100%); }
+    .color-cyan   { background: radial-gradient(circle at 32% 28%, #a7ffeb 0%, #00e5ff 65%, #00838f 100%); }
+    .color-red    { background: radial-gradient(circle at 32% 28%, #ff8a80 0%, #ff1744 65%, #b71c1c 100%); }
+    .color-pink   { background: radial-gradient(circle at 32% 28%, #ff80ab 0%, #ff4081 65%, #c2185b 100%); }
+    .color-purple { background: radial-gradient(circle at 32% 28%, #ea80fc 0%, #d500f9 65%, #4a148c 100%); }
+
+    /* Victory Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 9, 24, 0.82);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: linear-gradient(145deg, #2b2854, #191736);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 30px 24px;
+      border-radius: 24px;
+      text-align: center;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.6);
+      width: 90%;
+      max-width: 320px;
+      animation: popIn 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-box h2 {
+      font-size: 26px;
+      margin-bottom: 8px;
+      color: #facc15;
+    }
+
+    .modal-box p {
+      color: #c7d2fe;
+      font-size: 15px;
+      margin-bottom: 22px;
+    }
+
+    .btn-next {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 12px 28px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+      width: 100%;
+    }
+
+    .btn-next:active {
+      transform: scale(0.96);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div>
+      <div class="level-info" id="level-title">Level 1</div>
+      <div class="stats" id="moves-label">Moves: 0</div>
+    </div>
+    <div class="controls">
+      <button class="btn" id="btn-undo">↶ Undo</button>
+      <button class="btn" id="btn-restart">↻ Reset</button>
+    </div>
+  </header>
+
+  <!-- Tubes Grid -->
+  <div id="tubes-grid"></div>
+
+  <!-- Win Celebration Modal -->
+  <div class="modal-overlay" id="win-modal">
+    <div class="modal-box">
+      <h2>🎉 Level Clear!</h2>
+      <p id="modal-moves">Bahut badhiya! Aapne solve kar liya.</p>
+      <button class="btn-next" id="btn-next">Next Level</button>
+    </div>
+  </div>
+
+  <script>
+    // Audio Synthesizer
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playSfx(type) {
+      try {
+        if (!audioCtx) audioCtx = new AudioContext();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'select') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(420, now);
+          osc.frequency.exponentialRampToValueAtTime(650, now + 0.08);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+          osc.start(now);
+          osc.stop(now + 0.09);
+        } else if (type === 'drop') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(560, now);
+          osc.frequency.exponentialRampToValueAtTime(320, now + 0.1);
+          gain.gain.setValueAtTime(0.14, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+          osc.start(now);
+          osc.stop(now + 0.11);
+        } else if (type === 'invalid') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(160, now);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+          osc.start(now);
+          osc.stop(now + 0.14);
+        } else if (type === 'win') {
+          const notes = [440, 554, 659, 880];
+          notes.forEach((freq, idx) => {
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.connect(g);
+            g.connect(audioCtx.destination);
+            o.type = 'triangle';
+            o.frequency.setValueAtTime(freq, now + idx * 0.09);
+            g.gain.setValueAtTime(0.12, now + idx * 0.09);
+            g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.18);
+            o.start(now + idx * 0.09);
+            o.stop(now + idx * 0.09 + 0.2);
+          });
+        }
+      } catch (e) {}
+    }
+
+    // Color Palette
+    const ALL_COLORS = ['orange', 'yellow', 'green', 'blue', 'cyan', 'red', 'pink', 'purple'];
+    const MAX_BALLS = 4;
+
+    // Game State
+    let currentLevel = 1;
+    let tubes = [];
+    let selectedTubeIdx = null;
+    let moveCount = 0;
+    let history = [];
+
+    const tubesGrid = document.getElementById('tubes-grid');
+    const levelTitle = document.getElementById('level-title');
+    const movesLabel = document.getElementById('moves-label');
+    const winModal = document.getElementById('win-modal');
+    const modalMoves = document.getElementById('modal-moves');
+
+    // Level Generator
+    function initLevel(lvl) {
+      currentLevel = lvl;
+      moveCount = 0;
+      history = [];
+      selectedTubeIdx = null;
+      levelTitle.textContent = `Level ${currentLevel}`;
+      movesLabel.textContent = `Moves: ${moveCount}`;
+      winModal.classList.remove('active');
+
+      // Colors count based on level
+      const colorCount = Math.min(3 + Math.floor((lvl - 1) * 0.7), ALL_COLORS.length);
+      const activeColors = ALL_COLORS.slice(0, colorCount);
+      const emptyTubes = 2;
+      const totalTubes = colorCount + emptyTubes;
+
+      // Pool of 4 balls per color
+      let pool = [];
+      activeColors.forEach(color => {
+        for (let i = 0; i < MAX_BALLS; i++) pool.push(color);
+      });
+
+      // Shuffle pool thoroughly
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+
+      // Populate filled tubes
+      tubes = [];
+      for (let t = 0; t < colorCount; t++) {
+        tubes.push(pool.slice(t * MAX_BALLS, (t + 1) * MAX_BALLS));
+      }
+      // Populate 2 empty tubes
+      for (let e = 0; e < emptyTubes; e++) {
+        tubes.push([]);
+      }
+
+      render();
+    }
+
+    // Render Tubes and Balls
+    function render() {
+      tubesGrid.innerHTML = '';
+
+      tubes.forEach((tube, idx) => {
+        const tubeEl = document.createElement('div');
+        tubeEl.className = 'tube';
+        if (selectedTubeIdx === idx) {
+          tubeEl.classList.add('selected');
+        }
+
+        tube.forEach((color, ballIdx) => {
+          const ballEl = document.createElement('div');
+          ballEl.className = `ball color-${color}`;
+          // If this is the top ball of the currently selected tube, lift it
+          if (selectedTubeIdx === idx && ballIdx === tube.length - 1) {
+            ballEl.classList.add('lifted');
+          }
+          tubeEl.appendChild(ballEl);
+        });
+
+        tubeEl.addEventListener('click', () => handleTubeClick(idx));
+        tubesGrid.appendChild(tubeEl);
+      });
+    }
+
+    // Handle Tube Interaction
+    function handleTubeClick(targetIdx) {
+      if (winModal.classList.contains('active')) return;
+
+      // 1. If no tube is currently selected
+      if (selectedTubeIdx === null) {
+        if (tubes[targetIdx].length === 0) return; // Cannot select empty tube
+        selectedTubeIdx = targetIdx;
+        playSfx('select');
+        render();
+        return;
+      }
+
+      // 2. If clicking the already selected tube again, deselect
+      if (selectedTubeIdx === targetIdx) {
+        selectedTubeIdx = null;
+        playSfx('select');
+        render();
+        return;
+      }
+
+      // 3. Attempt to move ball from selectedTubeIdx to targetIdx
+      const fromTube = tubes[selectedTubeIdx];
+      const toTube = tubes[targetIdx];
+      const movingBall = fromTube[fromTube.length - 1];
+
+      const canMove = toTube.length < MAX_BALLS && (toTube.length === 0 || toTube[toTube.length - 1] === movingBall);
+
+      if (canMove) {
+        // Save move in history for Undo
+        history.push(JSON.parse(JSON.stringify(tubes)));
+
+        // Execute Move
+        toTube.push(fromTube.pop());
+        moveCount++;
+        movesLabel.textContent = `Moves: ${moveCount}`;
+        selectedTubeIdx = null;
+        playSfx('drop');
+        render();
+
+        // Check Victory
+        if (checkWin()) {
+          playSfx('win');
+          setTimeout(() => {
+            modalMoves.textContent = `Aapne ${moveCount} moves me solve kiya!`;
+            winModal.classList.add('active');
+          }, 350);
+        }
+      } else {
+        // Invalid Move: deselect & play buzz
+        playSfx('invalid');
+        selectedTubeIdx = null;
+        render();
+      }
+    }
+
+    // Win Verification
+    function checkWin() {
+      for (let tube of tubes) {
+        if (tube.length === 0) continue;
+        if (tube.length !== MAX_BALLS) return false;
+        const color = tube[0];
+        for (let ball of tube) {
+          if (ball !== color) return false;
+        }
+      }
+      return true;
+    }
+
+    // Undo Last Move
+    document.getElementById('btn-undo').addEventListener('click', () => {
+      if (history.length > 0) {
+        tubes = history.pop();
+        moveCount = Math.max(0, moveCount - 1);
+        movesLabel.textContent = `Moves: ${moveCount}`;
+        selectedTubeIdx = null;
+        playSfx('select');
+        render();
+      }
+    });
+
+    // Reset Current Level
+    document.getElementById('btn-restart').addEventListener('click', () => {
+      initLevel(currentLevel);
+    });
+
+    // Next Level
+    document.getElementById('btn-next').addEventListener('click', () => {
+      initLevel(currentLevel + 1);
+    });
+
+    // Start Level 1
+    initLevel(1);
+  </script>
+</body>
+</html>

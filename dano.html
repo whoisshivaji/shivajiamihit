@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Chrome T-Rex Game</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    body {
+      background-color: #f7f7f7;
+      color: #535353;
+      font-family: 'Press Start 2P', monospace, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+      transition: background-color 0.6s ease;
+    }
+    body.night {
+      background-color: #202124;
+      color: #e8eaed;
+    }
+    #game-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      max-width: 600px;
+      height: 150px;
+      background: transparent;
+      image-rendering: pixelated;
+    }
+    .instructions {
+      margin-top: 18px;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      color: #757575;
+      text-align: center;
+    }
+    body.night .instructions {
+      color: #9aa0a6;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game-container">
+    <canvas id="canvas" width="600" height="150"></canvas>
+    <div class="instructions">Space / Tap to Jump • Down Arrow to Duck</div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Audio Synth
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playSound(type) {
+      try {
+        if (!audioCtx) audioCtx = new AudioContext();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'jump') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(587, now);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } else if (type === 'score') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(659, now);
+          osc.frequency.setValueAtTime(880, now + 0.08);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.start(now);
+          osc.stop(now + 0.22);
+        } else if (type === 'hit') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(160, now);
+          osc.frequency.linearRampToValueAtTime(60, now + 0.2);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        }
+      } catch (e) {}
+    }
+
+    // Color Theme
+    let isNight = false;
+    function getThemeColor() {
+      return isNight ? '#acb0b5' : '#535353';
+    }
+
+    // Game Variables
+    let gameStarted = false;
+    let gameOver = false;
+    let score = 0;
+    let highScore = parseInt(localStorage.getItem('chrome_dino_hi') || '0', 10);
+    let speed = 6;
+    let frame = 0;
+    let spawnTimer = 0;
+    const GROUND_Y = 126;
+
+    // Sprite Pixel Patterns
+    const SPRITES = {
+      dinoStand: [
+        "..........XXXXXX",
+        ".........XXXXXXXX",
+        ".........XX.XXXXX",
+        ".........XXXXXXXX",
+        ".........XXXXXXXX",
+        ".........XXXX....",
+        ".........XXXXXXX.",
+        "X.......XXXXXXXX.",
+        "XX.....XXXXXXXX..",
+        "XXX...XXXXXXXXX..",
+        "XXXX.XXXXXXXXXX..",
+        "XXXXXXXXXXXXXX...",
+        ".XXXXXXXXXXXX....",
+        "..XXXXXXXXXX.....",
+        "...XXXXXXXX......",
+        "....XXXXXX.......",
+        "....XX..XX.......",
+        "....XX...X.......",
+        "....X....X.......",
+        "....XX...XX......"
+      ],
+      dinoRun1: [
+        "..........XXXXXX",
+        ".........XXXXXXXX",
+        ".........XX.XXXXX",
+        ".........XXXXXXXX",
+        ".........XXXXXXXX",
+        ".........XXXX....",
+        ".........XXXXXXX.",
+        "X.......XXXXXXXX.",
+        "XX.....XXXXXXXX..",
+        "XXX...XXXXXXXXX..",
+        "XXXX.XXXXXXXXXX..",
+        "XXXXXXXXXXXXXX...",
+        ".XXXXXXXXXXXX....",
+        "..XXXXXXXXXX.....",
+        "...XXXXXXXX......",
+        "....XXXXXX.......",
+        "....XX...XX......",
+        "....X.....X......",
+        "....XX....X......",
+        "..........X......"
+      ],
+      dinoRun2: [
+        "..........XXXXXX",
+        ".........XXXXXXXX",
+        ".........XX.XXXXX",
+        ".........XXXXXXXX",
+        ".........XXXXXXXX",
+        ".........XXXX....",
+        ".........XXXXXXX.",
+        "X.......XXXXXXXX.",
+        "XX.....XXXXXXXX..",
+        "XXX...XXXXXXXXX..",
+        "XXXX.XXXXXXXXXX..",
+        "XXXXXXXXXXXXXX...",
+        ".XXXXXXXXXXXX....",
+        "..XXXXXXXXXX.....",
+        "...XXXXXXXX......",
+        "....XXXXXX.......",
+        "....XX..XX.......",
+        "....XX...X.......",
+        "....X............",
+        "....XX..........."
+      ],
+      dinoDuck1: [
+        "...................XXXXXXXXXXXXX",
+        "...................XXXXXXXXXXXXX",
+        "...................XX.XXXXXXXXXX",
+        "...................XXXXXXXXXXXXX",
+        "X.................XXXXXXXX......",
+        "XX...............XXXXXXXXXXXX...",
+        "XXX.............XXXXXXXXXXXXX...",
+        "XXXXX..........XXXXXXXXXXXXX....",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXX.....",
+        ".XXXXXXXXXXXXXXXXXXXXXXXXX......",
+        "..XXXXXXXXXXXXXXXXXXXXXXX.......",
+        "....XXXXXXXXXXXXXXXXXXXX........",
+        ".......XXXXXXXXXXXXXXX..........",
+        ".........XX......XX.............",
+        ".........X........X.............",
+        ".........XX.......XX............"
+      ],
+      dinoDuck2: [
+        "...................XXXXXXXXXXXXX",
+        "...................XXXXXXXXXXXXX",
+        "...................XX.XXXXXXXXXX",
+        "...................XXXXXXXXXXXXX",
+        "X.................XXXXXXXX......",
+        "XX...............XXXXXXXXXXXX...",
+        "XXX.............XXXXXXXXXXXXX...",
+        "XXXXX..........XXXXXXXXXXXXX....",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXX.....",
+        ".XXXXXXXXXXXXXXXXXXXXXXXXX......",
+        "..XXXXXXXXXXXXXXXXXXXXXXX.......",
+        "....XXXXXXXXXXXXXXXXXXXX........",
+        ".......XXXXXXXXXXXXXXX..........",
+        ".........XX......XX.............",
+        "..........X.......X.............",
+        "..........XX......X............."
+      ],
+      dinoDead: [
+        "..........XXXXXX",
+        ".........XXXXXXXX",
+        ".........X.X.XXXX",
+        ".........XXXXXXXX",
+        ".........XXXXXXXX",
+        ".........XXXX....",
+        ".........XXXXXXX.",
+        "X.......XXXXXXXX.",
+        "XX.....XXXXXXXX..",
+        "XXX...XXXXXXXXX..",
+        "XXXX.XXXXXXXXXX..",
+        "XXXXXXXXXXXXXX...",
+        ".XXXXXXXXXXXX....",
+        "..XXXXXXXXXX.....",
+        "...XXXXXXXX......",
+        "....XXXXXX.......",
+        "....XX..XX.......",
+        "....XX...X.......",
+        "....X....X.......",
+        "....XX...XX......"
+      ],
+      cactusSmall: [
+        "...XX...",
+        "...XX...",
+        "X..XX...",
+        "X..XX..X",
+        "X..XX..X",
+        "XXXXXX.X",
+        "...XX..X",
+        "...XXXXX",
+        "...XX...",
+        "...XX...",
+        "...XX...",
+        "...XX...",
+        "...XX..."
+      ],
+      cactusLarge: [
+        "....XX....",
+        "....XX....",
+        ".X..XX....",
+        ".X..XX..X.",
+        ".X..XX..X.",
+        ".X..XX..X.",
+        "XXXXXX..X.",
+        "....XXXXX.",
+        "....XX....",
+        "....XX....",
+        "....XX....",
+        "....XX....",
+        "....XX....",
+        "....XX....",
+        "....XX...."
+      ],
+      bird1: [
+        ".............X..",
+        "............XXX.",
+        "...........XXXXX",
+        "..........XXXXXX",
+        "....XXXXXXXXXXXX",
+        "...XXXXXXXXXXXX.",
+        "..XXXXXXXXXXXX..",
+        ".XXXXXXXXXXXX...",
+        "XXXXX...........",
+        ".XXX............",
+        "..X............."
+      ],
+      bird2: [
+        "....XXXXXXXXXXXX",
+        "...XXXXXXXXXXXX.",
+        "..XXXXXXXXXXXX..",
+        ".XXXXXXXXXXXX...",
+        "XXXXX...........",
+        ".XXX............",
+        "..X.X...........",
+        ".....XX.........",
+        "......XXX.......",
+        ".......XXXX.....",
+        "........XXXXX..."
+      ]
+    };
+
+    function drawPixelMap(map, startX, startY, pixelSize, color) {
+      ctx.fillStyle = color;
+      for (let r = 0; r < map.length; r++) {
+        const row = map[r];
+        for (let c = 0; c < row.length; c++) {
+          if (row[c] === 'X') {
+            ctx.fillRect(startX + c * pixelSize, startY + r * pixelSize, pixelSize, pixelSize);
+          }
+        }
+      }
+    }
+
+    // Dino Object
+    const dino = {
+      x: 35,
+      y: GROUND_Y - 40,
+      width: 32,
+      height: 40,
+      vy: 0,
+      gravity: 0.6,
+      jumpForce: -10.5,
+      isJumping: false,
+      isDucking: false,
+      stepTimer: 0,
+      legState: 0,
+
+      reset() {
+        this.y = GROUND_Y - 40;
+        this.vy = 0;
+        this.isJumping = false;
+        this.isDucking = false;
+        this.width = 32;
+        this.height = 40;
+      },
+
+      jump() {
+        if (!this.isJumping && !this.isDucking) {
+          this.vy = this.jumpForce;
+          this.isJumping = true;
+          playSound('jump');
+        }
+      },
+
+      update() {
+        if (this.isJumping) {
+          this.vy += this.gravity;
+          this.y += this.vy;
+          const normalY = GROUND_Y - 40;
+          if (this.y >= normalY) {
+            this.y = normalY;
+            this.vy = 0;
+            this.isJumping = false;
+          }
+        }
+
+        if (this.isDucking && !this.isJumping) {
+          this.height = 28;
+          this.width = 46;
+          this.y = GROUND_Y - 28;
+        } else if (!this.isJumping) {
+          this.height = 40;
+          this.width = 32;
+          this.y = GROUND_Y - 40;
+        }
+
+        this.stepTimer++;
+        if (this.stepTimer > 5) {
+          this.legState = 1 - this.legState;
+          this.stepTimer = 0;
+        }
+      },
+
+      draw() {
+        const color = getThemeColor();
+        if (gameOver) {
+          drawPixelMap(SPRITES.dinoDead, this.x, this.y, 2, color);
+        } else if (this.isJumping) {
+          drawPixelMap(SPRITES.dinoStand, this.x, this.y, 2, color);
+        } else if (this.isDucking) {
+          const duckSprite = this.legState === 0 ? SPRITES.dinoDuck1 : SPRITES.dinoDuck2;
+          drawPixelMap(duckSprite, this.x, this.y, 1.8, color);
+        } else {
+          const runSprite = this.legState === 0 ? SPRITES.dinoRun1 : SPRITES.dinoRun2;
+          drawPixelMap(runSprite, this.x, this.y, 2, color);
+        }
+      }
+    };
+
+    // Obstacles
+    let obstacles = [];
+
+    class Obstacle {
+      constructor(type, x) {
+        this.type = type;
+        this.x = x;
+        this.counted = false;
+
+        if (type === 'cactusSmall') {
+          this.width = 16;
+          this.height = 26;
+          this.y = GROUND_Y - this.height;
+        } else if (type === 'cactusLarge') {
+          this.width = 20;
+          this.height = 34;
+          this.y = GROUND_Y - this.height;
+        } else if (type === 'cactusGroup') {
+          this.width = 36;
+          this.height = 26;
+          this.y = GROUND_Y - this.height;
+        } else if (type === 'bird') {
+          this.width = 30;
+          this.height = 20;
+          const heights = [GROUND_Y - 26, GROUND_Y - 42, GROUND_Y - 60];
+          this.y = heights[Math.floor(Math.random() * heights.length)];
+          this.wingState = 0;
+          this.wingTimer = 0;
+        }
+      }
+
+      update() {
+        this.x -= speed;
+        if (this.type === 'bird') {
+          this.wingTimer++;
+          if (this.wingTimer > 8) {
+            this.wingState = 1 - this.wingState;
+            this.wingTimer = 0;
+          }
+        }
+      }
+
+      draw() {
+        const color = getThemeColor();
+        if (this.type === 'cactusSmall') {
+          drawPixelMap(SPRITES.cactusSmall, this.x, this.y, 2, color);
+        } else if (this.type === 'cactusLarge') {
+          drawPixelMap(SPRITES.cactusLarge, this.x, this.y, 2.2, color);
+        } else if (this.type === 'cactusGroup') {
+          drawPixelMap(SPRITES.cactusSmall, this.x, this.y, 2, color);
+          drawPixelMap(SPRITES.cactusSmall, this.x + 18, this.y + 2, 1.8, color);
+        } else if (this.type === 'bird') {
+          const birdSprite = this.wingState === 0 ? SPRITES.bird1 : SPRITES.bird2;
+          drawPixelMap(birdSprite, this.x, this.y, 1.8, color);
+        }
+      }
+    }
+
+    // Ground and Clouds
+    let groundOffset = 0;
+    const clouds = [
+      { x: 180, y: 35, speed: 0.6 },
+      { x: 380, y: 22, speed: 0.4 },
+      { x: 550, y: 45, speed: 0.5 }
+    ];
+
+    function drawCloud(cx, cy) {
+      const color = isNight ? '#3c4043' : '#d1d1d1';
+      ctx.fillStyle = color;
+      ctx.fillRect(cx + 8, cy, 26, 4);
+      ctx.fillRect(cx + 4, cy + 4, 34, 4);
+      ctx.fillRect(cx, cy + 8, 42, 4);
+    }
+
+    function checkCollision(d, o) {
+      const padX = 6;
+      const padY = 4;
+      return (
+        d.x + padX < o.x + o.width - padX &&
+        d.x + d.width - padX > o.x + padX &&
+        d.y + padY < o.y + o.height - padY &&
+        d.y + d.height - padY > o.y + padY
+      );
+    }
+
+    function resetGame() {
+      score = 0;
+      speed = 6;
+      obstacles = [];
+      dino.reset();
+      gameOver = false;
+      gameStarted = true;
+      isNight = false;
+      document.body.classList.remove('night');
+    }
+
+    function handleInput() {
+      if (!gameStarted) {
+        resetGame();
+      } else if (gameOver) {
+        resetGame();
+      } else {
+        dino.jump();
+      }
+    }
+
+    // Event Listeners
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') {
+        e.preventDefault();
+        handleInput();
+      } else if (e.code === 'ArrowDown') {
+        e.preventDefault();
+        if (gameStarted && !gameOver) dino.isDucking = true;
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'ArrowDown') {
+        dino.isDucking = false;
+      }
+    });
+
+    canvas.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      handleInput();
+    });
+
+    // Touch Swipe Down for Ducking
+    let touchStartY = 0;
+    window.addEventListener('touchstart', (e) => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      const deltaY = e.touches[0].clientY - touchStartY;
+      if (deltaY > 30 && gameStarted && !gameOver) {
+        dino.isDucking = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      dino.isDucking = false;
+    }, { passive: true });
+
+    // Main Game Loop
+    function loop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Clouds
+      clouds.forEach(c => {
+        if (gameStarted && !gameOver) {
+          c.x -= c.speed;
+          if (c.x < -50) c.x = canvas.width + 30;
+        }
+        drawCloud(c.x, c.y);
+      });
+
+      // Ground Line
+      const color = getThemeColor();
+      ctx.fillStyle = color;
+      ctx.fillRect(0, GROUND_Y, canvas.width, 2);
+
+      // Ground Bumps
+      if (gameStarted && !gameOver) {
+        groundOffset = (groundOffset + speed) % 24;
+      }
+      for (let gx = -groundOffset; gx < canvas.width; gx += 24) {
+        ctx.fillRect(gx + 4, GROUND_Y + 4, 3, 2);
+        ctx.fillRect(gx + 14, GROUND_Y + 7, 5, 1);
+      }
+
+      // Update & Draw Dino
+      if (gameStarted && !gameOver) {
+        dino.update();
+        frame++;
+
+        // Increase Score & Speed
+        if (frame % 4 === 0) {
+          score++;
+          if (score % 100 === 0) {
+            playSound('score');
+          }
+          if (score % 700 === 0) {
+            isNight = !isNight;
+            document.body.classList.toggle('night', isNight);
+          }
+          if (score % 100 === 0 && speed < 13.5) {
+            speed += 0.35;
+          }
+        }
+
+        // Spawn Obstacles
+        spawnTimer++;
+        const minSpawnInterval = Math.max(50, 95 - Math.floor(speed * 3.5));
+        if (spawnTimer > minSpawnInterval) {
+          if (Math.random() < 0.04) {
+            let type = 'cactusSmall';
+            const r = Math.random();
+            if (score > 350 && r < 0.3) {
+              type = 'bird';
+            } else if (r < 0.6) {
+              type = 'cactusLarge';
+            } else if (r < 0.8) {
+              type = 'cactusGroup';
+            }
+            obstacles.push(new Obstacle(type, canvas.width + 20));
+            spawnTimer = 0;
+          }
+        }
+      }
+
+      dino.draw();
+
+      // Obstacles loop
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        const obs = obstacles[i];
+        if (gameStarted && !gameOver) {
+          obs.update();
+          if (checkCollision(dino, obs)) {
+            gameOver = true;
+            playSound('hit');
+            if (score > highScore) {
+              highScore = score;
+              localStorage.setItem('chrome_dino_hi', highScore);
+            }
+          }
+        }
+        obs.draw();
+        if (obs.x + obs.width < -20) {
+          obstacles.splice(i, 1);
+        }
+      }
+
+      // Draw Retro Scoreboard
+      ctx.fillStyle = color;
+      ctx.font = '11px "Press Start 2P", monospace';
+      ctx.textAlign = 'right';
+      const padScore = String(score).padStart(5, '0');
+      const padHi = String(highScore).padStart(5, '0');
+      ctx.fillText(`HI ${padHi}  ${padScore}`, canvas.width - 15, 24);
+
+      // Game Over Screen
+      if (gameOver) {
+        ctx.textAlign = 'center';
+        ctx.font = '14px "Press Start 2P", monospace';
+        ctx.fillText('G A M E   O V E R', canvas.width / 2, 60);
+
+        // Restart Circle Icon
+        const rx = canvas.width / 2;
+        const ry = 88;
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = color;
+        ctx.beginPath();
+        ctx.arc(rx, ry, 12, 0.25 * Math.PI, 1.85 * Math.PI);
+        ctx.stroke();
+
+        // Arrow head
+        ctx.beginPath();
+        ctx.moveTo(rx + 8, ry - 14);
+        ctx.lineTo(rx + 15, ry - 7);
+        ctx.lineTo(rx + 5, ry - 5);
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
+
+      // Initial Start Screen Prompt
+      if (!gameStarted) {
+        ctx.textAlign = 'center';
+        ctx.font = '11px "Press Start 2P", monospace';
+        ctx.fillText('PRESS SPACE OR TAP TO START', canvas.width / 2, 70);
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    loop();
+  </script>
+</body>
+</html>

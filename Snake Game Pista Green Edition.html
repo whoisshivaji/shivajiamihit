@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Snake Game - Pista Green Edition</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pista: {
+              50: '#f4fbf6',
+              100: '#e5f6ec',
+              200: '#ccefd8',
+              300: '#a3dfbe',
+              400: '#75cb9f',
+              500: '#4dae82',
+              600: '#3a9069',
+              700: '#2e7254',
+              800: '#265b44',
+              900: '#1e4333',
+            },
+            boardLight: '#a6e2bf',
+            boardDark: '#93d8b0',
+            snakeHead: '#20563e',
+            snakeBody: '#2e7556',
+            appleRed: '#ef4444'
+          },
+          fontFamily: {
+            sans: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(135deg, #f7fcf9 0%, #edf8f2 50%, #e0f4ea 100%);
+      min-height: 100vh;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 14px 34px -10px rgba(62, 148, 107, 0.15), 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    .diff-pill {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-between min-h-screen p-3 sm:p-5 text-gray-800">
+
+  <!-- Header & Status Bar -->
+  <header class="w-full max-w-md flex items-center justify-between py-1">
+    <div class="flex items-center space-x-2.5">
+      <div class="w-9 h-9 rounded-2xl bg-pista-500 flex items-center justify-center text-white shadow-md shadow-pista-400/30">
+        <!-- Snake Icon -->
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold tracking-tight text-pista-900 leading-tight">Snake Game</h1>
+        <p class="text-[11px] font-semibold text-pista-600 uppercase tracking-wider">Pista Edition</p>
+      </div>
+    </div>
+
+    <!-- Sound & Pause Controls -->
+    <div class="flex items-center space-x-2">
+      <button id="soundBtn" class="p-2 text-pista-700 hover:text-pista-900 rounded-xl bg-white/70 hover:bg-white shadow-sm border border-pista-100 transition" aria-label="Toggle Sound">
+        <svg id="soundOn" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+        </svg>
+        <svg id="soundOff" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+        </svg>
+      </button>
+
+      <button id="pauseBtn" class="p-2 text-pista-700 hover:text-pista-900 rounded-xl bg-white/70 hover:bg-white shadow-sm border border-pista-100 transition" aria-label="Pause/Resume">
+        <svg id="pauseIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <svg id="playIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Difficulty Selector Tabs -->
+  <div class="w-full max-w-md bg-white/70 p-1 rounded-2xl border border-pista-200/80 shadow-xs flex items-center justify-between my-2">
+    <div class="text-[11px] font-bold text-pista-700 uppercase tracking-wider px-2">Speed:</div>
+    <div class="flex items-center space-x-1">
+      <button data-difficulty="easy" class="diff-btn diff-pill px-3 py-1 rounded-xl text-xs font-bold text-pista-700 hover:text-pista-900 transition">
+        Easy
+      </button>
+      <button data-difficulty="medium" class="diff-btn diff-pill px-3 py-1 rounded-xl text-xs font-bold bg-pista-500 text-white shadow-xs transition">
+        Medium
+      </button>
+      <button data-difficulty="hard" class="diff-btn diff-pill px-3 py-1 rounded-xl text-xs font-bold text-pista-700 hover:text-pista-900 transition">
+        Hard
+      </button>
+    </div>
+  </div>
+
+  <!-- Score Board Bar -->
+  <div class="w-full max-w-md grid grid-cols-2 gap-3 mb-2">
+    <!-- Current Score Card -->
+    <div class="glass-card rounded-2xl px-4 py-2 flex items-center justify-between border border-pista-200">
+      <div class="flex items-center space-x-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm shadow-red-300"></span>
+        <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">Score</span>
+      </div>
+      <span id="currentScore" class="text-2xl font-extrabold text-pista-900">0</span>
+    </div>
+
+    <!-- High Score Card -->
+    <div class="glass-card rounded-2xl px-4 py-2 flex items-center justify-between border border-pista-200">
+      <div class="flex items-center space-x-2">
+        <span class="text-amber-500 text-sm">🏆</span>
+        <span class="text-xs font-semibold text-gray-500 tracking-wider uppercase">Best</span>
+      </div>
+      <span id="highScore" class="text-2xl font-extrabold text-pista-900">0</span>
+    </div>
+  </div>
+
+  <!-- Level & Target Progress Bar -->
+  <div class="w-full max-w-md glass-card rounded-2xl px-4 py-2.5 mb-3 border border-pista-200 shadow-sm">
+    <div class="flex items-center justify-between mb-1.5">
+      <div class="flex items-center space-x-2">
+        <span class="px-2 py-0.5 rounded-lg bg-pista-500 text-white text-xs font-extrabold tracking-wider uppercase shadow-xs">
+          Lv. <span id="levelBadge">1</span>
+        </span>
+        <span id="levelName" class="text-xs font-semibold text-pista-800">Sprout</span>
+      </div>
+      <div class="text-xs font-bold text-pista-700">
+        <span id="applesEatenInLevel">0</span> / <span id="applesNeeded">5</span> 🍎
+      </div>
+    </div>
+    <!-- Progress Bar Track -->
+    <div class="w-full h-2 bg-pista-100 rounded-full overflow-hidden p-0.5 border border-pista-200/60">
+      <div id="levelProgressBar" class="h-full bg-gradient-to-r from-pista-400 to-pista-600 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
+    </div>
+  </div>
+
+  <!-- Game Arena Canvas Wrapper -->
+  <main class="w-full max-w-md flex flex-col items-center justify-center relative">
+    
+    <div class="relative w-full aspect-square max-w-[390px] rounded-3xl p-2 bg-boardDark/40 shadow-xl shadow-pista-500/15 border-4 border-pista-200/80 overflow-hidden">
+      <!-- HTML5 Canvas -->
+      <canvas id="gameCanvas" width="400" height="400" class="w-full h-full rounded-2xl block bg-boardLight"></canvas>
+
+      <!-- Level Up Toast Notification -->
+      <div id="levelUpBanner" class="absolute top-6 left-1/2 -translate-x-1/2 bg-white/95 border-2 border-pista-400 text-pista-900 px-5 py-2 rounded-2xl shadow-xl flex items-center space-x-2 opacity-0 pointer-events-none transition-all duration-500 scale-90 z-20">
+        <span class="text-xl">🌟</span>
+        <div>
+          <p class="text-[10px] uppercase font-bold text-pista-500 tracking-wider">Level Completed!</p>
+          <p class="text-sm font-extrabold text-pista-900 leading-tight">Welcome to Level <span id="toastLevelNum">2</span></p>
+        </div>
+      </div>
+
+      <!-- Game Over Overlay -->
+      <div id="gameOverModal" class="absolute inset-0 bg-pista-900/60 backdrop-blur-sm flex flex-col items-center justify-center rounded-2xl opacity-0 pointer-events-none transition-opacity duration-300 p-6 z-20">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-xs text-center shadow-2xl border border-pista-200">
+          <div class="w-14 h-14 mx-auto mb-3 bg-red-100 rounded-full flex items-center justify-center text-2xl shadow-inner">
+            🍎
+          </div>
+          <h2 class="text-2xl font-extrabold text-pista-900 mb-1">Game Over!</h2>
+          <p class="text-xs text-pista-700 font-medium mb-4">You had a delicious run!</p>
+          
+          <div class="bg-pista-50 rounded-2xl p-3 mb-5 border border-pista-100 grid grid-cols-3 gap-1 text-center">
+            <div>
+              <p class="text-[10px] uppercase font-bold text-gray-500">Score</p>
+              <p id="modalScore" class="text-lg font-black text-pista-800">0</p>
+            </div>
+            <div class="border-x border-pista-200">
+              <p class="text-[10px] uppercase font-bold text-gray-500">Level</p>
+              <p id="modalLevel" class="text-lg font-black text-pista-800">1</p>
+            </div>
+            <div>
+              <p class="text-[10px] uppercase font-bold text-gray-500">Record</p>
+              <p id="modalHigh" class="text-lg font-black text-pista-800">0</p>
+            </div>
+          </div>
+
+          <button id="modalRestartBtn" class="w-full py-3 px-5 rounded-2xl bg-pista-500 hover:bg-pista-600 active:scale-95 text-white font-bold text-sm tracking-wider uppercase shadow-md shadow-pista-400/40 transition">
+            Play Again
+          </button>
+        </div>
+      </div>
+
+      <!-- Paused Overlay -->
+      <div id="pausedOverlay" class="absolute inset-0 bg-white/70 backdrop-blur-[2px] flex items-center justify-center rounded-2xl opacity-0 pointer-events-none transition-opacity z-10">
+        <span class="bg-pista-800 text-white font-bold tracking-widest text-sm uppercase px-5 py-2 rounded-full shadow-lg">
+          Paused
+        </span>
+      </div>
+    </div>
+
+    <!-- Quick Restart Button -->
+    <div class="mt-4 flex items-center justify-center">
+      <button id="restartBtn" class="flex items-center space-x-2 text-pista-800 hover:text-pista-900 font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full bg-white/90 hover:bg-white shadow-sm border border-pista-200 transition active:scale-95">
+        <svg class="w-4 h-4 text-pista-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span>Restart Game</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- Mobile Touch & Keyboard hint footer -->
+  <footer class="w-full max-w-md text-center py-2 text-xs text-pista-700/80 font-medium">
+    <div class="flex items-center justify-center space-x-3">
+      <span>📱 Swipe screen to move</span>
+      <span>•</span>
+      <span>⌨️ Arrow Keys / WASD</span>
+    </div>
+  </footer>
+
+  <!-- Synthesizer & Game Script -->
+  <script>
+    /* Audio System using Web Audio API */
+    class SoundController {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+      }
+      playBip(freq, type = 'sine', duration = 0.08, gainVal = 0.1) {
+        if (!this.enabled) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+          gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {
+          // Ignore audio permissions
+        }
+      }
+      eatApple() {
+        if (!this.enabled) return;
+        this.playBip(587.33, 'triangle', 0.08, 0.12); // D5
+        setTimeout(() => this.playBip(880, 'sine', 0.12, 0.14), 60); // A5
+      }
+      playLevelUp() {
+        if (!this.enabled) return;
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          setTimeout(() => this.playBip(freq, 'triangle', 0.15, 0.15), idx * 80);
+        });
+      }
+      crash() {
+        if (!this.enabled) return;
+        this.playBip(180, 'sawtooth', 0.25, 0.2);
+        setTimeout(() => this.playBip(90, 'triangle', 0.35, 0.2), 120);
+      }
+      click() {
+        this.playBip(440, 'sine', 0.04, 0.05);
+      }
+    }
+
+    const sound = new SoundController();
+
+    /* Game Variables */
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const GRID_SIZE = 16; // 16x16 grid
+    const CELL_SIZE = canvas.width / GRID_SIZE; // 25px per cell
+
+    let snake = [];
+    let direction = { x: 1, y: 0 };
+    let nextDirection = { x: 1, y: 0 };
+    let food = { x: 10, y: 8 };
+    let score = 0;
+    let level = 1;
+    let applesInCurrentLevel = 0;
+    const APPLES_PER_LEVEL = 5; // Eat 5 apples to advance to the next level
+    const LEVEL_TITLES = ['Sprout', 'Crawler', 'Slitherer', 'Swift Pista', 'Speedy Viper', 'Master Cobra', 'Emerald Dragon', 'Legendary'];
+
+    // Difficulty settings
+    let difficulty = 'medium'; // 'easy' | 'medium' | 'hard'
+    const DIFFICULTY_CONFIG = {
+      easy: { baseSpeed: 175, speedStep: 7, minSpeed: 80 },
+      medium: { baseSpeed: 135, speedStep: 10, minSpeed: 55 },
+      hard: { baseSpeed: 95, speedStep: 12, minSpeed: 38 }
+    };
+
+    let highScore = parseInt(localStorage.getItem('snake_pista_highscore_' + difficulty) || '0', 10);
+    let isGameOver = false;
+    let isPaused = false;
+    let gameLoopTimeout = null;
+
+    /* UI Elements */
+    const currentScoreEl = document.getElementById('currentScore');
+    const highScoreEl = document.getElementById('highScore');
+    const levelBadgeEl = document.getElementById('levelBadge');
+    const levelNameEl = document.getElementById('levelName');
+    const applesEatenInLevelEl = document.getElementById('applesEatenInLevel');
+    const applesNeededEl = document.getElementById('applesNeeded');
+    const levelProgressBar = document.getElementById('levelProgressBar');
+    const levelUpBanner = document.getElementById('levelUpBanner');
+    const toastLevelNum = document.getElementById('toastLevelNum');
+    const gameOverModal = document.getElementById('gameOverModal');
+    const pausedOverlay = document.getElementById('pausedOverlay');
+    const modalScore = document.getElementById('modalScore');
+    const modalLevel = document.getElementById('modalLevel');
+    const modalHigh = document.getElementById('modalHigh');
+    const modalRestartBtn = document.getElementById('modalRestartBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const pauseIcon = document.getElementById('pauseIcon');
+    const playIcon = document.getElementById('playIcon');
+    const soundBtn = document.getElementById('soundBtn');
+    const soundOn = document.getElementById('soundOn');
+    const soundOff = document.getElementById('soundOff');
+    const diffButtons = document.querySelectorAll('.diff-btn');
+
+    function refreshHighScore() {
+      highScore = parseInt(localStorage.getItem('snake_pista_highscore_' + difficulty) || '0', 10);
+      highScoreEl.textContent = highScore;
+    }
+    refreshHighScore();
+    applesNeededEl.textContent = APPLES_PER_LEVEL;
+
+    /* Difficulty Selection Handlers */
+    diffButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const selected = btn.getAttribute('data-difficulty');
+        if (selected === difficulty) return;
+
+        difficulty = selected;
+        sound.click();
+
+        // Update button styles
+        diffButtons.forEach(b => {
+          if (b.getAttribute('data-difficulty') === difficulty) {
+            b.className = "diff-btn diff-pill px-3 py-1 rounded-xl text-xs font-bold bg-pista-500 text-white shadow-xs transition";
+          } else {
+            b.className = "diff-btn diff-pill px-3 py-1 rounded-xl text-xs font-bold text-pista-700 hover:text-pista-900 transition";
+          }
+        });
+
+        refreshHighScore();
+        initGame();
+      });
+    });
+
+    /* Sound Toggle */
+    soundBtn.addEventListener('click', () => {
+      sound.enabled = !sound.enabled;
+      soundOn.classList.toggle('hidden', !sound.enabled);
+      soundOff.classList.toggle('hidden', sound.enabled);
+      sound.click();
+    });
+
+    /* Pause Toggle */
+    function togglePause() {
+      if (isGameOver) return;
+      isPaused = !isPaused;
+      sound.click();
+      if (isPaused) {
+        pauseIcon.classList.add('hidden');
+        playIcon.classList.remove('hidden');
+        pausedOverlay.classList.remove('opacity-0', 'pointer-events-none');
+      } else {
+        pauseIcon.classList.remove('hidden');
+        playIcon.classList.add('hidden');
+        pausedOverlay.classList.add('opacity-0', 'pointer-events-none');
+        gameTick();
+      }
+    }
+    pauseBtn.addEventListener('click', togglePause);
+
+    /* Reset / Start Game */
+    function initGame() {
+      clearTimeout(gameLoopTimeout);
+      snake = [
+        { x: 5, y: 8 },
+        { x: 4, y: 8 },
+        { x: 3, y: 8 }
+      ];
+      direction = { x: 1, y: 0 };
+      nextDirection = { x: 1, y: 0 };
+      score = 0;
+      level = 1;
+      applesInCurrentLevel = 0;
+      isGameOver = false;
+      isPaused = false;
+      
+      currentScoreEl.textContent = '0';
+      updateLevelUI();
+
+      pauseIcon.classList.remove('hidden');
+      playIcon.classList.add('hidden');
+      pausedOverlay.classList.add('opacity-0', 'pointer-events-none');
+      gameOverModal.classList.add('opacity-0', 'pointer-events-none');
+      levelUpBanner.classList.add('opacity-0', 'pointer-events-none', 'scale-90');
+
+      spawnApple();
+      draw();
+      gameTick();
+    }
+
+    function updateLevelUI() {
+      levelBadgeEl.textContent = level;
+      const titleIndex = Math.min(level - 1, LEVEL_TITLES.length - 1);
+      levelNameEl.textContent = LEVEL_TITLES[titleIndex];
+      applesEatenInLevelEl.textContent = applesInCurrentLevel;
+      const pct = (applesInCurrentLevel / APPLES_PER_LEVEL) * 100;
+      levelProgressBar.style.width = `${Math.min(100, pct)}%`;
+    }
+
+    function triggerLevelUp() {
+      level++;
+      applesInCurrentLevel = 0;
+      updateLevelUI();
+      sound.playLevelUp();
+
+      // Show level up toast banner
+      toastLevelNum.textContent = level;
+      levelUpBanner.classList.remove('opacity-0', 'pointer-events-none', 'scale-90');
+      levelUpBanner.classList.add('scale-100');
+
+      setTimeout(() => {
+        levelUpBanner.classList.add('opacity-0', 'pointer-events-none', 'scale-90');
+        levelUpBanner.classList.remove('scale-100');
+      }, 1400);
+    }
+
+    /* Spawn Apple on Free Cell */
+    function spawnApple() {
+      const emptyCells = [];
+      for (let x = 0; x < GRID_SIZE; x++) {
+        for (let y = 0; y < GRID_SIZE; y++) {
+          const isOccupied = snake.some(seg => seg.x === x && seg.y === y);
+          if (!isOccupied) emptyCells.push({ x, y });
+        }
+      }
+      if (emptyCells.length > 0) {
+        food = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+      }
+    }
+
+    /* Change Direction with 180° check */
+    function changeDirection(newDir) {
+      if (isPaused || isGameOver) return;
+      // Prevent reversing into itself
+      if (newDir.x !== -direction.x || newDir.y !== -direction.y) {
+        nextDirection = newDir;
+        sound.click();
+      }
+    }
+
+    /* Keyboard Controls */
+    window.addEventListener('keydown', (e) => {
+      switch (e.key) {
+        case 'ArrowUp':
+        case 'w':
+        case 'W':
+          e.preventDefault();
+          changeDirection({ x: 0, y: -1 });
+          break;
+        case 'ArrowDown':
+        case 's':
+        case 'S':
+          e.preventDefault();
+          changeDirection({ x: 0, y: 1 });
+          break;
+        case 'ArrowLeft':
+        case 'a':
+        case 'A':
+          e.preventDefault();
+          changeDirection({ x: -1, y: 0 });
+          break;
+        case 'ArrowRight':
+        case 'd':
+        case 'D':
+          e.preventDefault();
+          changeDirection({ x: 1, y: 0 });
+          break;
+        case ' ':
+          e.preventDefault();
+          togglePause();
+          break;
+      }
+    });
+
+    /* Restart Button Handlers */
+    restartBtn.addEventListener('click', () => {
+      sound.click();
+      initGame();
+    });
+    modalRestartBtn.addEventListener('click', () => {
+      sound.click();
+      initGame();
+    });
+
+    /* Touch Swipe Gesture Support for Touchscreen / Mobile */
+    let touchStartX = 0;
+    let touchStartY = 0;
+    window.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      if (!touchStartX || !touchStartY) return;
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+
+      if (Math.abs(diffX) > 24 || Math.abs(diffY) > 24) {
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+          // Horizontal swipe
+          if (diffX > 0) changeDirection({ x: 1, y: 0 });
+          else changeDirection({ x: -1, y: 0 });
+        } else {
+          // Vertical swipe
+          if (diffY > 0) changeDirection({ x: 0, y: 1 });
+          else changeDirection({ x: 0, y: -1 });
+        }
+      }
+      touchStartX = 0;
+      touchStartY = 0;
+    }, { passive: true });
+
+    /* Main Game Tick Loop */
+    function gameTick() {
+      if (isGameOver || isPaused) return;
+
+      direction = nextDirection;
+      const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+      // Wall collision check
+      if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+        return gameOver();
+      }
+
+      // Self collision check
+      if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+        return gameOver();
+      }
+
+      snake.unshift(head);
+
+      // Eat Apple check
+      if (head.x === food.x && head.y === food.y) {
+        score++;
+        applesInCurrentLevel++;
+        currentScoreEl.textContent = score;
+
+        if (score > highScore) {
+          highScore = score;
+          highScoreEl.textContent = highScore;
+          localStorage.setItem('snake_pista_highscore_' + difficulty, highScore);
+        }
+
+        sound.eatApple();
+
+        // Level up check
+        if (applesInCurrentLevel >= APPLES_PER_LEVEL) {
+          triggerLevelUp();
+        } else {
+          updateLevelUI();
+        }
+
+        spawnApple();
+      } else {
+        snake.pop();
+      }
+
+      draw();
+
+      // Calculate speed based on selected difficulty and current level
+      const config = DIFFICULTY_CONFIG[difficulty];
+      const levelBonus = (level - 1) * config.speedStep;
+      const appleBonus = Math.floor(applesInCurrentLevel * 1.5);
+      const currentSpeed = Math.max(config.minSpeed, config.baseSpeed - levelBonus - appleBonus);
+
+      gameLoopTimeout = setTimeout(gameTick, currentSpeed);
+    }
+
+    /* Game Over */
+    function gameOver() {
+      isGameOver = true;
+      sound.crash();
+      modalScore.textContent = score;
+      modalLevel.textContent = level;
+      modalHigh.textContent = highScore;
+      gameOverModal.classList.remove('opacity-0', 'pointer-events-none');
+    }
+
+    /* Drawing Helpers */
+
+    // Draw Google-inspired subtle two-tone pista checkerboard
+    function drawGrid() {
+      for (let r = 0; r < GRID_SIZE; r++) {
+        for (let c = 0; c < GRID_SIZE; c++) {
+          ctx.fillStyle = (r + c) % 2 === 0 ? '#a6e2bf' : '#9bdcba';
+          ctx.fillRect(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        }
+      }
+    }
+
+    // Draw a detailed, juicy red apple with stem and leaf
+    function drawApple(gx, gy) {
+      const centerX = gx * CELL_SIZE + CELL_SIZE / 2;
+      const centerY = gy * CELL_SIZE + CELL_SIZE / 2 + 1;
+      const radius = CELL_SIZE * 0.36;
+
+      // Apple Body (Two lobes)
+      ctx.fillStyle = '#e63946';
+      ctx.beginPath();
+      ctx.arc(centerX - radius * 0.45, centerY, radius * 0.9, 0, Math.PI * 2);
+      ctx.arc(centerX + radius * 0.45, centerY, radius * 0.9, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Top indent highlight
+      ctx.fillStyle = '#ff6b6b';
+      ctx.beginPath();
+      ctx.arc(centerX - radius * 0.4, centerY - radius * 0.35, radius * 0.35, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Stem (Brown curved twig)
+      ctx.strokeStyle = '#5a3d28';
+      ctx.lineWidth = 2.2;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY - radius * 0.7);
+      ctx.quadraticCurveTo(centerX + 3, centerY - radius * 1.35, centerX + 6, centerY - radius * 1.25);
+      ctx.stroke();
+
+      // Green Leaf
+      ctx.fillStyle = '#40916c';
+      ctx.beginPath();
+      ctx.ellipse(centerX + 6, centerY - radius * 0.9, radius * 0.45, radius * 0.22, Math.PI / 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Draw smooth, rounded snake with face details
+    function drawSnake() {
+      snake.forEach((seg, index) => {
+        const isHead = index === 0;
+        const x = seg.x * CELL_SIZE;
+        const y = seg.y * CELL_SIZE;
+        const padding = 1.5;
+
+        if (isHead) {
+          // Snake Head (Darker pistachio forest green)
+          ctx.fillStyle = '#1e543b';
+          roundedRect(ctx, x + padding, y + padding, CELL_SIZE - padding * 2, CELL_SIZE - padding * 2, 8);
+          ctx.fill();
+
+          // Eyes and Pupils based on current direction
+          const cx = x + CELL_SIZE / 2;
+          const cy = y + CELL_SIZE / 2;
+          let eye1 = {}, eye2 = {};
+
+          if (direction.x === 1) { // Right
+            eye1 = { x: cx + 4, y: cy - 5 };
+            eye2 = { x: cx + 4, y: cy + 5 };
+          } else if (direction.x === -1) { // Left
+            eye1 = { x: cx - 4, y: cy - 5 };
+            eye2 = { x: cx - 4, y: cy + 5 };
+          } else if (direction.y === -1) { // Up
+            eye1 = { x: cx - 5, y: cy - 4 };
+            eye2 = { x: cx + 5, y: cy - 4 };
+          } else { // Down
+            eye1 = { x: cx - 5, y: cy + 4 };
+            eye2 = { x: cx + 5, y: cy + 4 };
+          }
+
+          // White of eyes
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(eye1.x, eye1.y, 3, 0, Math.PI * 2);
+          ctx.arc(eye2.x, eye2.y, 3, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Pupils
+          ctx.fillStyle = '#0f291d';
+          ctx.beginPath();
+          ctx.arc(eye1.x + direction.x, eye1.y + direction.y, 1.5, 0, Math.PI * 2);
+          ctx.arc(eye2.x + direction.x, eye2.y + direction.y, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+
+        } else {
+          // Body segment (Alternating gentle gradient shades)
+          ctx.fillStyle = index % 2 === 0 ? '#2d7a55' : '#358a61';
+          roundedRect(ctx, x + padding, y + padding, CELL_SIZE - padding * 2, CELL_SIZE - padding * 2, 6);
+          ctx.fill();
+        }
+      });
+    }
+
+    // Helper for rounded corners in canvas
+    function roundedRect(c, x, y, width, height, radius) {
+      c.beginPath();
+      c.moveTo(x + radius, y);
+      c.lineTo(x + width - radius, y);
+      c.quadraticCurveTo(x + width, y, x + width, y + radius);
+      c.lineTo(x + width, y + height - radius);
+      c.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      c.lineTo(x + radius, y + height);
+      c.quadraticCurveTo(x, y + height, x, y + height - radius);
+      c.lineTo(x, y + radius);
+      c.quadraticCurveTo(x, y, x + radius, y);
+      c.closePath();
+    }
+
+    /* Master Render */
+    function draw() {
+      drawGrid();
+      drawApple(food.x, food.y);
+      drawSnake();
+    }
+
+    // Start on load
+    window.onload = () => {
+      initGame();
+    };
+  </script>
+</body>
+</html>

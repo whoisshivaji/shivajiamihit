@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Gold Rate Widget</title>
+    <style>
+        :root {
+            --bg-main: #f8faf6;
+            --card-bg: #ffffff;
+            --accent-color: #93C572;
+            --accent-light: #eef6e9;
+            --accent-dark: #5a8240;
+            --text-primary: #1e291b;
+            --text-secondary: #5c6b58;
+            --border-color: #dce8d5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .gold-widget {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-top: 5px solid var(--accent-color);
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(147, 197, 114, 0.15);
+            width: 100%;
+            max-width: 380px;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .widget-title {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .live-badge {
+            background-color: var(--accent-light);
+            color: var(--accent-dark);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-dark);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .rate-box {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .purity-info h4 {
+            margin: 0 0 4px 0;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+        }
+
+        .purity-info span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .price-display {
+            text-align: right;
+        }
+
+        .price-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-dark);
+            margin: 0;
+        }
+
+        .price-unit {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .widget-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 18px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .refresh-btn {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background-color: var(--accent-dark);
+        }
+    </style>
+</head>
+<body>
+
+<div class="gold-widget">
+    <div class="widget-header">
+        <h3 class="widget-title">Today's Gold Rate</h3>
+        <div class="live-badge">
+            <span class="pulse-dot"></span> LIVE
+        </div>
+    </div>
+
+    <div class="rate-box">
+        <div class="purity-info">
+            <h4>24K Gold</h4>
+            <span>99.9% Pure</span>
+        </div>
+        <div class="price-display">
+            <p class="price-value" id="price-24k">Loading...</p>
+            <span class="price-unit">per 10 grams</span>
+        </div>
+    </div>
+
+    <div class="rate-box">
+        <div class="purity-info">
+            <h4>22K Gold</h4>
+            <span>91.6% Standard</span>
+        </div>
+        <div class="price-display">
+            <p class="price-value" id="price-22k">Loading...</p>
+            <span class="price-unit">per 10 grams</span>
+        </div>
+    </div>
+
+    <div class="widget-footer">
+        <span id="last-updated">Fetching rate...</span>
+        <button class="refresh-btn" onclick="fetchGoldRate()">Refresh</button>
+    </div>
+</div>
+
+<script>
+    async function fetchGoldRate() {
+        const price24El = document.getElementById("price-24k");
+        const price22El = document.getElementById("price-22k");
+        const updatedEl = document.getElementById("last-updated");
+
+        updatedEl.innerText = "Updating...";
+
+        try {
+            // 1. बिना API Key के लाइव Gold रेट (USD per Troy Ounce) और USD-INR रेट एक साथ लाना
+            const [goldRes, fxRes] = await Promise.all([
+                fetch("https://freegoldapi.com/data/latest.json"),
+                fetch("https://api.frankfurter.app/latest?from=USD&to=INR")
+            ]);
+
+            if (!goldRes.ok || !fxRes.ok) throw new Error("Network issue");
+
+            const goldData = await goldRes.json();
+            const fxData = await fxRes.json();
+
+            // लेटेस्ट एंट्री से गोल्ड की कीमत निकालना (1 Troy Ounce = 31.1034768 grams)
+            const latestEntry = Array.isArray(goldData) ? goldData[goldData.length - 1] : goldData;
+            const usdPerOunce = parseFloat(latestEntry.price || latestEntry.gold || latestEntry.XAU);
+            const usdToInr = fxData.rates.INR;
+
+            // 10 ग्राम 24K और 22K का कैलकुलेशन
+            const pricePerGram24k = (usdPerOunce / 31.1034768) * usdToInr;
+            const rate24k10g = Math.round(pricePerGram24k * 10);
+            const rate22k10g = Math.round(rate24k10g * 0.916);
+
+            price24El.innerText = "₹ " + rate24k10g.toLocaleString("en-IN");
+            price22El.innerText = "₹ " + rate22k10g.toLocaleString("en-IN");
+
+            const now = new Date();
+            updatedEl.innerText = "Updated: " + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        } catch (error) {
+            price24El.innerText = "Retry";
+            price22El.innerText = "Retry";
+            updatedEl.innerText = "Connection failed";
+            console.error(error);
+        }
+    }
+
+    // पेज खुलते ही रेट लोड करें
+    fetchGoldRate();
+</script>
+
+</body>
+</html>

@@ -1,74 +1,416 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tic Tac Toe - Light & Pista Green</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Poppins & Outfit -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            pista: {
-              50: '#f4fbf6',
-              100: '#e5f6ec',
-              200: '#cbeed9',
-              300: '#a3dfbe',
-              400: '#73c89e',
-              500: '#4dae82', // Primary pista accent
-              600: '#3a8f68',
-              700: '#307154',
-              800: '#295a45',
-              900: '#234a3a',
-            },
-            board: '#9edbb9', // Soft pista green board background
-            boardDark: '#85cb9f',
-            charcoal: '#2e3a34',
-            cream: '#fefbf3'
-          },
-          fontFamily: {
-            sans: ['Outfit', 'sans-serif'],
-          }
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Tic Tac Toe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-page: #f2fbf6;
+      --mint-board: #a5dfc1;
+      --mint-line: #88cba9;
+      --accent-green: #4fb984;
+      --accent-pill: #71c89c;
+      --dark-green: #1e4231;
+      --muted-green: #587968;
+      --card-bg: #ffffff;
+      --o-cream: #fffdf5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-page);
+      color: var(--dark-green);
+      min-height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 16px 16px 24px;
+      overflow-x: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 2px;
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: var(--accent-pill);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(79, 185, 132, 0.28);
+    }
+
+    .brand-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--dark-green);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: none;
+      background: transparent;
+      color: #3b7d5c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.12s ease;
+    }
+
+    .icon-btn:hover {
+      background: rgba(113, 200, 156, 0.16);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* Control Bar (Mode Dropdown + Symbol Toggle) */
+    .control-bar {
+      width: 100%;
+      background: var(--card-bg);
+      border-radius: 999px;
+      padding: 6px 8px 6px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 16px rgba(30, 66, 49, 0.05);
+      border: 1px solid rgba(136, 203, 169, 0.25);
+      gap: 8px;
+    }
+
+    .select-wrap {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .mode-select {
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--dark-green);
+      text-transform: uppercase;
+      padding-right: 26px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .select-chevron {
+      position: absolute;
+      right: 6px;
+      pointer-events: none;
+      color: #4fb984;
+      display: flex;
+      align-items: center;
+    }
+
+    .side-toggle {
+      display: flex;
+      align-items: center;
+      background: #f3faf6;
+      border: 1px solid #d5eee1;
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .side-btn {
+      width: 36px;
+      height: 28px;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--dark-green);
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .side-btn.active {
+      background: var(--accent-green);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(79, 185, 132, 0.35);
+    }
+
+    /* Grid Size Pills (3x3, 4x4, 5x5) */
+    .size-bar {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: var(--card-bg);
+      padding: 5px;
+      border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(30, 66, 49, 0.04);
+      border: 1px solid rgba(136, 203, 169, 0.25);
+    }
+
+    .size-btn {
+      border: none;
+      background: transparent;
+      padding: 7px 0;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      color: var(--muted-green);
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .size-btn.active {
+      background: var(--accent-green);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(79, 185, 132, 0.32);
+    }
+
+    /* Score Cards */
+    .score-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .score-card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 2px solid transparent;
+      box-shadow: 0 6px 18px rgba(30, 66, 49, 0.04);
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .score-card.active-turn {
+      border-color: #8fd4b0;
+      box-shadow: 0 8px 20px rgba(79, 185, 132, 0.12);
+    }
+
+    .score-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .score-mark-x {
+      width: 22px;
+      height: 22px;
+      color: var(--dark-green);
+      flex-shrink: 0;
+    }
+
+    .score-mark-o {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 4px solid #f7f3e3;
+      box-shadow: 0 0 0 1px rgba(30, 66, 49, 0.12);
+      flex-shrink: 0;
+    }
+
+    .score-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: var(--muted-green);
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .score-val {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--dark-green);
+      margin-left: 6px;
+    }
+
+    /* Turn Pill */
+    .turn-pill {
+      background: var(--card-bg);
+      border-radius: 999px;
+      padding: 7px 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(30, 66, 49, 0.06);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--dark-green);
+    }
+
+    .turn-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      transition: background 0.2s ease;
+    }
+
+    /* Board Container */
+    .board-card {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: var(--mint-board);
+      border-radius: 28px;
+      padding: 22px;
+      position: relative;
+      box-shadow: 0 16px 34px rgba(55, 130, 92, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .board-grid {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      position: relative;
+    }
+
+    .cell {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      padding: 0;
+      outline: none;
+    }
+
+    /* Internal grid lines via borders */
+    .cell.r-border {
+      border-right: 6px solid var(--mint-line);
+    }
+    .cell.b-border {
+      border-bottom: 6px solid var(--mint-line);
+    }
+
+    .board-grid.size-4 .cell.r-border {
+      border-right-width: 5px;
+    }
+    .board-grid.size-4 .cell.b-border {
+      border-bottom-width: 5px;
+    }
+
+    .board-grid.size-5 .cell.r-border {
+      border-right-width: 4px;
+    }
+    .board-grid.size-5 .cell.b-border {
+      border-bottom-width: 4px;
+    }
+
+    /* Animated X and O Marks */
+    .mark-svg {
+      width: 58%;
+      height: 58%;
+      overflow: visible;
+      animation: popIn 0.18s cubic-bezier(0.24, 1.4, 0.5, 1) forwards;
+    }
+
+    .cell.win-cell .mark-svg {
+      animation: winPulse 0.65s ease-in-out infinite alternate;
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(0.35);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
       }
     }
-  </script>
 
-  <style>
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: linear-gradient(135deg, #f7fdf9 0%, #ebf7f0 50%, #e0f2e8 100%);
-      min-height: 100vh;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* Grid Line styling */
-    .board-cell {
-      position: relative;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .board-cell:active {
-      transform: scale(0.96);
+    @keyframes winPulse {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(1.14);
+      }
     }
 
-    /* SVG Marks Animation */
-    .draw-x {
-      stroke-dasharray: 100;
-      stroke-dashoffset: 100;
-      animation: drawLine 0.28s ease-out forwards;
+    /* Winning Strike Line Overlay */
+    .win-line-svg {
+      position: absolute;
+      inset: 22px;
+      width: calc(100% - 44px);
+      height: calc(100% - 44px);
+      pointer-events: none;
+      z-index: 5;
     }
-    .draw-o {
-      stroke-dasharray: 260;
-      stroke-dashoffset: 260;
-      animation: drawCircle 0.32s ease-out forwards;
+
+    .win-line {
+      stroke: var(--dark-green);
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+      animation: drawLine 0.32s ease-out forwards;
     }
 
     @keyframes drawLine {
@@ -76,568 +418,277 @@
         stroke-dashoffset: 0;
       }
     }
-    @keyframes drawCircle {
-      to {
-        stroke-dashoffset: 0;
-      }
+
+    /* Restart Button */
+    .restart-btn {
+      margin-top: 2px;
+      background: var(--card-bg);
+      border: 1px solid rgba(136, 203, 169, 0.35);
+      border-radius: 999px;
+      padding: 13px 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--dark-green);
+      cursor: pointer;
+      box-shadow: 0 8px 22px rgba(30, 66, 49, 0.07);
+      transition: transform 0.14s ease, box-shadow 0.14s ease;
     }
 
-    /* Winning pulse animation */
-    @keyframes winPulse {
-      0%, 100% {
-        transform: scale(1);
-        filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9));
-      }
-      50% {
-        transform: scale(1.08);
-        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 1));
-      }
-    }
-    .winning-cell svg {
-      animation: winPulse 1.2s ease-in-out infinite;
+    .restart-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 26px rgba(30, 66, 49, 0.11);
     }
 
-    /* Subtle shadow & container glass */
-    .glass-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      box-shadow: 0 16px 40px -10px rgba(77, 174, 130, 0.15), 0 2px 8px rgba(0, 0, 0, 0.04);
+    .restart-btn:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    /* Ties Footer */
+    .ties-text {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted-green);
+      margin-top: -2px;
     }
   </style>
 </head>
-<body class="flex flex-col items-center justify-between p-4 md:p-6 text-gray-800">
-
-  <!-- Header / Navigation -->
-  <header class="w-full max-w-md flex items-center justify-between py-2">
-    <div class="flex items-center space-x-2">
-      <div class="w-8 h-8 rounded-xl bg-pista-400 flex items-center justify-center text-white shadow-sm">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
+<body>
+  <div class="app-shell">
+    <!-- Header -->
+    <header class="top-bar">
+      <div class="brand-left">
+        <div class="logo-badge" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+            <line x1="6" y1="6" x2="18" y2="18" />
+            <line x1="18" y1="6" x2="6" y2="18" />
+          </svg>
+        </div>
+        <h1 class="brand-title">Tic Tac Toe</h1>
       </div>
-      <h1 class="text-xl font-bold tracking-tight text-pista-900">Tic Tac Toe</h1>
-    </div>
-    
-    <!-- Sound Toggle & Reset Score Buttons -->
-    <div class="flex items-center space-x-2">
-      <button id="soundToggleBtn" aria-label="Toggle Sound" class="p-2 text-pista-700 hover:text-pista-900 rounded-full hover:bg-pista-100 transition">
-        <svg id="soundOnIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-        </svg>
-        <svg id="soundOffIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
-        </svg>
-      </button>
 
-      <button id="resetScoreBtn" title="Reset All Scores" class="p-2 text-pista-700 hover:text-pista-900 rounded-full hover:bg-pista-100 transition text-xs font-medium flex items-center gap-1">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-      </button>
-    </div>
-  </header>
+      <div class="top-actions">
+        <button id="sound-btn" class="icon-btn" type="button" title="Toggle Sound" aria-label="Toggle Sound">
+          <svg id="sound-on-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+          </svg>
+          <svg id="sound-off-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+        </button>
 
-  <!-- Main Game Container -->
-  <main class="w-full max-w-md flex flex-col items-center my-auto py-2">
+        <button id="top-reset-btn" class="icon-btn" type="button" title="Reset All Scores" aria-label="Reset All Scores">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+          </svg>
+        </button>
+      </div>
+    </header>
 
-    <!-- Mode Selector Dropdown / Pills -->
-    <div class="w-full flex justify-between items-center bg-white/70 p-1.5 rounded-2xl shadow-sm border border-pista-100 mb-3">
-      <div class="relative flex-1 mr-2">
-        <select id="modeSelect" class="w-full text-xs font-semibold uppercase tracking-wider bg-transparent text-pista-800 py-1.5 px-3 pr-7 rounded-xl focus:outline-none cursor-pointer appearance-none">
-          <option value="medium">AI: Medium</option>
-          <option value="easy">AI: Easy</option>
-          <option value="hard">AI: Impossible</option>
-          <option value="pvp">2 Players (Pass & Play)</option>
+    <!-- Mode & Symbol Bar -->
+    <div class="control-bar">
+      <div class="select-wrap">
+        <select id="mode-select" class="mode-select" aria-label="Game Mode">
+          <option value="easy">AI: EASY</option>
+          <option value="medium">AI: MEDIUM</option>
+          <option value="hard" selected>AI: HARD (IMPOSSIBLE)</option>
+          <option value="2p">2 PLAYER MODE</option>
         </select>
-        <div class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-pista-600">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+        <span class="select-chevron">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
           </svg>
-        </div>
+        </span>
       </div>
 
-      <!-- Quick symbol select (when playing vs AI) -->
-      <div id="symbolPicker" class="flex items-center space-x-1 bg-pista-50 p-1 rounded-xl border border-pista-200">
-        <button id="pickX" class="px-2.5 py-0.5 text-xs font-bold rounded-lg bg-pista-500 text-white shadow-sm transition">X</button>
-        <button id="pickO" class="px-2.5 py-0.5 text-xs font-bold rounded-lg text-pista-700 hover:text-pista-900 transition">O</button>
+      <div class="side-toggle" role="group" aria-label="Choose Player Symbol">
+        <button id="pick-x-btn" type="button" class="side-btn active">X</button>
+        <button id="pick-o-btn" type="button" class="side-btn">O</button>
       </div>
     </div>
 
-    <!-- Google Style Score Cards -->
-    <div class="w-full grid grid-cols-2 gap-3 mb-3">
-      <!-- Player X -->
-      <div id="playerXCard" class="glass-card rounded-2xl p-3 flex items-center justify-between border-2 border-pista-400/80 transition-all shadow-sm">
-        <div class="flex items-center space-x-2">
-          <!-- X Icon -->
-          <svg class="w-6 h-6 text-charcoal" viewBox="0 0 40 40">
-            <line x1="8" y1="8" x2="32" y2="32" stroke="currentColor" stroke-width="6.5" stroke-linecap="round"/>
-            <line x1="32" y1="8" x2="8" y2="32" stroke="currentColor" stroke-width="6.5" stroke-linecap="round"/>
+    <!-- Board Size Selector (3x3, 4x4, 5x5) -->
+    <div class="size-bar" role="group" aria-label="Board Grid Size">
+      <button type="button" class="size-btn active" data-size="3">3 × 3</button>
+      <button type="button" class="size-btn" data-size="4">4 × 4</button>
+      <button type="button" class="size-btn" data-size="5">5 × 5</button>
+    </div>
+
+    <!-- Score Cards -->
+    <div class="score-row">
+      <div id="card-x" class="score-card active-turn">
+        <div class="score-left">
+          <svg class="score-mark-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round">
+            <line x1="5" y1="5" x2="19" y2="19" />
+            <line x1="19" y1="5" x2="5" y2="19" />
           </svg>
-          <span class="text-xs uppercase tracking-wider font-semibold text-gray-500" id="labelX">Player X</span>
+          <span id="label-x" class="score-label">PLAYER (X)</span>
         </div>
-        <span id="scoreX" class="text-2xl font-bold text-pista-900">0</span>
+        <span id="score-x" class="score-val">0</span>
       </div>
 
-      <!-- Player O -->
-      <div id="playerOCard" class="glass-card rounded-2xl p-3 flex items-center justify-between border-2 border-transparent transition-all shadow-sm">
-        <div class="flex items-center space-x-2">
-          <!-- O Icon -->
-          <svg class="w-6 h-6 text-cream" viewBox="0 0 40 40">
-            <circle cx="20" cy="20" r="14" fill="none" stroke="#fefbf3" stroke-width="6.5"/>
-          </svg>
-          <span class="text-xs uppercase tracking-wider font-semibold text-gray-500" id="labelO">Computer</span>
+      <div id="card-o" class="score-card">
+        <div class="score-left">
+          <span class="score-mark-o"></span>
+          <span id="label-o" class="score-label">COMPUTER (O)</span>
         </div>
-        <span id="scoreO" class="text-2xl font-bold text-pista-900">0</span>
+        <span id="score-o" class="score-val">0</span>
       </div>
     </div>
 
-    <!-- Active Turn / Game Status Banner -->
-    <div class="w-full py-2 mb-2 flex items-center justify-center">
-      <div id="turnBanner" class="inline-flex items-center space-x-2 bg-white/80 px-4 py-1.5 rounded-full shadow-sm border border-pista-200">
-        <span id="turnIndicatorIcon" class="w-2.5 h-2.5 rounded-full bg-pista-500 animate-pulse"></span>
-        <span id="statusText" class="text-xs font-semibold tracking-wide text-pista-900">X's Turn</span>
-      </div>
+    <!-- Turn Status Pill -->
+    <div class="turn-pill">
+      <span id="turn-dot" class="turn-dot"></span>
+      <span id="turn-text">X's Turn</span>
     </div>
 
-    <!-- Google-Inspired Pista Green Board -->
-    <div class="w-full aspect-square max-w-[360px] p-3 sm:p-4 rounded-3xl bg-board shadow-xl shadow-pista-500/20 flex flex-col justify-between relative overflow-hidden border-4 border-pista-200/50">
-      
-      <!-- Grid Container -->
-      <div class="w-full h-full grid grid-cols-3 grid-rows-3 relative">
-        <!-- Vertical Dividers (Google style lines) -->
-        <div class="absolute top-2 bottom-2 left-1/3 w-1.5 -translate-x-1/2 bg-boardDark rounded-full pointer-events-none opacity-80"></div>
-        <div class="absolute top-2 bottom-2 left-2/3 w-1.5 -translate-x-1/2 bg-boardDark rounded-full pointer-events-none opacity-80"></div>
-        
-        <!-- Horizontal Dividers -->
-        <div class="absolute left-2 right-2 top-1/3 h-1.5 -translate-y-1/2 bg-boardDark rounded-full pointer-events-none opacity-80"></div>
-        <div class="absolute left-2 right-2 top-2/3 h-1.5 -translate-y-1/2 bg-boardDark rounded-full pointer-events-none opacity-80"></div>
-
-        <!-- 9 Interactive Cells -->
-        <button class="board-cell flex items-center justify-center focus:outline-none" data-index="0" aria-label="Square 1"></button>
-        <button class="board-cell flex items-center justify-center focus:outline-none" data-index="1" aria-label="Square 2"></button>
-        <button class="board-cell flex items-center justify-center focus:outline-none" data-index="2" aria-label="Square 3"></button>
-        <button class="board-cell flex items-center justify-center focus:outline-none" data-index="3" aria-label="Square 4"></button>
-        <button class="board-cell flex items-center justify-center focus:outline-none" data-index="4" aria-label="Square 5"></button>
-        <button class="board-cell flex items-center justify-center focus:outline-none" data-index="5" aria-label="Square 6"></button>
-        <button class="board-cell flex items-center justify-center focus:outline-none" data-index="6" aria-label="Square 7"></button>
-        <button class="board-cell flex items-center justify-center focus:outline-none" data-index="7" aria-label="Square 8"></button>
-        <button class="board-cell flex items-center justify-center focus:outline-none" data-index="8" aria-label="Square 9"></button>
-      </div>
-
+    <!-- Mint Board -->
+    <div class="board-card">
+      <div id="board-grid" class="board-grid size-3"></div>
+      <svg id="win-line-svg" class="win-line-svg" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
     </div>
 
-    <!-- Restart Game Button (Google UI Style) -->
-    <div class="w-full flex items-center justify-center mt-5">
-      <button id="restartBtn" class="flex items-center space-x-2 text-pista-800 hover:text-pista-900 font-bold text-sm tracking-wider uppercase px-6 py-2.5 rounded-full bg-white/90 hover:bg-white shadow-sm hover:shadow border border-pista-200 transition-all duration-200 active:scale-95">
-        <svg class="w-4 h-4 text-pista-600 transition-transform duration-500 ease-in-out group-hover:rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-        <span>Restart game</span>
-      </button>
-    </div>
+    <!-- Restart Game Button -->
+    <button id="restart-btn" type="button" class="restart-btn">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#4fb984" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+        <path d="M3 3v5h5" />
+      </svg>
+      <span>RESTART GAME</span>
+    </button>
 
-    <!-- Ties count indicator -->
-    <div class="mt-3 text-xs text-pista-700 font-medium">
-      Ties: <span id="scoreTies" class="font-bold">0</span>
-    </div>
-  </main>
+    <!-- Ties Counter -->
+    <div class="ties-text">Ties: <span id="score-ties">0</span></div>
+  </div>
 
-  <!-- Footer -->
-  <footer class="w-full max-w-md text-center py-2 text-xs text-pista-600">
-    <p>Pista Green Edition &bull; Clean &amp; Minimalist</p>
-  </footer>
-
-  <!-- Web Audio Synthesizer for lightweight native sounds -->
   <script>
-    class SoundFx {
-      constructor() {
-        this.ctx = null;
-        this.enabled = true;
-      }
-      init() {
-        if (!this.ctx) {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          if (AudioContext) {
-            this.ctx = new AudioContext();
-          }
+    (() => {
+      // ---------- Game State ----------
+      const state = {
+        size: 3,              // 3, 4, or 5
+        winLen: 3,            // 3 for 3x3, 4 for 4x4 and 5x5
+        mode: 'hard',         // 'easy' | 'medium' | 'hard' | '2p'
+        humanSide: 'X',       // 'X' | 'O'
+        turn: 'X',            // 'X' always starts
+        board: [],
+        gameOver: false,
+        aiThinking: false,
+        soundOn: true,
+        scores: { X: 0, O: 0, ties: 0 },
+        winLines: []
+      };
+
+      // ---------- DOM Elements ----------
+      const boardGrid = document.getElementById('board-grid');
+      const winLineSvg = document.getElementById('win-line-svg');
+      const modeSelect = document.getElementById('mode-select');
+      const pickXBtn = document.getElementById('pick-x-btn');
+      const pickOBtn = document.getElementById('pick-o-btn');
+      const sizeBtns = document.querySelectorAll('.size-btn');
+      const cardX = document.getElementById('card-x');
+      const cardO = document.getElementById('card-o');
+      const labelX = document.getElementById('label-x');
+      const labelO = document.getElementById('label-o');
+      const scoreXEl = document.getElementById('score-x');
+      const scoreOEl = document.getElementById('score-o');
+      const scoreTiesEl = document.getElementById('score-ties');
+      const turnTextEl = document.getElementById('turn-text');
+      const turnDotEl = document.getElementById('turn-dot');
+      const restartBtn = document.getElementById('restart-btn');
+      const topResetBtn = document.getElementById('top-reset-btn');
+      const soundBtn = document.getElementById('sound-btn');
+      const soundOnIcon = document.getElementById('sound-on-icon');
+      const soundOffIcon = document.getElementById('sound-off-icon');
+
+      let aiTimer = null;
+
+      // ---------- Web Audio API Sound Effects ----------
+      let audioCtx = null;
+      function getAudio() {
+        if (!state.soundOn) return null;
+        if (!audioCtx) {
+          const Ctx = window.AudioContext || window.webkitAudioContext;
+          if (Ctx) audioCtx = new Ctx();
         }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume().catch(() => {});
+        }
+        return audioCtx;
       }
-      play(freq, type = 'sine', duration = 0.08) {
-        if (!this.enabled) return;
-        try {
-          this.init();
-          if (!this.ctx) return;
-          if (this.ctx.state === 'suspended') this.ctx.resume();
 
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
+      function playMoveSound(side) {
+        const ctx = getAudio();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        const base = side === 'X' ? 520 : 420;
+        osc.frequency.setValueAtTime(base, now);
+        osc.frequency.exponentialRampToValueAtTime(base * 1.32, now + 0.065);
+        gain.gain.setValueAtTime(0.11, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.075);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.08);
+      }
 
-          osc.type = type;
-          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-
-          gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
-
+      function playEndSound(type) {
+        const ctx = getAudio();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const notes = type === 'win' ? [523.25, 659.25, 783.99] : [360, 300];
+        notes.forEach((f, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(f, now + idx * 0.085);
+          gain.gain.setValueAtTime(0.12, now + idx * 0.085);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.085 + 0.22);
           osc.connect(gain);
-          gain.connect(this.ctx.destination);
-
-          osc.start();
-          osc.stop(this.ctx.currentTime + duration);
-        } catch (e) {
-          // Ignore audio restriction blocks
-        }
-      }
-      playMove(isX) {
-        this.play(isX ? 360 : 440, 'sine', 0.09);
-      }
-      playWin() {
-        if (!this.enabled) return;
-        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
-          setTimeout(() => this.play(freq, 'triangle', 0.15), i * 90);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.085);
+          osc.stop(now + idx * 0.085 + 0.24);
         });
       }
-      playDraw() {
-        if (!this.enabled) return;
-        [400, 350, 300].forEach((freq, i) => {
-          setTimeout(() => this.play(freq, 'sine', 0.1), i * 80);
-        });
-      }
-    }
 
-    const sound = new SoundFx();
-
-    /* Game State */
-    let board = Array(9).fill(null);
-    let humanSymbol = 'X';
-    let aiSymbol = 'O';
-    let currentTurn = 'X';
-    let isGameOver = false;
-    let gameMode = 'medium'; // 'easy', 'medium', 'hard', 'pvp'
-    let scores = { X: 0, O: 0, ties: 0 };
-
-    const WINNING_COMBOS = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-      [0, 4, 8], [2, 4, 6]             // Diagonals
-    ];
-
-    /* DOM Elements */
-    const cells = document.querySelectorAll('.board-cell');
-    const statusText = document.getElementById('statusText');
-    const turnDot = document.getElementById('turnIndicatorIcon');
-    const restartBtn = document.getElementById('restartBtn');
-    const resetScoreBtn = document.getElementById('resetScoreBtn');
-    const modeSelect = document.getElementById('modeSelect');
-    const pickX = document.getElementById('pickX');
-    const pickO = document.getElementById('pickO');
-    const symbolPicker = document.getElementById('symbolPicker');
-    const scoreXElem = document.getElementById('scoreX');
-    const scoreOElem = document.getElementById('scoreO');
-    const scoreTiesElem = document.getElementById('scoreTies');
-    const playerXCard = document.getElementById('playerXCard');
-    const playerOCard = document.getElementById('playerOCard');
-    const labelX = document.getElementById('labelX');
-    const labelO = document.getElementById('labelO');
-    const soundToggleBtn = document.getElementById('soundToggleBtn');
-    const soundOnIcon = document.getElementById('soundOnIcon');
-    const soundOffIcon = document.getElementById('soundOffIcon');
-
-    // SVG templates matching the Google Pistachio aesthetic
-    function getXSVG() {
-      return `
-        <svg class="w-16 h-16 sm:w-20 sm:h-20 text-[#33463d] drop-shadow-sm" viewBox="0 0 64 64">
-          <line class="draw-x" x1="14" y1="14" x2="50" y2="50" stroke="currentColor" stroke-width="8.5" stroke-linecap="round"/>
-          <line class="draw-x" x1="50" y1="14" x2="14" y2="50" stroke="currentColor" stroke-width="8.5" stroke-linecap="round"/>
-        </svg>
-      `;
-    }
-
-    function getOSVG() {
-      return `
-        <svg class="w-16 h-16 sm:w-20 sm:h-20 text-[#fef9ea] drop-shadow-sm" viewBox="0 0 64 64">
-          <circle class="draw-o" cx="32" cy="32" r="21" fill="none" stroke="currentColor" stroke-width="8.5" stroke-linecap="round"/>
-        </svg>
-      `;
-    }
-
-    /* Sound Toggle */
-    soundToggleBtn.addEventListener('click', () => {
-      sound.enabled = !sound.enabled;
-      soundOnIcon.classList.toggle('hidden', !sound.enabled);
-      soundOffIcon.classList.toggle('hidden', sound.enabled);
-    });
-
-    /* Mode Change */
-    modeSelect.addEventListener('change', (e) => {
-      gameMode = e.target.value;
-      if (gameMode === 'pvp') {
-        symbolPicker.classList.add('hidden');
-        labelX.textContent = 'Player 1 (X)';
-        labelO.textContent = 'Player 2 (O)';
-      } else {
-        symbolPicker.classList.remove('hidden');
-        labelX.textContent = humanSymbol === 'X' ? 'Player (X)' : 'Computer (X)';
-        labelO.textContent = humanSymbol === 'O' ? 'Player (O)' : 'Computer (O)';
-      }
-      resetGame();
-    });
-
-    /* Symbol Picker */
-    pickX.addEventListener('click', () => {
-      if (humanSymbol === 'X') return;
-      humanSymbol = 'X';
-      aiSymbol = 'O';
-      pickX.className = "px-2.5 py-0.5 text-xs font-bold rounded-lg bg-pista-500 text-white shadow-sm transition";
-      pickO.className = "px-2.5 py-0.5 text-xs font-bold rounded-lg text-pista-700 hover:text-pista-900 transition";
-      updateCardLabels();
-      resetGame();
-    });
-
-    pickO.addEventListener('click', () => {
-      if (humanSymbol === 'O') return;
-      humanSymbol = 'O';
-      aiSymbol = 'X';
-      pickO.className = "px-2.5 py-0.5 text-xs font-bold rounded-lg bg-pista-500 text-white shadow-sm transition";
-      pickX.className = "px-2.5 py-0.5 text-xs font-bold rounded-lg text-pista-700 hover:text-pista-900 transition";
-      updateCardLabels();
-      resetGame();
-    });
-
-    function updateCardLabels() {
-      if (gameMode === 'pvp') {
-        labelX.textContent = 'Player 1 (X)';
-        labelO.textContent = 'Player 2 (O)';
-      } else {
-        labelX.textContent = humanSymbol === 'X' ? 'You (X)' : 'AI (X)';
-        labelO.textContent = humanSymbol === 'O' ? 'You (O)' : 'AI (O)';
-      }
-    }
-
-    /* Cell Click Handling */
-    cells.forEach(cell => {
-      cell.addEventListener('click', () => {
-        const index = parseInt(cell.getAttribute('data-index'), 10);
-        handleCellClick(index);
-      });
-    });
-
-    function handleCellClick(index) {
-      if (board[index] || isGameOver) return;
-
-      // If playing vs AI and it's not human's turn, do nothing
-      if (gameMode !== 'pvp' && currentTurn !== humanSymbol) return;
-
-      makeMove(index, currentTurn);
-
-      if (!isGameOver && gameMode !== 'pvp' && currentTurn === aiSymbol) {
-        // AI Turn
-        setTimeout(() => {
-          handleAiMove();
-        }, 320);
-      }
-    }
-
-    function makeMove(index, symbol) {
-      board[index] = symbol;
-      const cell = cells[index];
-      cell.innerHTML = symbol === 'X' ? getXSVG() : getOSVG();
-      sound.playMove(symbol === 'X');
-
-      const winningLine = checkWinner(board, symbol);
-      if (winningLine) {
-        handleWin(symbol, winningLine);
-      } else if (board.every(cell => cell !== null)) {
-        handleDraw();
-      } else {
-        currentTurn = currentTurn === 'X' ? 'O' : 'X';
-        updateTurnUI();
-      }
-    }
-
-    function updateTurnUI() {
-      statusText.textContent = `${currentTurn}'s Turn`;
-      if (currentTurn === 'X') {
-        playerXCard.classList.add('border-pista-400/80');
-        playerXCard.classList.remove('border-transparent');
-        playerOCard.classList.remove('border-pista-400/80');
-        playerOCard.classList.add('border-transparent');
-      } else {
-        playerOCard.classList.add('border-pista-400/80');
-        playerOCard.classList.remove('border-transparent');
-        playerXCard.classList.remove('border-pista-400/80');
-        playerXCard.classList.add('border-transparent');
-      }
-    }
-
-    function checkWinner(bd, player) {
-      for (const combo of WINNING_COMBOS) {
-        if (combo.every(idx => bd[idx] === player)) {
-          return combo;
-        }
-      }
-      return null;
-    }
-
-    function handleWin(winner, line) {
-      isGameOver = true;
-      scores[winner]++;
-      updateScoresUI();
-
-      statusText.textContent = `${winner} Wins!`;
-      turnDot.classList.remove('animate-pulse');
-      turnDot.style.backgroundColor = '#4dae82';
-      sound.playWin();
-
-      // Highlight winning cells
-      line.forEach(idx => {
-        cells[idx].classList.add('winning-cell');
-      });
-    }
-
-    function handleDraw() {
-      isGameOver = true;
-      scores.ties++;
-      updateScoresUI();
-      statusText.textContent = "It's a Draw!";
-      turnDot.classList.remove('animate-pulse');
-      sound.playDraw();
-    }
-
-    function updateScoresUI() {
-      scoreXElem.textContent = scores.X;
-      scoreOElem.textContent = scores.O;
-      scoreTiesElem.textContent = scores.ties;
-    }
-
-    /* AI Decision Making */
-    function handleAiMove() {
-      if (isGameOver) return;
-      let move;
-      if (gameMode === 'easy') {
-        move = getRandomMove();
-      } else if (gameMode === 'medium') {
-        // 55% optimal, 45% random
-        move = Math.random() > 0.45 ? getBestMove() : getRandomMove();
-      } else {
-        // Impossible / Hard Minimax
-        move = getBestMove();
-      }
-
-      if (move !== undefined && move !== null) {
-        makeMove(move, aiSymbol);
-      }
-    }
-
-    function getRandomMove() {
-      const available = board.map((val, idx) => val === null ? idx : null).filter(val => val !== null);
-      if (available.length === 0) return null;
-      return available[Math.floor(Math.random() * available.length)];
-    }
-
-    function getBestMove() {
-      // 1. Check if AI can win in this turn
-      for (let i = 0; i < 9; i++) {
-        if (!board[i]) {
-          board[i] = aiSymbol;
-          if (checkWinner(board, aiSymbol)) {
-            board[i] = null;
-            return i;
-          }
-          board[i] = null;
-        }
-      }
-
-      // 2. Block human if they can win
-      for (let i = 0; i < 9; i++) {
-        if (!board[i]) {
-          board[i] = humanSymbol;
-          if (checkWinner(board, humanSymbol)) {
-            board[i] = null;
-            return i;
-          }
-          board[i] = null;
-        }
-      }
-
-      // 3. Minimax for perfect move
-      let bestScore = -Infinity;
-      let move = null;
-      for (let i = 0; i < 9; i++) {
-        if (board[i] === null) {
-          board[i] = aiSymbol;
-          let score = minimax(board, 0, false);
-          board[i] = null;
-          if (score > bestScore) {
-            bestScore = score;
-            move = i;
+      // ---------- Precompute All Winning Lines for N x N Board ----------
+      // 3x3 -> 3 in a row; 4x4 -> 4 in a row; 5x5 -> 4 in a row (for deep tactical gameplay)
+      function buildWinLines(n, k) {
+        const lines = [];
+        // Rows
+        for (let r = 0; r < n; r++) {
+          for (let c = 0; c <= n - k; c++) {
+            const line = [];
+            for (let i = 0; i < k; i++) line.push(r * n + (c + i));
+            lines.push(line);
           }
         }
-      }
-      return move !== null ? move : getRandomMove();
-    }
-
-    function minimax(bd, depth, isMaximizing) {
-      if (checkWinner(bd, aiSymbol)) return 10 - depth;
-      if (checkWinner(bd, humanSymbol)) return depth - 10;
-      if (bd.every(c => c !== null)) return 0;
-
-      if (isMaximizing) {
-        let maxEval = -Infinity;
-        for (let i = 0; i < 9; i++) {
-          if (bd[i] === null) {
-            bd[i] = aiSymbol;
-            let evaluation = minimax(bd, depth + 1, false);
-            bd[i] = null;
-            maxEval = Math.max(maxEval, evaluation);
+        // Columns
+        for (let c = 0; c < n; c++) {
+          for (let r = 0; r <= n - k; r++) {
+            const line = [];
+            for (let i = 0; i < k; i++) line.push((r + i) * n + c);
+            lines.push(line);
           }
         }
-        return maxEval;
-      } else {
-        let minEval = Infinity;
-        for (let i = 0; i < 9; i++) {
-          if (bd[i] === null) {
-            bd[i] = humanSymbol;
-            let evaluation = minimax(bd, depth + 1, true);
-            bd[i] = null;
-            minEval = Math.min(minEval, evaluation);
+        // Down-Right Diagonals
+        for (let r = 0; r <= n - k; r++) {
+          for (let c = 0; c <= n - k; c++) {
+            const line = [];
+            for (let i = 0; i < k; i++) line.push((r + i) * n + (c + i));
+            lines.push(line);
           }
         }
-        return minEval;
-      }
-    }
-
-    /* Reset Current Board Round */
-    function resetGame() {
-      board = Array(9).fill(null);
-      isGameOver = false;
-      currentTurn = 'X';
-      turnDot.classList.add('animate-pulse');
-
-      cells.forEach(cell => {
-        cell.innerHTML = '';
-        cell.classList.remove('winning-cell');
-      });
-
-      updateTurnUI();
-
-      // If AI plays first as X
-      if (gameMode !== 'pvp' && aiSymbol === 'X') {
-        setTimeout(handleAiMove, 300);
-      }
-    }
-
-    restartBtn.addEventListener('click', resetGame);
-
-    resetScoreBtn.addEventListener('click', () => {
-      scores = { X: 0, O: 0, ties: 0 };
-      updateScoresUI();
-      resetGame();
-    });
-
-    // Initialize board on load
-    updateCardLabels();
-    updateTurnUI();
-  </script>
-</body>
-</html>
+        // Down-Left Diagonals
+        for (let r = 0; r <= n - k; r+

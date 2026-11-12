@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India & World Live Population</title>
+    <style>
+        :root {
+            --bg-main: #f5f9f2;
+            --bg-card: #ffffff;
+            --bg-subtle: #edf5e8;
+            --accent: #93C572;
+            --accent-dark: #4f7736;
+            --text-primary: #1a2417;
+            --text-secondary: #586953;
+            --border-color: #d4e4ca;
+            --danger-soft: #fdf2f2;
+            --danger-text: #b83b3b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            padding: 20px 14px 40px;
+            line-height: 1.5;
+        }
+
+        .wrapper {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-top: 5px solid var(--accent);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 6px 20px rgba(147, 197, 114, 0.12);
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .live-status {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            color: var(--accent-dark);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse {
+            width: 9px;
+            height: 9px;
+            background: var(--accent-dark);
+            border-radius: 50%;
+            animation: blink 1.4s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.25); }
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .pop-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 6px 20px rgba(147, 197, 114, 0.1);
+        }
+
+        .card-badge {
+            display: inline-block;
+            background: var(--bg-subtle);
+            color: var(--accent-dark);
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .big-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-dark);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        .sub-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-box {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+        .stat-box.death {
+            background: var(--danger-soft);
+            border-color: #f3d4d4;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .stat-val {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+            margin-top: 2px;
+        }
+
+        .stat-box.death .stat-val {
+            color: var(--danger-text);
+        }
+
+        .year-strip {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .year-strip strong {
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .section-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 16px rgba(147, 197, 114, 0.08);
+        }
+
+        .section-title {
+            font-size: 1.08rem;
+            font-weight: 800;
+            margin-bottom: 14px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .speed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .speed-item {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .speed-item span {
+            display: block;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .speed-item strong {
+            display: block;
+            font-size: 1.3rem;
+            color: var(--accent-dark);
+            margin: 4px 0;
+        }
+
+        .country-row {
+            margin-bottom: 12px;
+        }
+
+        .country-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .country-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .country-meta span:last-child {
+            color: var(--accent-dark);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 10px;
+            background: var(--bg-subtle);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .dob-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .dob-controls input {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-main);
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .dob-controls button {
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .dob-controls button:hover {
+            background: var(--accent-dark);
+        }
+
+        .dob-result {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .dob-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .dob-box {
+            background: var(--bg-card);
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+        }
+
+        .activity-card {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .activity-card .act-title {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .activity-card .act-num {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent-dark);
+            font-variant-numeric: tabular-nums;
+            margin: 4px 0;
+        }
+
+        .activity-card .act-sub {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- Header -->
+    <div class="header">
+        <div>
+            <h1>🌍 India & World Live Population</h1>
+            <p id="current-date-time">--</p>
+        </div>
+        <div class="live-status">
+            <span class="pulse"></span>
+            <span>LIVE</span>
+        </div>
+    </div>
+
+    <!-- Hero Counters: India & World -->
+    <div class="hero-grid">
+        <!-- India Card -->
+        <div class="pop-card">
+            <span class="card-badge">🇮🇳 INDIA LIVE POPULATION</span>
+            <div class="big-number" id="ind-pop">1,46,38,65,525</div>
+            <div class="sub-stats">
+                <div class="stat-box">
+                    <div class="stat-label">👶 Births Today</div>
+                    <div class="stat-val" id="ind-births-today">0</div>
+                </div>
+                <div class="stat-box death">
+                    <div class="stat-label">🕯️ Deaths Today</div>
+                    <div class="stat-val" id="ind-deaths-today">0</div>
+                </div>
+                <div class="stat-box" style="grid-column: span 2;">
+                    <div class="stat-label">📈 Net Population Growth Today</div>
+                    <div class="stat-val" id="ind-net-today" style="color: var(--accent-dark);">+0</div>
+                </div>
+            </div>
+            <div class="year-strip">
+                <span>This Year Births: <strong id="ind-births-year">0</strong></span>
+                <span>Deaths: <strong id="ind-deaths-year">0</strong></span>
+            </div>
+        </div>
+
+        <!-- World Card -->
+        <div class="pop-card">
+            <span class="card-badge">🌐 WORLD LIVE POPULATION</span>
+            <div class="big-number" id="wld-pop">8,23,16,13,070</div>
+            <div class="sub-stats">
+                <div class="stat-box">
+                    <div class="stat-label">👶 Births Today</div>
+                    <div class="stat-val" id="wld-births-today">0</div>
+                </div>
+                <div class="stat-box death">
+                    <div class="stat-label">🕯️ Deaths Today</div>
+                    <div class="stat-val" id="wld-deaths-today">0</div>
+                </div>
+                <div class="stat-box" style="grid-column: span 2;">
+                    <div class="stat-label">📈 Net Population Growth Today</div>
+                    <div class="stat-val" id="wld-net-today" style="color: var(--accent-dark);">+0</div>
+                </div>
+            </div>
+            <div class="year-strip">
+                <span>This Year Births: <strong id="wld-births-year">0</strong></span>
+                <span>Deaths: <strong id="wld-deaths-year">0</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Speed & Ratio Meter -->
+    <div class="section-card">
+        <div class="section-title">⚡ Live Speed & Ratio Meter (Per Minute)</div>
+        <div class="speed-grid">
+            <div class="speed-item">
+                <span>🇮🇳 India Birth Rate</span>
+                <strong>~44.2 / min</strong>
+                <span>1 birth every 1.36 sec</span>
+            </div>
+            <div class="speed-item">
+                <span>🇮🇳 India Net Growth</span>
+                <strong>+25.1 / min</strong>
+                <span>~36,100 added daily</span>
+            </div>
+            <div class="speed-item">
+                <span>🌍 World Birth Rate</span>
+                <strong>~252 / min</strong>
+                <span>4.2 births every second</span>
+            </div>
+            <div class="speed-item">
+                <span>🌍 World Net Growth</span>
+                <strong>+136 / min</strong>
+                <span>2.27 people every second</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top 5 Countries Comparison -->
+    <div class="section-card">
+        <div class="section-title">🏆 Top 5 Most Populous Countries (Live)</div>
+        <div id="top-countries-list"></div>
+    </div>
+
+    <!-- When Were You Born Tool -->
+    <div class="section-card">
+        <div class="section-title">🎂 When Were You Born? (Population Milestone)</div>
+        <div class="dob-controls">
+            <input type="date" id="dob-input" value="2004-06-15">
+            <button type="button" id="dob-btn">Check My Birth Stats</button>
+        </div>
+        <div class="dob-result" id="dob-result">
+            <strong id="dob-summary-title"></strong>
+            <div class="dob-grid">
+                <div class="dob-box">
+                    <div class="stat-label">🇮🇳 India Population Then</div>
+                    <div class="stat-val" id="dob-ind-then">--</div>
+                    <div class="stat-label" id="dob-ind-diff" style="margin-top:4px; color:var(--accent-dark);"></div>
+                </div>
+                <div class="dob-box">
+                    <div class="stat-label">🌍 World Population Then</div>
+                    <div class="stat-val" id="dob-wld-then">--</div>
+                    <div class="stat-label" id="dob-wld-diff" style="margin-top:4px; color:var(--accent-dark);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Other Interesting Live Counters -->
+    <div class="section-card">
+        <div class="section-title">📊 Today's Live Digital, Environment & Food Stats</div>
+        <div class="activity-grid">
+            <div class="activity-card">
+                <div class="act-title">🔍 Google Searches Today</div>
+                <div class="act-num" id="stat-google">0</div>
+                <div class="act-sub">~105,000 searches / sec</div>
+            </div>
+            <div class="activity-card">
+                <div class="act-title">📧 Emails Sent Today</div>
+                <div class="act-num" id="stat-emails">0</div>
+                <div class="act-sub">~4.1 million emails / sec</div>
+            </div>
+            <div class="activity-card">
+                <div class="act-title">▶️ YouTube Videos Viewed</div>
+                <div class="act-num" id="stat-youtube">0</div>
+                <div class="act-sub">~115,000 views / sec</div>
+            </div>
+            <div class="activity-card">
+                <div class="act-title">🌲 Forest Loss Today (Hectares)</div>
+                <div class="act-num" id="stat-forest" style="color: var(--danger-text);">0</div>
+                <div class="act-sub">Deforestation tracker</div>
+            </div>
+            <div class="activity-card">
+                <div class="act-title">🏭 CO2 Emissions Today (Tons)</div>
+                <div class="act-num" id="stat-co2" style="color: var(--danger-text);">0</div>
+                <div class="act-sub">Global carbon output</div>
+            </div>
+            <div class="activity-card">
+                <div class="act-title">🌾 Food Produced Today (Tons)</div>
+                <div class="act-num" id="stat-food">0</div>
+                <div class="act-sub">Global agricultural output</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var EPOCH_2026 = Date.UTC(2026, 0, 1, 0, 0, 0);
+
+    var models = {
+        india: {
+            base2026: 1463865525,
+            birthPerSec: 0.7367,
+            deathPerSec: 0.3184
+        },
+        world: {
+            base2026: 8231613070,
+            birthPerSec: 4.2015,
+            deathPerSec: 1.9310
+        },
+        china: {
+            base2026: 1416096094,
+            netPerSec: -0.095
+        },
+        usa: {
+            base2026: 347275807,
+            netPerSec: 0.058
+        },
+        indonesia: {
+            base2026: 285721236,
+            netPerSec: 0.072
+        },
+        pakistan: {
+            base2026: 255219554,
+            netPerSec: 0.125
+        }
+    };
+
+    function formatNum(num) {
+        var n = Math.floor(num);
+        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function formatIndianNum(num) {
+        var n = Math.floor(num).toString();
+        if (n.length <= 3) return n;
+        var lastThree = n.substring(n.length - 3);
+        var otherNumbers = n.substring(0, n.length - 3);
+        if (otherNumbers !== "") {
+            lastThree = "," + lastThree;
+        }
+        return otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+    }
+
+    function updateClocks() {
+        var now = new Date();
+        var dtEl = document.getElementById("current-date-time");
+        if (dtEl) {
+            var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var hh = String(now.getHours()).padStart(2, "0");
+            var mm = String(now.getMinutes()).padStart(2, "0");
+            var ss = String(now.getSeconds()).padStart(2, "0");
+            dtEl.textContent = days[now.getDay()] + ", " + now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear() + " • " + hh + ":" + mm + ":" + ss;
+        }
+
+        var secSince2026 = Math.max(0, (now.getTime() - EPOCH_2026) / 1000);
+        var midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+        var secToday = Math.max(0, (now.getTime() - midnight.getTime()) / 1000);
+
+        // India
+        var indBirthsYear = secSince2026 * models.india.birthPerSec;
+        var indDeathsYear = secSince2026 * models.india.deathPerSec;
+        var indCurrentPop = models.india.base2026 + (indBirthsYear - indDeathsYear);
+
+        var indBirthsToday = secToday * models.india.birthPerSec;
+        var indDeathsToday = secToday * models.india.deathPerSec;
+        var indNetToday = indBirthsToday - indDeathsToday;
+
+        document.getElementById("ind-pop").textContent = formatIndianNum(indCurrentPop);
+        document.getElementById("ind-births-today").textContent = formatIndianNum(indBirthsToday);
+        document.getElementById("ind-deaths-today").textContent = formatIndianNum(indDeathsToday);
+        document.getElementById("ind-net-today").textContent = "+" + formatIndianNum(indNetToday);
+        document.getElementById("ind-births-year").textContent = formatIndianNum(indBirthsYear);
+        document.getElementById("ind-deaths-year").textContent = formatIndianNum(indDeathsYear);
+
+        // World
+        var wldBirthsYear = secSince2026 * models.world.birthPerSec;
+        var wldDeathsYear = secSince2026 * models.world.deathPerSec;
+        var wldCurrentPop = models.world.base2026 + (wldBirthsYear - wldDeathsYear);
+
+        var wldBirthsToday = secToday * models.world.birthPerSec;
+        var wldDeathsToday = secToday * models.world.deathPerSec;
+        var wldNetToday = wldBirthsToday - wldDeathsToday;
+
+        document.getElementById("wld-pop").textContent = formatNum(wldCurrentPop);
+        document.getElementById("wld-births-today").textContent = formatNum(wldBirthsToday);
+        document.getElementById("wld-deaths-today").textContent = formatNum(wldDeathsToday);
+        document.getElementById("wld-net-today").textContent = "+" + formatNum(wldNetToday);
+        document.getElementById("wld-births-year").textContent = formatNum(wldBirthsYear);
+        document.getElementById("wld-deaths-year").textContent = formatNum(wldDeathsYear);
+
+        // Top 5 Countries
+        var top5 = [
+            { name: "🇮🇳 1. India", pop: indCurrentPop, ind: true },
+            { name: "🇨🇳 2. China", pop: models.china.base2026 + secSince2026 * models.china.netPerSec, ind: false },
+            { name: "🇺🇸 3. United States", pop: models.usa.base2026 + secSince2026 * models.usa.netPerSec, ind: false },
+            { name: "🇮🇩 4. Indonesia", pop: models.indonesia.base2026 + secSince2026 * models.indonesia.netPerSec, ind: false },
+            { name: "🇵🇰 5. Pakistan", pop: models.pakistan.base2026 + secSince2026 * models.pakistan.netPerSec, ind: false }
+        ];
+
+        var maxPop = top5[0].pop;
+        var html = "";
+        for (var i = 0; i < top5.length; i++) {
+            var c = top5[i];
+            var pct = ((c.pop / maxPop) * 100).toFixed(1);
+            var formattedPop = c.ind ? formatIndianNum(c.pop) : formatNum(c.pop);
+            html += '<div class="country-row">' +
+                '<div class="country-meta"><span>' + c.name + '</span><span>' + formattedPop + '</span></div>' +
+                '<div class="progress-track"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
+                '</div>';
+        }
+        document.getElementById("top-countries-list").innerHTML = html;
+
+        // Live Digital, Environment & Food Stats
+        document.getElementById("stat-google").textContent = formatNum(secToday * 105000);
+        document.getElementById("stat-emails").textContent = formatNum(secToday * 4100000);
+        document.getElementById("stat-youtube").textContent = formatNum(secToday * 115000);
+        document.getElementById("stat-forest").textContent = (secToday * 0.16).toFixed(1) + " ha";
+        document.getElementById("stat-co2").textContent = formatNum(secToday * 1180) + " t";
+        document.getElementById("stat-food").textContent = formatNum(secToday * 340) + " t";
+    }
+
+    var dobBtn = document.getElementById("dob-btn");
+    if (dobBtn) {
+        dobBtn.addEventListener("click", function () {
+            var dobVal = document.getElementById("dob-input").value;
+            if (!dobVal) return;
+
+            var parts = dobVal.split("-");
+            var dobDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+            var now = new Date();
+            if (dobDate >= now) {
+                alert("कृपया आज से पहले की जन्मतिथि चुनें।");
+                return;
+            }
+
+            var yearsDiff = (now - dobDate) / (1000 * 60 * 60 * 24 * 365.25);
+            var secSince2026 = Math.max(0, (now.getTime() - EPOCH_2026) / 1000);
+
+            var currentInd = models.india.base2026 + secSince2026 * (models.india.birthPerSec - models.india.deathPerSec);
+            var currentWld = models.world.base2026 + secSince2026 * (models.world.birthPerSec - models.world.deathPerSec);
+
+            var indThen = currentInd / Math.pow(1.0118, yearsDiff);
+            var wldThen = currentWld / Math.pow(1.0108, yearsDiff);
+
+            document.getElementById("dob-summary-title").textContent =
+                "आपकी उम्र लगभग " + yearsDiff.toFixed(1) + " वर्ष है — तब से अब तक के बदलाव:";
+
+            document.getElementById("dob-ind-then").textContent = formatIndianNum(indThen);
+            document.getElementById("dob-ind-diff").textContent = "+" + formatIndianNum(currentInd - indThen) + " लोग भारत में बढ़े";
+
+            document.getElementById("dob-wld-then").textContent = formatNum(wldThen);
+            document.getElementById("dob-wld-diff").textContent = "+" + formatNum(currentWld - wldThen) + " लोग दुनिया में बढ़े";
+
+            document.getElementById("dob-result").style.display = "block";
+        });
+    }
+
+    updateClocks();
+    setInterval(updateClocks, 250);
+});
+</script>
+
+</body>
+</html>

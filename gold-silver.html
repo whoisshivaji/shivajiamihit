@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Live Gold & Silver Rate</title>
+    <style>
+        :root {
+            --bg-page: #f4f8f1;
+            --bg-card: #ffffff;
+            --bg-subtle: #eef5e9;
+            --accent: #93C572;
+            --accent-dark: #547c3a;
+            --accent-hover: #7fb35c;
+            --text-main: #1c2619;
+            --text-muted: #5a6955;
+            --border: #d5e4cc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            padding: 20px 12px;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-top: 5px solid var(--accent);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(147, 197, 114, 0.16);
+        }
+
+        /* Top Bar: Date & City */
+        .top-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .info-pill {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .city-select {
+            background: transparent;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            width: 100%;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Section Titles */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live-tag {
+            background: var(--bg-subtle);
+            color: var(--accent-dark);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        /* Rate Cards Grid */
+        .rate-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .rate-card {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            transition: transform 0.2s;
+        }
+
+        .rate-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .rate-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .rate-amount {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--accent-dark);
+        }
+
+        .rate-sub {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 3px;
+        }
+
+        /* Calculator Box */
+        .calc-box {
+            border-top: 1px dashed var(--border);
+            padding-top: 18px;
+            margin-top: 6px;
+        }
+
+        .calc-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            background: var(--bg-subtle);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 7px;
+            border: none;
+            border-radius: 7px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: transparent;
+            color: var(--text-muted);
+            transition: 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-page);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--accent-dark);
+        }
+
+        /* Breakdown Table */
+        .summary-card {
+            background: var(--bg-page);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-row span:first-child {
+            color: var(--text-muted);
+        }
+
+        .summary-row span:last-child {
+            font-weight: 700;
+        }
+
+        .summary-total {
+            background: var(--bg-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 14px;
+        }
+
+        .total-label strong {
+            display: block;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .total-label small {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .total-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--accent-dark);
+        }
+
+        /* Footer */
+        .footer-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            font-size: 0.74rem;
+            color: var(--text-muted);
+        }
+
+        .refresh-btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .refresh-btn:hover {
+            background: var(--accent-dark);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="info-pill">
+            <span>📅 <span id="today-date">--</span></span>
+        </div>
+        <div class="info-pill">
+            <select id="city-select" class="city-select" onchange="updateUI()">
+                <option value="1.062">📍 Ahmedabad</option>
+                <option value="1.060">📍 Mumbai</option>
+                <option value="1.063">📍 Delhi</option>
+                <option value="1.065">📍 Varanasi / UP</option>
+                <option value="1.064">📍 Bengaluru</option>
+                <option value="1.068">📍 Chennai</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Gold Section -->
+    <div class="section-header">
+        <span class="section-title">🪙 India Gold Rate</span>
+        <span class="live-tag">● LIVE 10g</span>
+    </div>
+    <div class="rate-grid">
+        <div class="rate-card">
+            <div class="rate-label">24K Gold (99.9%)</div>
+            <div class="rate-amount" id="gold-24k">Loading...</div>
+            <div class="rate-sub" id="gold-24k-1g">₹ -- / gram</div>
+        </div>
+        <div class="rate-card">
+            <div class="rate-label">22K Gold (91.6%)</div>
+            <div class="rate-amount" id="gold-22k">Loading...</div>
+            <div class="rate-sub" id="gold-22k-1g">₹ -- / gram</div>
+        </div>
+    </div>
+
+    <!-- Silver Section -->
+    <div class="section-header">
+        <span class="section-title">⚪ India Silver Rate</span>
+        <span class="live-tag">● LIVE 1g / 1kg</span>
+    </div>
+    <div class="rate-grid">
+        <div class="rate-card">
+            <div class="rate-label">Silver / gram</div>
+            <div class="rate-amount" id="silver-1g">Loading...</div>
+            <div class="rate-sub">999 Fine Silver</div>
+        </div>
+        <div class="rate-card">
+            <div class="rate-label">Silver / kg</div>
+            <div class="rate-amount" id="silver-1kg">Loading...</div>
+            <div class="rate-sub">Per 1000 grams</div>
+        </div>
+    </div>
+
+    <!-- Calculator Section -->
+    <div class="calc-box">
+        <div class="section-header">
+            <span class="section-title">🧮 Jewellery Calculator</span>
+        </div>
+
+        <div class="calc-tabs">
+            <button class="tab-btn active" onclick="setMetal('gold22', this)">Gold 22K</button>
+            <button class="tab-btn" onclick="setMetal('gold24', this)">Gold 24K</button>
+            <button class="tab-btn" onclick="setMetal('silver', this)">Silver</button>
+        </div>
+
+        <div class="input-grid">
+            <div class="input-group">
+                <label>Weight (gm)</label>
+                <input type="number" id="calc-weight" value="10" min="0.1" step="0.1" oninput="calculateTotal()">
+            </div>
+            <div class="input-group">
+                <label>Making (%)</label>
+                <input type="number" id="calc-making" value="12" min="0" step="0.5" oninput="calculateTotal()">
+            </div>
+            <div class="input-group">
+                <label>GST</label>
+                <select id="calc-gst" onchange="calculateTotal()">
+                    <option value="0.03">Incl. 3%</option>
+                    <option value="0">No GST</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-row">
+                <span>Base value</span>
+                <span id="res-base">₹0</span>
+            </div>
+            <div class="summary-row">
+                <span>Making charges</span>
+                <span id="res-making">₹0</span>
+            </div>
+            <div class="summary-row">
+                <span>GST (3%)</span>
+                <span id="res-gst">₹0</span>
+            </div>
+            <div class="summary-total">
+                <div class="total-label">
+                    <strong>Total Amount</strong>
+                    <small>Incl. selected charges</small>
+                </div>
+                <div class="total-value" id="res-total">₹0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-bar">
+        <span id="status-text">Fetching live rates...</span>
+        <button class="refresh-btn" onclick="fetchRates()">Refresh</button>
+    </div>
+</div>
+
+<script>
+    // आज की तारीख सेट करना
+    const today = new Date();
+    document.getElementById("today-date").innerText = today.toLocaleDateString('en-IN', {
+        day: 'numeric', month: 'short', year: 'numeric'
+    });
+
+    let baseGoldUsdOz = 0;
+    let baseSilverUsdOz = 0;
+    let usdToInr = 84.5;
+    let selectedMetal = 'gold22';
+
+    const TROY_OZ_TO_GRAM = 31.1034768;
+
+    async function fetchRates() {
+        const statusEl = document.getElementById("status-text");
+        statusEl.innerText = "Updating live rates...";
+
+        try {
+            // Free & Open-Source APIs (No API Key Required)
+            const [goldRes, silverRes, fxRes] = await Promise.all([
+                fetch("https://api.gold-api.com/price/XAU"),
+                fetch("https://api.gold-api.com/price/XAG"),
+                fetch("https://api.frankfurter.app/latest?from=USD&to=INR")
+            ]);
+
+            if (!goldRes.ok || !silverRes.ok || !fxRes.ok) throw new Error("API Error");
+
+            const goldData = await goldRes.json();
+            const silverData = await silverRes.json();
+            const fxData = await fxRes.json();
+
+            baseGoldUsdOz = goldData.price;
+            baseSilverUsdOz = silverData.price;
+            usdToInr = fxData.rates.INR;
+
+            updateUI();
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            statusEl.innerText = "Updated at " + timeStr;
+        } catch (err) {
+            statusEl.innerText = "Connection error. Tap Refresh.";
+            console.error(err);
+        }
+    }
+
+    function getCalculatedRates() {
+        // भारतीय इम्पोर्ट ड्यूटी + लोकल प्रीमियम फैक्टर (शहर के अनुसार)
+        const cityFactor = parseFloat(document.getElementById("city-select").value);
+
+        const gold24PerGram = (baseGoldUsdOz / TROY_OZ_TO_GRAM) * usdToInr * cityFactor;
+        const gold22PerGram = gold24PerGram * 0.916;
+        const silverPerGram = (baseSilverUsdOz / TROY_OZ_TO_GRAM) * usdToInr * cityFactor;
+
+        return {
+            gold24: gold24PerGram,
+            gold22: gold22PerGram,
+            silver: silverPerGram
+        };
+    }
+
+    function updateUI() {
+        if (!baseGoldUsdOz || !baseSilverUsdOz) return;
+
+        const rates = getCalculatedRates();
+
+        // Gold 24K & 22K (10g और 1g)
+        document.getElementById("gold-24k").innerText = "₹" + Math.round(rates.gold24 * 10).toLocaleString("en-IN");
+        document.getElementById("gold-24k-1g").innerText = "₹" + Math.round(rates.gold24).toLocaleString("en-IN") + " / gram";
+
+        document.getElementById("gold-22k").innerText = "₹" + Math.round(rates.gold22 * 10).toLocaleString("en-IN");
+        document.getElementById("gold-22k-1g").innerText = "₹" + Math.round(rates.gold22).toLocaleString("en-IN") + " / gram";
+
+        // Silver (1g और 1kg)
+        document.getElementById("silver-1g").innerText = "₹" + Math.round(rates.silver).toLocaleString("en-IN");
+        document.getElementById("silver-1kg").innerText = "₹" + Math.round(rates.silver * 1000).toLocaleString("en-IN");
+
+        calculateTotal();
+    }
+
+    function setMetal(metal, btn) {
+        selectedMetal = metal;
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        if (!baseGoldUsdOz) return;
+
+        const rates = getCalculatedRates();
+        const ratePerGram = rates[selectedMetal];
+
+        const weight = parseFloat(document.getElementById("calc-weight").value) || 0;
+        const makingPercent = parseFloat(document.getElementById("calc-making").value) || 0;
+        const gstRate = parseFloat(document.getElementById("calc-gst").value) || 0;
+
+        const baseVal = ratePerGram * weight;
+        const makingVal = baseVal * (makingPercent / 100);
+        const gstVal = (baseVal + makingVal) * gstRate;
+        const totalVal = baseVal + makingVal + gstVal;
+
+        document.getElementById("res-base").innerText = "₹" + Math.round(baseVal).toLocaleString("en-IN");
+        document.getElementById("res-making").innerText = "₹" + Math.round(makingVal).toLocaleString("en-IN");
+        document.getElementById("res-gst").innerText = "₹" + Math.round(gstVal).toLocaleString("en-IN");
+        document.getElementById("res-total").innerText = "₹" + Math.round(totalVal).toLocaleString("en-IN");
+    }
+
+    // पेज लोड होते ही लाइव रेट लाएं
+    fetchRates();
+</script>
+
+</body>
+</html>
